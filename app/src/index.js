@@ -15,11 +15,16 @@ const allReducers = combineReducers({
   user: UserReducer
 });
 
-const allStoreEnahncers = compose(
-    applyMiddleware(thunk),
-    window.devToolsExtension && window.devToolsExtension()
 
-);
+const allStoreEnahncers = window.devToolsExtension ? 
+    compose(
+        applyMiddleware(thunk),
+        window.devToolsExtension()
+    ) : 
+    compose(
+        applyMiddleware(thunk)
+    );
+
 
 const store = createStore(
   allReducers,
