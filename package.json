@@ -1,0 +1,20 @@
+{
+  "name": "gm-tools",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "install": "cd ./app && npm i && cd ../server && npm i",
+    "app": "cd ./app && npm start",
+    "server": "cd ./server && node ./program"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/litsters/GMTools.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/litsters/GMTools/issues"
+  },
+  "homepage": "https://github.com/litsters/GMTools#readme"
+}

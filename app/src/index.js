@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { UserReducer } from './scripts/react/reducers';
 
+
 const allReducers = combineReducers({
   user: UserReducer
 });
