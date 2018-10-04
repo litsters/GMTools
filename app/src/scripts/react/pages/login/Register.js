@@ -27,7 +27,7 @@ class Register extends Component {
                 <input type="text" ref={el => this.txtbEmail} />
                 <input type="password" ref={el => this.txtbPwd1} />
                 <input type="password" ref={el => this.txtbPwd2} />
-                <button type="button">Submit</button>
+                <button type="button" onClick={this.submit}>Submit</button>
                 <a onClick={changeMode.bind(null, "login")}>Back to login</a>
             </div>
         );
