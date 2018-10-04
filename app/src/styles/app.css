@@ -1,4 +1,6 @@
 @import "./base/variables.css";
 @import "./base/animations.css";
+@import "./base/inputs.css";
+@import "./base/buttons.css";
 
 @import "./layout.css";
