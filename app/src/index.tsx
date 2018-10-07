@@ -17,10 +17,10 @@ const allReducers = combineReducers({
 });
 
 
-const allStoreEnahncers = window.devToolsExtension ? 
+const allStoreEnahncers = (window as any).devToolsExtension ?
     compose(
         applyMiddleware(thunk),
-        window.devToolsExtension()
+        (window as any).devToolsExtension()
     ) : 
     compose(
         applyMiddleware(thunk)

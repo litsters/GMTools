@@ -1,7 +1,6 @@
 import express from "express";
-const bodyParser = require("body-parser");
+import bodyParser from "body-parser";
 import { AuthApi } from "./api";
-
 
 const app = express();
 
@@ -14,5 +13,5 @@ AuthApi(app);
 
 // Start Server
 app.listen(8080, function () {
-    console.log('Server is started');
+    console.log(`Server is started on port ${process.env.PORT || 8080}`);
 });

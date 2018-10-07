@@ -22,7 +22,7 @@ class App extends Component {
 }
 
 const userSelector = createSelector(
-  state => state.user,
+  (state: any) => state.user,
   user => user
 )
 

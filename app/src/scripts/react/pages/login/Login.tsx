@@ -1,7 +1,16 @@
 import React, { Component } from "react";
 
-class Login extends Component {
-    constructor(props) {
+export interface ILogin
+{
+  changeMode: (mode: any) => void
+}
+
+export class Login extends React.Component<ILogin, {}>{
+
+  txtbPassword: any;
+  txtbUsername: any;
+
+    constructor(props: any) {
         super(props);
 
         this.isFormComplete = this.isFormComplete.bind(this);
@@ -20,7 +29,7 @@ class Login extends Component {
     }
 
     render() {
-        const { changeMode } = this.props;
+        const { changeMode }: any = this.props;
         return (
             <div>
                 <h2>Login</h2>
@@ -32,5 +41,3 @@ class Login extends Component {
         );
     }
 }
-
-export default Login;

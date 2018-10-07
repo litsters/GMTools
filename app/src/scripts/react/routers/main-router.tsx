@@ -5,7 +5,7 @@ import LoginPage from "../pages/login/LoginPage";
 
 class MainRouter extends Component {
     render() {
-        const { history } = this.props;
+        const { history }: any = this.props;
 
         return (
             <Switch>
@@ -15,7 +15,7 @@ class MainRouter extends Component {
                 }} />
 
                 <Route path="" render={({match}) => {
-                    return <div history={history}>main path</div>
+                    return <div data-history={history}>main path</div>
                 }} />
 
             </Switch>
