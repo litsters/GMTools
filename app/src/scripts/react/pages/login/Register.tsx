@@ -1,4 +1,4 @@
-import React, { Component, ReactElement } from 'react';
+import React from 'react';
 
 export interface IRegister
 {

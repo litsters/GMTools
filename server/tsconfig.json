@@ -1,1 +1,25 @@
-../tsconfig.json
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "lib": ["es2015", "es2016", "dom"],
+    "target": "es2015",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "types/*"
+      ],
+      "@app": ["."]
+    }
+  },
+  "include": [
+    "./**/*",
+    "*"
+  ]
+}
