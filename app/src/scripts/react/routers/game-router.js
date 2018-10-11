@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch } from "react-router-dom";
 import { GameConfig as Config } from "./config";
 
-import DicePage from "../pages/game/DicePage";
+import DicePage from "../pages/game/dice/DicePage";
 
 // used to map configuration to components
 const components = { DicePage };

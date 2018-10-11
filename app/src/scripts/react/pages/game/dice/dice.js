@@ -49,7 +49,8 @@ class Dice {
   }
   
   applyModifier(value) {
-    if (this.operator && this.operand !== null) {
+    const { operator, operand } = this;
+    if (operator && operand !== null) {
       switch(operator) {
         case '+': return value + operand;
         case '-': return value - operand;
@@ -64,7 +65,7 @@ class Dice {
   roll() {
     let result =  Math.floor(Math.random() * this.numSides) + 1;  
     
-    result = this.applyModifier(value);
+    result = this.applyModifier(result);
 
     return result;
   }
