@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { Route, Switch } from "react-router-dom";
-import LoginPage from "../pages/login/LoginPage";
+import { MainConfig as Config } from "./config";
 
+import LoginPage from "../pages/login/LoginPage";
+import NotFoundPage from "../pages/NotFoundPage";
+
+
+// used to map configuration to components
+const components = { LoginPage, NotFoundPage };
 
 class MainRouter extends Component {
     render() {
@@ -9,15 +15,18 @@ class MainRouter extends Component {
 
         return (
             <Switch>
+                {Object.keys(Config.routes).map((key) => {
+                    let route = Config.routes[key],
+                        Page = components[route.component];
 
-                <Route path="/login" render={({match}) => {
-                    return <LoginPage />
-                }} />
-
-                <Route path="" render={({match}) => {
-                    return <div history={history}>main path</div>
-                }} />
-
+                    return (
+                        <Route key={key} path={route.path} render={({match}) => {
+                            console.log(route);
+                            return <Page history={history} match={match} />
+                            
+                        }} />
+                    );
+                })}
             </Switch>
         );
     }
