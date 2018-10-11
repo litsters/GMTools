@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { Route, Switch } from "react-router-dom";
-import { MainConfig as Config } from "./config";
+import { GameConfig as Config } from "./config";
 
-import LoginPage from "../pages/login/LoginPage";
-import GamePage from "../pages/game/GamePage";
-import NotFoundPage from "../pages/NotFoundPage";
-
+import DicePage from "../pages/game/DicePage";
 
 // used to map configuration to components
-const components = { LoginPage, GamePage, NotFoundPage };
+const components = { DicePage };
 
-class MainRouter extends Component {
+class GameRouter extends Component {
     render() {
         const { history } = this.props;
 
@@ -31,4 +28,4 @@ class MainRouter extends Component {
     }
 }
 
-export default MainRouter;
+export default GameRouter;
