@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import { Route, Switch } from "react-router-dom";
 import LoginPage from "../pages/login/LoginPage";
-
+import LandingPage from "../pages/landing/LandingPage";
+import Dashboard from "../pages/dashboard/Dashboard";
+import Auth from "../auth/Auth";
 
 class MainRouter extends Component {
-    render() {
-        const { history }: any = this.props;
+    private auth:Auth;
 
+    constructor(props:any){
+        super(props);
+        this.auth = new Auth();
+    }
+
+    render() {
         return (
             <Switch>
 
@@ -14,8 +21,16 @@ class MainRouter extends Component {
                     return <LoginPage />
                 }} />
 
-                <Route path="" render={({match}) => {
-                    return <div data-history={history}>main path</div>
+                <Route path="/dashboard" render={({match}) => {
+                    return <Dashboard auth={this.auth}/>
+                }} />
+
+                <Route path="/landing" render={({match}) => {
+                    return <LandingPage auth={this.auth} />
+                }} />
+
+                <Route exact path="/" render={({match}) => {
+                    return <LandingPage auth={this.auth} />
                 }} />
 
             </Switch>
