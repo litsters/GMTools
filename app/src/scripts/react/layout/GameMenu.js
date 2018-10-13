@@ -6,7 +6,7 @@ class Menu extends Component {
     render() {
         const routes = Config.routes.game.children
         return (
-            <div>
+            <div className="menu-game">
                 <h2>menu</h2>
                 <ul>
                 {Object.keys(routes).map((key) => {
