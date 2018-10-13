@@ -3,9 +3,9 @@ import Menu from "./GameMenu";
 
 const GameLayout = ({children}) => {
     return (
-        <div className="layout">
+        <div className="layout-game">
             <Menu/>
-            <div>
+            <div className="layout-body">
                 {children}
             </div>
         </div>

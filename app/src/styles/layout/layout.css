@@ -1,0 +1,20 @@
+body {
+    margin: 0;
+}
+
+.app {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-header {
+    position: fixed;
+    top: 0; right: 0; left: 0;
+    background: red;
+}
+
+.app-body {
+    height: 100%;
+}
+
+@import "./game.css";

@@ -5,7 +5,7 @@ class Body extends Component {
         const { children } = this.props;
         
         return (
-            <div>
+            <div className="app-body">
                 {children}
             </div>
         );

@@ -1,0 +1,15 @@
+.layout-game {
+    display: flex;
+    flex-direction: horizontal;
+    height: 100%;
+}
+
+.menu-game {
+    background: #ccc;
+    flex: 0 1 250px;
+}
+
+.layout-body {
+    flex: 1 1 auto;
+    padding: 10px;
+}
