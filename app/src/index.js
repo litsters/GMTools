@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from "react-router-dom";
 import './styles/app.css';
 import App from './scripts/App';
 import registerServiceWorker from './scripts/registerServiceWorker';
@@ -35,9 +34,7 @@ const store = createStore(
 
 ReactDOM.render(
     <Provider store={store}>
-        <Router>
-            <App />
-        </Router>
+        <App />
     </Provider>, 
     document.getElementById('root')
 );
