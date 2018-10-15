@@ -13,6 +13,13 @@ class MainRouter extends Component {
         this.auth = new Auth();
     }
 
+    handleAuthentication = (props: any) => {
+        if(/access_token|id_token|error/.test(props.history.location.hash)){
+            // This prevents people from accessing unauthorized info; it's not working yet
+            // this.auth.handleAuthentication();
+        }
+    }
+
     render() {
         return (
             <Switch>
@@ -21,7 +28,8 @@ class MainRouter extends Component {
                     return <LoginPage />
                 }} />
 
-                <Route path="/dashboard" render={({match}) => {
+                <Route path="/dashboard" render={(props) => {
+                    this.handleAuthentication(props);
                     return <Dashboard auth={this.auth}/>
                 }} />
 
@@ -29,7 +37,7 @@ class MainRouter extends Component {
                     return <LandingPage auth={this.auth} />
                 }} />
 
-                <Route exact path="/" render={({match}) => {
+                <Route exact path="" render={({match}) => {
                     return <LandingPage auth={this.auth} />
                 }} />
 
