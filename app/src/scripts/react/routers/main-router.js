@@ -5,6 +5,8 @@ import { MainRouterConfig as Config } from "./config";
 import LoginPage from "../pages/login/LoginPage";
 import GamePage from "../pages/game/GamePage";
 import DicePage from "../pages/game/dice/DicePage";
+import GeneratorPage from "../pages/game/generator/GeneratorPage";
+import InitiativePage from "../pages/game/initiative/InitiativePage";
 import LookupPage from "../pages/game/lookup/LookupPage";
 import NotFoundPage from "../pages/NotFoundPage";
 
@@ -12,7 +14,7 @@ import GameLayout from "../layout/GameLayout";
 
 
 // used to map configuration to components
-const components = { LoginPage, GamePage, DicePage, LookupPage, NotFoundPage };
+const components = { LoginPage, GamePage, DicePage, GeneratorPage, InitiativePage, LookupPage, NotFoundPage };
 
 const layouts = { GameLayout };
 
