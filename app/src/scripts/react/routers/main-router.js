@@ -45,7 +45,7 @@ class MainRouter extends Component {
         return (
             <Route key={key} path={path} exact={exact} render={({match, history}) => {
                 let page = <Page history={history} match={match} />;
-                return Layout ? <Layout>{page}</Layout> : page;
+                return Layout ? <Layout history={history} match={match}>{page}</Layout> : page;
             }} />
         );
     }
