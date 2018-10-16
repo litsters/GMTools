@@ -3,3 +3,7 @@ button {
     display: block;
     margin: auto;
 }
+
+.btn.disabled {
+    background: #ccc;
+}

@@ -12,22 +12,23 @@ export function GenerateDice(defs) {
     let data = ParseDefinition(types[i]);
     if (data === null) continue;
 
+    let group = [];
     for (var j = 0; j < data.num_dice; j++) {
       let d = new Dice(data.num_sides, data.operator, data.operand);
-      dice.push(d);
+      group.push(d);
     }
+    dice.push(group);
   }
-
   return dice;
 }
 
 function ParseDefinition(def) {
-  const template = /[0-9]*d[0-9]*[+-/*][0-9]*/;
+  const template = /[1-9]*d[0-9]+([+-/*][0-9])?$/;
   if (!template.test(def)) return null;
 
   let result = {};
   const parts = def.split('d');
-  result.num_dice = parts[0];
+  result.num_dice = parts[0].length > 0 ? Number(parts[0]) : 1;
   result.operator = parts[1].replace(/[1-9]/g, '');
   if (result.operator) {
     const subparts = parts[1].split(result.operator);
@@ -36,6 +37,45 @@ function ParseDefinition(def) {
   }
   else {
     result.num_sides = parts[1];
+  }
+
+  return result;
+}
+
+export function ValidateDefinition(def) {
+  if (def.length === 0) return null;
+
+  const template = /([1-9]*d[0-9]+([+-/*][0-9])?)(,([1-9]*d[0-9]+([+-/*][0-9])?))*$/;
+  const test = template.test(def);
+
+  if (!test) return false;
+  else return true;
+}
+
+export function RollDiceGroups(diceGroups) {
+  let result = {
+    value: 0,
+    details: ""
+  };
+
+  for (var i = 0; i < diceGroups.length; i++) {
+    let group = diceGroups[i];
+    
+    if (group.length === 1) {
+      let rollValue = group[0].roll();
+      result.value += rollValue;
+      result.details += rollValue;
+    }
+    else {
+      result.details += "{";
+      for (var j = 0; j < group.length; j++) {
+        let rollValue = group[j].roll();
+        result.value += rollValue;
+        result.details += rollValue + (j === group.length - 1 ? "" : ",");
+      }
+      result.details += "}";
+    }
+    result.details += i === diceGroups.length - 1 ? "" : ",";
   }
 
   return result;

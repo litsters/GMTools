@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Dice from "./dice";
+import AdvancedDiceTool from "./AdvancedDiceTool";
 
 class DicePage extends Component {
     constructor(props) {
@@ -7,13 +8,16 @@ class DicePage extends Component {
 
         this.state = {
             currentRoll: null,
+            mode: "basic",
             dice: {
                 6: new Dice(6),
                 20: new Dice(20)
-            }
+            },
+            history: []
         }
 
         this.rollDice = this.rollDice.bind(this);
+        this.addHistory = this.addHistory.bind(this);
     }
 
     rollDice(dice) {
@@ -22,8 +26,14 @@ class DicePage extends Component {
         this.setState({currentRoll: result});
     }
 
+    addHistory(val) {
+        let history = this.state.history;
+        history.unshift(val);
+        this.setState(history);
+    }
+
     render() {
-        const { currentRoll, dice } = this.state;
+        const { currentRoll, dice, history } = this.state;
         return (
             <div>
                 <h1>Dice Page</h1>
@@ -35,6 +45,12 @@ class DicePage extends Component {
                         </button>
                     )
                 })}
+                <AdvancedDiceTool addHistory={this.addHistory}/>
+                <ul>
+                    {history.map((data, i) => {
+                        return <li>{data.value}</li>
+                    })}
+                </ul>
             </div>
         );
     }
