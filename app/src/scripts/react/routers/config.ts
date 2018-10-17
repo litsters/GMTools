@@ -27,8 +27,25 @@
 
 const gameRoute = "/game";
 
+interface RouteDefs {
+    routes: {[key: string]: RouteDef}
+}
 
-export const MainRouterConfig = {
+interface RouteDef {
+    path: string,
+    component: string,
+
+    children?: {[key: string]: RouteDef}
+
+    layout?: string,
+    exact?: boolean,
+    showInMenu?: boolean,
+    icon?: string
+    text?: string
+    visibleTo?: "gm" | "player"
+}
+
+export const MainRouterConfig: RouteDefs = {
     routes: {
         login:  { path: "/login",   component: "LoginPage" },
         game:   { path: gameRoute,  component: "GamePage",  layout: "GameLayout",   exact: true,
@@ -36,7 +53,7 @@ export const MainRouterConfig = {
                 lookup: { path: `${gameRoute}/lookup`,  component: "LookupPage",showInMenu: true,   icon: null, text: "lookup", visibleTo: "gm" },
                 dice:   { path: `${gameRoute}/dice`,    component: "DicePage",  showInMenu: true,   icon: null, text: "dice",   visibleTo: "gm" }
             }},
-        default:{ path: "/",        component: "NotFoundPage" }
+        default:{ path: "/",        component: "Dashboard" }
     }
 };
 

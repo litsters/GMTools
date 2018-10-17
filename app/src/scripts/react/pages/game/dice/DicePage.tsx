@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import Dice from "./dice";
 
 class DicePage extends Component {
-    constructor(props) {
+
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -16,14 +17,14 @@ class DicePage extends Component {
         this.rollDice = this.rollDice.bind(this);
     }
 
-    rollDice(dice) {
+    rollDice(dice: Dice) {
         if (!dice) return;
         let result = dice.roll();
         this.setState({currentRoll: result});
     }
 
     render() {
-        const { currentRoll, dice } = this.state;
+        const { currentRoll, dice }: any = this.state;
         return (
             <div>
                 <h1>Dice Page</h1>

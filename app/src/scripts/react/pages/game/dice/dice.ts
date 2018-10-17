@@ -2,17 +2,17 @@
   Simulated Dice
 */
 
-export function GenerateDice(defs) {
+export function GenerateDice(defs: string) {
   defs = defs.replace(' ', '');
 
   let dice = [],
     types = defs.split(',');
 
-  for (var i = 0; i < types.length; i++) {
+  for (let i = 0; i < types.length; i++) {
     let data = ParseDefinition(types[i]);
     if (data === null) continue;
 
-    for (var j = 0; j < data.num_dice; j++) {
+    for (let j = 0; j < data.num_dice; j++) {
       let d = new Dice(data.num_sides, data.operator, data.operand);
       dice.push(d);
     }
@@ -21,34 +21,47 @@ export function GenerateDice(defs) {
   return dice;
 }
 
-function ParseDefinition(def) {
+interface DiceDefinition {
+  num_dice: number,
+  operator: string,
+  num_sides: number,
+  operand: number
+};
+
+function ParseDefinition(def: string) {
   const template = /[0-9]*d[0-9]*[+-/*][0-9]*/;
   if (!template.test(def)) return null;
 
-  let result = {};
+  let result: DiceDefinition = {num_dice: 0, operator: "", num_sides: 0, operand: 0};
+
   const parts = def.split('d');
-  result.num_dice = parts[0];
+  result.num_dice = parseInt(parts[0], 10);
   result.operator = parts[1].replace(/[1-9]/g, '');
   if (result.operator) {
     const subparts = parts[1].split(result.operator);
-    result.num_sides = subparts[0];
-    result.operand = subparts[1];
+    result.num_sides = parseInt(subparts[0], 10);
+    result.operand = parseInt(subparts[1], 10);
   }
   else {
-    result.num_sides = parts[1];
+    result.num_sides = parseInt(parts[1], 10);
   }
 
   return result;
 }
 
 class Dice {
-  constructor(numSides, operator = null, operand = null) {
+
+  numSides: number;
+  operator: string;
+  operand: number;
+
+  constructor(numSides: number, operator: string = null, operand: number = null) {
     this.numSides = numSides;
     this.operator = operator;
     this.operand = operand;
   }
   
-  applyModifier(value) {
+  applyModifier(value: number) {
     const { operator, operand } = this;
     if (operator && operand !== null) {
       switch(operator) {

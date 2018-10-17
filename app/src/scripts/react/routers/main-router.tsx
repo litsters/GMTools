@@ -1,49 +1,65 @@
 import React, { Component } from 'react';
-import { Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { MainRouterConfig as Config } from "./config";
+
 import LoginPage from "../pages/login/LoginPage";
-import LandingPage from "../pages/landing/LandingPage";
+import GamePage from "../pages/game/GamePage";
+import DicePage from "../pages/game/dice/DicePage";
+import LookupPage from "../pages/game/lookup/LookupPage";
+import NotFoundPage from "../pages/NotFoundPage";
 import Dashboard from "../pages/dashboard/Dashboard";
-import Auth from "../auth/Auth";
+
+import GameLayout from "../layout/GameLayout";
+
+
+// used to map configuration to components
+const components = { LoginPage, GamePage, DicePage, LookupPage, NotFoundPage, Dashboard };
+
+const layouts = { GameLayout };
 
 class MainRouter extends Component {
-    private auth:Auth;
 
-    constructor(props:any){
-        super(props);
-        this.auth = new Auth();
-    }
+  renderRoutes() {
+    let result: any = [];
 
-    handleAuthentication = (props: any) => {
-        if(/access_token|id_token|error/.test(props.history.location.hash)){
-            // This prevents people from accessing unauthorized info; it's not working yet
-            // this.auth.handleAuthentication();
-        }
-    }
+    Object.keys(Config.routes).forEach((key) => {
+      let route = Config.routes[key],
+        Page = components[route.component],
+        Layout = route.layout ? layouts[route.layout] : null;
 
-    render() {
-        return (
-            <Switch>
+      if (route.children) {
+        Object.keys(route.children).forEach((childKey) => {
+          let childRoute = route.children[childKey],
+            ChildPage = components[childRoute.component];
 
-                <Route path="/login" render={({match}) => {
-                    return <LoginPage />
-                }} />
+          result.push(this.renderRoute(childKey, childRoute.path, true, ChildPage, Layout));
+        });
+      }
 
-                <Route path="/dashboard" render={(props) => {
-                    this.handleAuthentication(props);
-                    return <Dashboard auth={this.auth}/>
-                }} />
+      result.push(this.renderRoute(key, route.path, true, Page, Layout));
+    })
 
-                <Route path="/landing" render={({match}) => {
-                    return <LandingPage auth={this.auth} />
-                }} />
+    return result;
+  }
 
-                <Route exact path="" render={({match}) => {
-                    return <LandingPage auth={this.auth} />
-                }} />
+  renderRoute(key: string, path: string, exact: boolean, Page: any, Layout: any = null) {
+    return (
+      <Route key={key} path={path} exact={exact} render={({match, history}) => {
+        let page = <Page history={history} match={match} />;
+        return Layout ? <Layout>{page}</Layout> : page;
+      }} />
+    );
+  }
 
-            </Switch>
-        );
-    }
+  render() {
+    return (
+      <Router>
+        <Switch>
+          {this.renderRoutes()}
+        </Switch>
+      </Router>
+    );
+  }
 }
 
 export default MainRouter;
