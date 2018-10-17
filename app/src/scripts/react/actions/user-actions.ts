@@ -1,6 +1,6 @@
 export const UPDATE_USER = "user:updateUser";
 
-export function updateUser(newUser) {
+export function updateUser(newUser: any) {
     return {
         type: UPDATE_USER,
         payload: {
@@ -10,7 +10,7 @@ export function updateUser(newUser) {
 }
 
 export function apiRequest() {
-    return dispatch => {
+    return (dispatch: any) => {
         // perform api request
     }
 }

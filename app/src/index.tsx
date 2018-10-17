@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Router } from "react-router-dom";
+import history from './scripts/react/routers/history';
 import './styles/app.css';
 import App from './scripts/App';
 import registerServiceWorker from './scripts/registerServiceWorker';
@@ -15,16 +17,14 @@ const allReducers = combineReducers({
   user: UserReducer
 });
 
-
-const allStoreEnahncers = window.devToolsExtension ? 
+const allStoreEnahncers = (window as any).devToolsExtension ?
     compose(
         applyMiddleware(thunk),
-        window.devToolsExtension()
+        (window as any).devToolsExtension()
     ) : 
     compose(
         applyMiddleware(thunk)
     );
-
 
 const store = createStore(
   allReducers,
@@ -33,8 +33,11 @@ const store = createStore(
 );
 
 ReactDOM.render(
+
     <Provider store={store}>
-        <App />
+        <Router history={history}>
+            <App />
+        </Router>
     </Provider>, 
     document.getElementById('root')
 );

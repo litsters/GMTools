@@ -1,7 +1,19 @@
-import React, { Component } from "react";
+import React from 'react';
 
-class Register extends Component {
-    constructor(props) {
+export interface IRegister
+{
+  changeMode: (mode: any) => void
+}
+
+export class Register extends React.Component<IRegister, {}> {
+
+  txtbFname: any;
+  txtbLname: any;
+  txtbEmail: any;
+  txtbPwd1: any;
+  txtbPwd2: any;
+
+    constructor(props: any) {
         super(props);
 
         this.isFormComplete = this.isFormComplete.bind(this);
@@ -17,7 +29,7 @@ class Register extends Component {
     }
 
     render() {
-        const { changeMode } = this.props;
+        const { changeMode }: any = this.props;
 
         return (
             <div>
@@ -33,5 +45,3 @@ class Register extends Component {
         );
     }
 }
-
-export default Register;

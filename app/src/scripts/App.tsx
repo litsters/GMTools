@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+import { withRouter, RouteComponentProps } from 'react-router';
 
 import MainRouter from './react/routers/main-router';
 import Header from './react/layout/header';
 import Body from './react/layout/body';
 import { updateUser, apiRequest } from './react/actions/user-actions';
 
+interface Props {
 
-class App extends Component {
+}
+
+class App extends Component<Props & RouteComponentProps<any>> {
   render() {
     return (
       <main className="app">
@@ -22,7 +26,7 @@ class App extends Component {
 }
 
 const userSelector = createSelector(
-  state => state.user,
+  (state: any) => state.user,
   user => user
 )
 
@@ -38,4 +42,4 @@ const mapActionsToProps = {
   onApiRequest: apiRequest
 }
 
-export default connect(mapStateToProps, mapActionsToProps)(App);
+export default withRouter(connect(mapStateToProps, mapActionsToProps)(App));
