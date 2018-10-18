@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import IPage from "../../../interfaces/IPage";
 
-class LookupPage extends Component {
+class LookupPage extends Component<IPage, {}> {
     render() {
         return (
             <div>

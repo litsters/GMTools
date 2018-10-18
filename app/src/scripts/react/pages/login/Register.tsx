@@ -1,8 +1,9 @@
 import React from 'react';
+import { LoginPageMode } from "./LoginPage";
 
 export interface IRegister
 {
-  changeMode: (mode: any) => void
+  changeMode: (mode: LoginPageMode) => void
 }
 
 export class Register extends React.Component<IRegister, {}> {
@@ -40,7 +41,7 @@ export class Register extends React.Component<IRegister, {}> {
                 <input type="password" ref={el => this.txtbPwd1} />
                 <input type="password" ref={el => this.txtbPwd2} />
                 <button type="button" onClick={this.submit}>Submit</button>
-                <a onClick={changeMode.bind(null, "login")}>Back to login</a>
+                <a onClick={changeMode.bind(null, LoginPageMode.login)}>Back to login</a>
             </div>
         );
     }
