@@ -5,7 +5,10 @@ import { AuthApi } from "./api";
 
 import loadPlugin from "./plugins";
 
-loadPlugin("dnd-5e");
+var dnd5ePlugin = {};
+loadPlugin("dnd-5e", (err: any, result: any) => {
+    dnd5ePlugin = result;//{...dnd5ePlugin, ...result};
+});
 
 const app = express();
 

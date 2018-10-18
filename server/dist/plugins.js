@@ -6,18 +6,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const pluginsDir = path_1.default.resolve(__dirname + "/../") + "/plugins";
-console.log("ryan test");
-const loadPlugin = (pluginName) => {
+const fileExtensionRegex = /(?:\.([^.]+))?$/;
+const loadPlugin = (pluginName, callback) => {
     const path = `${pluginsDir}/${pluginName}`;
-    var plugin = {};
-    var files = [];
-    fs_1.default.readdir(path, (err, file) => {
-        fs_1.default.readFile(`${path}/${file}`, (err, data) => {
-            plugin[file] = data;
-            console.log("---------");
-            console.log(data);
-        });
+    var plugin = {
+        name: pluginName
+    };
+    let items = fs_1.default.readdirSync(path);
+    items.forEach((item, idx) => {
+        let objName = item.split('.')[0];
+        let extension = fileExtensionRegex.exec(item)[1];
+        if (extension === "json") {
+            let buffer = fs_1.default.readFileSync(`${path}/${item}`);
+            let data = buffer.toString();
+            plugin[objName] = JSON.parse(data);
+        }
     });
+    callback(null, plugin);
 };
 exports.default = loadPlugin;
 //# sourceMappingURL=plugins.js.map

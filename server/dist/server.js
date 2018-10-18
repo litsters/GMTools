@@ -7,7 +7,10 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const api_1 = require("./api");
 const plugins_1 = __importDefault(require("./plugins"));
-plugins_1.default("dnd-5e");
+var dnd5ePlugin = {};
+plugins_1.default("dnd-5e", (err, result) => {
+    dnd5ePlugin = result; //{...dnd5ePlugin, ...result};
+});
 const app = express_1.default();
 // Middleware
 app.use(body_parser_1.default.json());
