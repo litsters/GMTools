@@ -50,6 +50,7 @@ class Auth {
         localStorage.removeItem('id_token');
         localStorage.removeItem('expires_at');
         // navigate to the home route
+        console.log(history)
         history.replace(homeRoute);
     }
 

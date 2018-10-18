@@ -7,12 +7,16 @@ import MainRouter from './react/routers/main-router';
 import Header from './react/layout/header';
 import Body from './react/layout/body';
 import { updateUser, apiRequest } from './react/actions/user-actions';
+import { updateCodex, apiGetCodex } from './react/actions/codex-actions';
 
 interface Props {
 
 }
 
 class App extends Component<Props & RouteComponentProps<any>> {
+  componentDidMount() {
+    apiGetCodex();
+  }
   render() {
     return (
       <main className="app">
@@ -30,16 +34,24 @@ const userSelector = createSelector(
   user => user
 )
 
+const codexSelector = createSelector(
+  (state: any) => state.codex,
+  codex => codex
+)
+
 const mapStateToProps = createSelector(
   userSelector,
-  (user) => ({
-    user
+  codexSelector,
+  (user, codex) => ({
+    user, codex
   })
 );
 
 const mapActionsToProps = {
   onUpdateUser: updateUser,
-  onApiRequest: apiRequest
+  onApiRequest: apiRequest,
+  onUpdateCodex: updateCodex,
+  onGetCodex: apiGetCodex
 }
 
 export default withRouter(connect(mapStateToProps, mapActionsToProps)(App));

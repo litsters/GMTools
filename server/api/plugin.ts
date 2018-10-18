@@ -8,7 +8,7 @@ export default function (app: Application) {
 
 function getPlugin(request: Request, response: Response) {
     const pluginName = request.param("name");
-    
+
     loadPlugin(pluginName, (err: any, result: any) => {
         response.json(result);
     });
