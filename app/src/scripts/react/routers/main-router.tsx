@@ -8,12 +8,13 @@ import DicePage from "../pages/game/dice/DicePage";
 import LookupPage from "../pages/game/lookup/LookupPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import Dashboard from "../pages/dashboard/Dashboard";
+import LandingPage from "../pages/landing/LandingPage";
 
 import GameLayout from "../layout/GameLayout";
 
 
 // used to map configuration to components
-const components = { LoginPage, GamePage, DicePage, LookupPage, NotFoundPage, Dashboard };
+const components = { LoginPage, GamePage, DicePage, LookupPage, NotFoundPage, Dashboard, LandingPage };
 
 const layouts = { GameLayout };
 

@@ -53,7 +53,7 @@ export const MainRouterConfig: RouteDefs = {
                 lookup: { path: `${gameRoute}/lookup`,  component: "LookupPage",showInMenu: true,   icon: null, text: "lookup", visibleTo: "gm" },
                 dice:   { path: `${gameRoute}/dice`,    component: "DicePage",  showInMenu: true,   icon: null, text: "dice",   visibleTo: "gm" }
             }},
-        default:{ path: "/",        component: "Dashboard" }
+        default:{ path: "/",        component: "LandingPage" }
     }
 };
 
