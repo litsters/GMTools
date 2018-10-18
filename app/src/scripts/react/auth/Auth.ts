@@ -1,7 +1,7 @@
 import auth0 from 'auth0-js';
 import history from '../routers/history';
 
-const homeRoute: string = "/landing";
+const homeRoute: string = "/";
 
 class Auth {
     private auth0: auth0.WebAuth;

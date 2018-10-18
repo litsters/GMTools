@@ -6,8 +6,11 @@ interface DashboardProps {
 }
 
 class Dashboard extends Component<DashboardProps, {}> {
+    private auth:Auth;
+
     constructor(props: any) {
         super(props);
+        this.auth = new Auth();
     }
 
     render() {
@@ -21,7 +24,7 @@ class Dashboard extends Component<DashboardProps, {}> {
 
     logout() {
         console.log("you are logging out");
-        this.props.auth.logout();
+        this.auth.logout();
     }
 }
 

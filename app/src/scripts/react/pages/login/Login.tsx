@@ -1,8 +1,9 @@
 import React from "react";
+import { LoginPageMode } from "./LoginPage";
 
 export interface ILogin
 {
-  changeMode: (mode: any) => void
+  changeMode: (mode: LoginPageMode) => void
 }
 
 export class Login extends React.Component<ILogin, {}>{
@@ -30,13 +31,14 @@ export class Login extends React.Component<ILogin, {}>{
 
     render() {
         const { changeMode }: any = this.props;
+        
         return (
             <div>
                 <h2>Login</h2>
                 <input type="text" ref={el => this.txtbUsername = el}/>
                 <input type="password" ref={el => this.txtbPassword = el}/>
                 <button type="button" disabled={!this.isFormComplete()} onClick={this.submit}>Sign In</button>
-                <a onClick={changeMode.bind(null, "register")}>I don't have an account</a>
+                <a onClick={changeMode.bind(null, LoginPageMode.register)}>I don't have an account</a>
             </div>
         );
     }

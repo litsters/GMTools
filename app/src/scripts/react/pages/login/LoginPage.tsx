@@ -2,11 +2,16 @@ import React, { Component } from "react";
 import {Login} from "./Login";
 import {Register} from "./Register";
 
+export enum LoginPageMode {
+    login,
+    register
+}
+
 class LoginPage extends Component {
     constructor(props: any) {
         super(props);
         this.state = {
-            mode: "login"
+            mode: LoginPageMode.login
         };
 
         this.renderBody = this.renderBody.bind(this);
@@ -19,9 +24,9 @@ class LoginPage extends Component {
 
     renderBody(mode: any) {
         switch(mode) {
-            case "login":
+            case LoginPageMode.login:
                 return <Login changeMode={this.changeMode} />;
-            case "register":
+            case LoginPageMode.register:
                 return <Register changeMode={this.changeMode} />;
             default:
                 return null;

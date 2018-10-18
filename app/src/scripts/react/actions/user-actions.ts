@@ -1,4 +1,8 @@
+import Auth from "../auth/Auth";
+
 export const UPDATE_USER = "user:updateUser";
+
+export const UPDATE_AUTH = "user:updateAuth";
 
 export function updateUser(newUser: any) {
     return {
@@ -12,5 +16,14 @@ export function updateUser(newUser: any) {
 export function apiRequest() {
     return (dispatch: any) => {
         // perform api request
+    }
+}
+
+export function updateAuth(auth:Auth) {
+    return {
+        type: UPDATE_AUTH,
+        payload: {
+            auth: auth
+        }
     }
 }
