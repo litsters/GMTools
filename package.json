@@ -5,7 +5,7 @@
   "scripts": {
     "install": "cd ./app && npm i && cd ../server && npm i",
     "app": "cd ./app && npm start",
-    "server": "cd ./server && node ./program"
+    "server": "cd ./server && npm start"
   },
   "repository": {
     "type": "git",
