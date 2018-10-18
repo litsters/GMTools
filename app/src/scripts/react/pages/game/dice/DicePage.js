@@ -41,7 +41,7 @@ class DicePage extends Component {
                 {tool}
                 <ul>
                     {history.map((data, i) => {
-                        return <li>{data.value}</li>
+                        return <li key={i}>{data.value}</li>
                     })}
                 </ul>
             </div>
