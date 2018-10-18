@@ -1,0 +1,60 @@
+.dice-roller.advanced {
+    display: grid;
+    grid-template-areas: 
+        "display"
+        "buttons";
+    width: 100%;
+
+    border: 1px dashed red;
+}
+
+.dice-roller.advanced .display {
+    display: flex;
+    font-size: 1.4em;
+}
+.dice-roller.advanced .display.valid {
+    background: green;
+}
+.dice-roller.advanced .display.invalid {
+    background: red;
+}
+.dice-roller.advanced .display input {
+    background: none;
+    padding: 10px 0;
+    flex: 1 1 auto;
+    font-size: 1.4em;
+    width: 100%;
+}
+.dice-roller.advanced .display .result {
+    flex: 0 1 auto;
+    line-height: .7;
+    padding: 15px;
+    text-align: center;
+}
+.dice-roller.advanced .display .result .result-value {
+    display: block;
+    font-size: 1.2em;
+}
+.dice-roller.advanced .display .result .result-details {
+    color: rgba(0, 0, 0, .5);
+    font-size: .6em;
+}
+
+.dice-roller.advanced .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.dice-roller.advanced .buttons .btn {
+    cursor: pointer;
+    font-size: 1.2em;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+.dice-roller.advanced .buttons .btn.d {
+    background: green;
+}
+.dice-roller.advanced .buttons .btn.o {
+    background: orange;
+}

@@ -5,6 +5,8 @@ import { MainRouterConfig as Config } from "./config";
 import LoginPage from "../pages/login/LoginPage";
 import GamePage from "../pages/game/GamePage";
 import DicePage from "../pages/game/dice/DicePage";
+import GeneratorPage from "../pages/game/generator/GeneratorPage";
+import InitiativePage from "../pages/game/initiative/InitiativePage";
 import LookupPage from "../pages/game/lookup/LookupPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import Dashboard from "../pages/dashboard/Dashboard";
@@ -13,7 +15,9 @@ import GameLayout from "../layout/GameLayout";
 
 
 // used to map configuration to components
-const components = { LoginPage, GamePage, DicePage, LookupPage, NotFoundPage, Dashboard };
+const components = { 
+  LoginPage, GamePage, DicePage, GeneratorPage, InitiativePage, LookupPage, NotFoundPage, Dashboard 
+};
 
 const layouts = { GameLayout };
 
@@ -46,7 +50,7 @@ class MainRouter extends Component {
     return (
       <Route key={key} path={path} exact={exact} render={({match, history}) => {
         let page = <Page history={history} match={match} />;
-        return Layout ? <Layout>{page}</Layout> : page;
+        return Layout ? <Layout history={history} match={match}>{page}</Layout> : page;
       }} />
     );
   }

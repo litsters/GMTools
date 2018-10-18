@@ -8,6 +8,12 @@
     background: #ccc;
     flex: 0 1 250px;
 }
+.menu-game .menu-item {
+    list-style-type: none;
+}
+.menu-game .menu-item.active {
+    font-size: 1.4em;
+}
 
 .layout-body {
     flex: 1 1 auto;

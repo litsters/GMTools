@@ -1,41 +1,47 @@
 import React, { Component } from "react";
-import Dice from "./dice";
+import IPage from "../../../interfaces/IPage";
+import AdvancedDiceTool from "./AdvancedDiceTool";
 
-class DicePage extends Component {
+export enum DiceToolMode {
+    Basic,
+    Advanced
+};
+
+interface MainState {
+    mode: DiceToolMode,
+    history: Array<any>
+}
+
+class DicePage extends Component<IPage, MainState> {
 
     constructor(props: any) {
         super(props);
 
         this.state = {
-            currentRoll: null,
-            dice: {
-                6: new Dice(6),
-                20: new Dice(20)
-            }
+            mode: DiceToolMode.Advanced,
+            history: []
         }
 
-        this.rollDice = this.rollDice.bind(this);
+        this.addHistory = this.addHistory.bind(this);
     }
 
-    rollDice(dice: Dice) {
-        if (!dice) return;
-        let result = dice.roll();
-        this.setState({currentRoll: result});
+    addHistory(val: any) {
+        let history = this.state.history;
+        history.unshift(val);
+        this.setState({history});
     }
 
     render() {
-        const { currentRoll, dice }: any = this.state;
+        const { history }: any = this.state;
         return (
             <div>
                 <h1>Dice Page</h1>
-                <h3>Result: {currentRoll}</h3>
-                {Object.keys(dice).map((key) => {
-                    return (
-                        <button key={key} type="button" onClick={this.rollDice.bind(null, dice[key])}>
-                            <span>Roll {key}-sided dice</span>
-                        </button>
-                    )
-                })}
+                <AdvancedDiceTool addHistory={this.addHistory}/>
+                <ul>
+                    {history.map((data:any, i:number) => {
+                        return <li>{data.value}</li>
+                    })}
+                </ul>
             </div>
         );
     }
