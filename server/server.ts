@@ -1,6 +1,11 @@
 import express from "express";
 import bodyParser from "body-parser";
+import path from "path";
 import { AuthApi } from "./api";
+
+import loadPlugin from "./plugins";
+
+loadPlugin("dnd-5e");
 
 const app = express();
 
