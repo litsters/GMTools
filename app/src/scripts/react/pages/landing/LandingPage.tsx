@@ -3,7 +3,8 @@ import Auth from "../../auth/Auth";
 import { updateAuth } from "../../actions/user-actions";
 
 interface LandingProps {
-    auth: Auth;
+    auth: Auth,
+    history: History
 }
 
 class LandingPage extends Component<LandingProps, {}> {
@@ -11,7 +12,7 @@ class LandingPage extends Component<LandingProps, {}> {
 
     constructor(props: any) {
         super(props);
-        this.auth = new Auth();
+        this.auth = new Auth(props.history);
     }
 
     login(){

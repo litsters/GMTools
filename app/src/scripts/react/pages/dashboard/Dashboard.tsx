@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import Auth from "../../auth/Auth";
 
 interface DashboardProps {
-    auth: Auth;
+    auth: Auth,
+    history: History
 }
 
 class Dashboard extends Component<DashboardProps, {}> {
@@ -10,7 +11,7 @@ class Dashboard extends Component<DashboardProps, {}> {
 
     constructor(props: any) {
         super(props);
-        this.auth = new Auth();
+        this.auth = new Auth(props.history);
     }
 
     render() {

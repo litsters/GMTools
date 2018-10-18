@@ -1,13 +1,12 @@
 import auth0 from 'auth0-js';
-import history from '../routers/history';
 
 const homeRoute: string = "/";
 
 class Auth {
     private auth0: auth0.WebAuth;
-    // private history: any;
+    private history: any;
 
-    constructor(){
+    constructor(history: History){
         this.auth0 = new auth0.WebAuth({
             domain: 'gm-tools.auth0.com',
             clientID: '5j5hV3sMFUstdIOijBgVxGWuSw059kBQ',
@@ -15,7 +14,7 @@ class Auth {
             responseType: 'token id_token',
             scope: 'openid'
         });
-        // this.history = history;
+        this.history = history;
     }
 
     login(): void{
@@ -26,9 +25,9 @@ class Auth {
         this.auth0.parseHash((err, authResult) => {
             if(authResult && authResult.accessToken && authResult.idToken){
                 this.setSession(authResult);
-                history.replace(homeRoute);
+                this.history.replace(homeRoute);
             } else if(err){
-                history.replace(homeRoute);
+                this.history.replace(homeRoute);
                 console.log(err);
             }
         });
@@ -41,7 +40,7 @@ class Auth {
         localStorage.setItem('id_token', authResult.idToken);
         localStorage.setItem('expires_at', expiresAt);
         // navigate to the home route
-        history.replace(homeRoute);
+        this.history.replace(homeRoute);
     }
 
     logout(): void{
@@ -50,7 +49,7 @@ class Auth {
         localStorage.removeItem('id_token');
         localStorage.removeItem('expires_at');
         // navigate to the home route
-        history.replace(homeRoute);
+        this.history.replace(homeRoute);
     }
 
     isAuthenticated(): boolean{
