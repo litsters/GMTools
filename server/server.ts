@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import path from "path";
-import { AuthApi } from "./api";
+import { AuthApi, PluginApi } from "./api";
 
 import loadPlugin from "./plugins";
 
@@ -18,6 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // API Registration
 AuthApi(app);
+PluginApi(app);
 
 // HTML Server
 app.use('/', express.static(__dirname + '/public'));
