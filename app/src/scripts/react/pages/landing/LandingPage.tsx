@@ -1,24 +1,22 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { UserReducer } from "../../reducers";
 import Auth from "../../auth/Auth";
 import { updateAuth } from "../../actions/user-actions";
 
 interface LandingProps {
-    auth: Auth,
-    history: History
+    history: History,
+    updateAuth: any
 }
 
 class LandingPage extends Component<LandingProps, {}> {
-    private auth:Auth;
-
-    constructor(props: any) {
-        super(props);
-        this.auth = new Auth(props.history);
-    }
-
     login(){
         console.log("You clicked log in!");
-        this.auth.login();
-        updateAuth(this.auth);
+
+        let auth = new Auth(this.props.history);
+        auth.login();
+
+        this.props.updateAuth(auth);
     }
 
     render() {
@@ -31,4 +29,8 @@ class LandingPage extends Component<LandingProps, {}> {
     }
 }
 
-export default LandingPage;
+const mapActionsToProps = {
+    updateAuth
+}
+
+export default connect(UserReducer, mapActionsToProps)(LandingPage);

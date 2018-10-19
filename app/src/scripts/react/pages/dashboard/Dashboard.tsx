@@ -1,17 +1,15 @@
 import React, { Component } from "react";
-import Auth from "../../auth/Auth";
+import { connect } from "react-redux";
+import { UserReducer } from "../../reducers";
 
 interface DashboardProps {
-    auth: Auth,
-    history: History
+    history: History,
+    user: any
 }
 
 class Dashboard extends Component<DashboardProps, {}> {
-    private auth:Auth;
-
     constructor(props: any) {
         super(props);
-        this.auth = new Auth(props.history);
     }
 
     render() {
@@ -25,8 +23,8 @@ class Dashboard extends Component<DashboardProps, {}> {
 
     logout() {
         console.log("you are logging out");
-        this.auth.logout();
+        this.props.user.auth.logout();
     }
 }
 
-export default Dashboard;
+export default connect(UserReducer)(Dashboard);
