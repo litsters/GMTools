@@ -2,5 +2,8 @@
 Must have nodejs installed. 
 Must have mongodb installed with command 'npm install mongodb'
 
+Pulblic IP Addr to connect to is 10.25.100.89
+In mongo.js replace 'mongodb://localhost:27017/gm-tools' with 'mongodb://10.25.100.89:27017/gm-tools'
+
 DB name we are using is 'gm-tools'
 Collection name we are using is 'plugins'
