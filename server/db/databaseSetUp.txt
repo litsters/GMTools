@@ -1,0 +1,6 @@
+
+Must have nodejs installed. 
+Must have mongodb installed with command 'npm install mongodb'
+
+DB name we are using is 'gm-tools'
+Collection name we are using is 'plugins'
