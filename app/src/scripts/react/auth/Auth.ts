@@ -1,6 +1,7 @@
 import auth0 from 'auth0-js';
 
 const homeRoute: string = "/";
+const dashRoute: string = "/dashboard";
 
 class Auth {
     private auth0: auth0.WebAuth;
@@ -25,7 +26,7 @@ class Auth {
         this.auth0.parseHash((err, authResult) => {
             if(authResult && authResult.accessToken && authResult.idToken){
                 this.setSession(authResult);
-                this.history.replace(homeRoute);
+                this.history.replace(dashRoute);
             } else if(err){
                 this.history.replace(homeRoute);
                 console.log(err);
@@ -39,8 +40,6 @@ class Auth {
         localStorage.setItem('access_token', authResult.accessToken);
         localStorage.setItem('id_token', authResult.idToken);
         localStorage.setItem('expires_at', expiresAt);
-        // navigate to the home route
-        this.history.replace(homeRoute);
     }
 
     logout(): void{

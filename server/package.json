@@ -4,9 +4,16 @@
   "description": "",
   "main": "server.ts",
   "dependencies": {
+    "@types/auth0-js": "^8.11.6",
+    "@types/debug": "0.0.31",
+    "@types/jsonwebtoken": "^7.2.8",
+    "auth0-js": "^9.8.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "socket.io": "^2.1.1",
+    "socketio-auth": "^0.1.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",

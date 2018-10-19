@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/auth0-js": "^8.11.6",
+    "@types/socket.io-client": "^1.4.32",
     "auth0-js": "^9.8.0",
     "jquery": "^3.3.1",
     "react": "^16.5.2",
@@ -14,7 +15,10 @@
     "react-scripts-ts": "^3.1.0",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
-    "reselect": "^3.0.1"
+    "reselect": "^3.0.1",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
+    "socketio-auth": "^0.1.1"
   },
   "scripts": {
     "start": "react-scripts-ts start",
