@@ -11,7 +11,7 @@ function default_1(app) {
 exports.default = default_1;
 function getPlugin(request, response) {
     const pluginName = request.param("name");
-    plugins_1.default("dnd-5e", (err, result) => {
+    plugins_1.default(pluginName, (err, result) => {
         response.json(result);
     });
 }

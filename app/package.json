@@ -16,6 +16,7 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1"
   },
+  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
