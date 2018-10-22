@@ -5,34 +5,35 @@ import { apiGetCodex } from "../../../actions/codex-actions";
 import { CodexReducer } from "../../../reducers";
 import CategoryList from "./CategoryList";
 
+// define categories that should not be rendered
 const blockedCategories = ["config"];
 
 interface LookupPageProps {
     codex: any,
-    apiGetCodex: any,
-    setFilterText: any
+    apiGetCodex: any
 }
 
-class LookupPage extends Component<IPage & LookupPageProps, {}> {
-    private setFilterText: any;
-    private txtbFilter: any;
+interface LookupPageState {
+    filterText: string
+}
+
+class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
 
     constructor(props:any) {
         super(props);
         this.state = {
             filterText: ""
         }
-
-        this.setFilterText = (text:string) => { this.setState({filterText: text}) }
     }
 
     componentDidMount() {
-        this.props.apiGetCodex();
+        if (!this.props.codex) this.props.apiGetCodex();
     }
 
     filterEntries(search:string, codex:any) {
         search = search.trim().toLowerCase();
         let results: any = [];
+
         Object.keys(codex).forEach((key) => {
             if (blockedCategories.indexOf(key) !== -1) return;
 
@@ -46,8 +47,10 @@ class LookupPage extends Component<IPage & LookupPageProps, {}> {
 
     renderCategories(codex:any) {
         if (!codex) return null;
+
         return Object.keys(codex).map((key) => {
             if (blockedCategories.indexOf(key) !== -1) return null;
+
             return (
                 <CategoryList key={key} headline={key} items={codex[key]} />
             );
@@ -56,15 +59,14 @@ class LookupPage extends Component<IPage & LookupPageProps, {}> {
 
     render() {
         const { codex } = this.props;
-        const filterText = this.txtbFilter ? this.txtbFilter.value : null;
+        const { filterText } = this.state;
         const filteredCodex = filterText ? this.filterEntries(filterText, codex) : codex;
         const categories = this.renderCategories(filteredCodex);
-        //console.log(codex)
 
         return (
             <div>
                 <h1>Lookup Page</h1>
-                <input type="text" ref={el => this.txtbFilter = el} onKeyUp={this.setFilterText}/>
+                <input type="text" onKeyUp={(event:any) => this.setState({filterText: event.target.value})}/>
                 {categories}
             </div>
         );

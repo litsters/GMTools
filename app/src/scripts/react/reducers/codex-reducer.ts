@@ -1,8 +1,6 @@
 import { UPDATE_CODEX } from "../actions/codex-actions";
 
-var initialState: any = {
-    codex: null
-};
+var initialState: any = null;
 
 export default function(state = initialState, { type, payload }: {type: any, payload: any}) {
     switch(type) {
