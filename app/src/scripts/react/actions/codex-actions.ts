@@ -22,7 +22,7 @@ export function updateCodex(codex: any) {
 // }
 
 export function apiGetCodex() {
-    console.log("getting from api")
+    console.log("getting codex from api")
     return (dispatch: any) => {
         fetch("/plugin/dnd-5e", { method: "GET"})
         .then((response) => {

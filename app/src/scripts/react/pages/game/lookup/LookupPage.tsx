@@ -7,14 +7,41 @@ import CategoryList from "./CategoryList";
 
 const blockedCategories = ["config"];
 
-interface LookupPage {
+interface LookupPageProps {
     codex: any,
-    apiGetCodex: any
+    apiGetCodex: any,
+    setFilterText: any
 }
 
-class LookupPage extends Component<IPage & LookupPage, {}> {
+class LookupPage extends Component<IPage & LookupPageProps, {}> {
+    private setFilterText: any;
+    private txtbFilter: any;
+
+    constructor(props:any) {
+        super(props);
+        this.state = {
+            filterText: ""
+        }
+
+        this.setFilterText = (text:string) => { this.setState({filterText: text}) }
+    }
+
     componentDidMount() {
         this.props.apiGetCodex();
+    }
+
+    filterEntries(search:string, codex:any) {
+        search = search.trim().toLowerCase();
+        let results: any = [];
+        Object.keys(codex).forEach((key) => {
+            if (blockedCategories.indexOf(key) !== -1) return;
+
+            results[key] = codex[key].filter((item:any) => {
+                return item.name && item.name.toLowerCase().indexOf(search) !== -1;
+            })
+        });
+
+        return results;
     }
 
     renderCategories(codex:any) {
@@ -29,11 +56,15 @@ class LookupPage extends Component<IPage & LookupPage, {}> {
 
     render() {
         const { codex } = this.props;
-        const categories = this.renderCategories(codex);
-        console.log(codex)
+        const filterText = this.txtbFilter ? this.txtbFilter.value : null;
+        const filteredCodex = filterText ? this.filterEntries(filterText, codex) : codex;
+        const categories = this.renderCategories(filteredCodex);
+        //console.log(codex)
+
         return (
             <div>
                 <h1>Lookup Page</h1>
+                <input type="text" ref={el => this.txtbFilter = el} onKeyUp={this.setFilterText}/>
                 {categories}
             </div>
         );

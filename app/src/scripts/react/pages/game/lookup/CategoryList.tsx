@@ -12,7 +12,6 @@ const CategoryList: SFC<CategoryListProps> = (props) => {
         <div>
             <h2>{headline}</h2>
             {items.map((item:any, i:number) => {
-                console.log(item)
                 return (
                     <li key={i}>{item.name}</li>
                 );
