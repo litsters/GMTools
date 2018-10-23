@@ -1,0 +1,36 @@
+@media screen and (max-width: 899px) {
+    .layout-master-details {
+        position: relative;
+    }
+    
+    .layout-master-details .details {
+        animation:  slide-in-left .5s;
+        background: white;
+        padding: 30px;
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+    }
+    .layout-master-details .details-close {
+
+    }
+}
+
+
+@media screen and (min-width: 900px) {
+    .layout-master-details {
+        display: flex;
+        height: 100%;
+    }
+    
+    .layout-master-details .master {
+        flex: 1 1 auto;
+    }
+    
+    .layout-master-details .details {
+        flex: 1 1 auto;
+        padding: 30px;
+    }
+    .layout-master-details .details-close {
+        display: none;
+    }
+}

@@ -10,7 +10,7 @@ const CategoryList: SFC<CategoryListProps> = (props) => {
     const { headline, items } = props;
     if (!headline || !items) return null;
     return (
-        <div>
+        <div className="category">
             <h2>{headline}</h2>
             {items.map((item:any, i:number) => {
                 return (

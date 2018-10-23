@@ -34,7 +34,7 @@ const MonsterDetails: SFC<ItemDetailsProps> = (props) => {
     return (
         <div>
             <button type="button" 
-                onClick={props.openTab.bind(null, {text: monster.name, path: `/game/lookup/creatures/${props.id}`})}
+                onClick={props.openTab.bind(null, {text: monster.name, path: `/game/lookup/creatures/${props.id}`, icon: "https://i1.wp.com/www.pixelmatortemplates.com/wp-content/uploads/2014/11/cartoon-icon-final.jpg"})}
                 >
                 Pin
             </button>

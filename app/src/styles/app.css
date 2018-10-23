@@ -6,3 +6,5 @@
 @import "./layout/layout.css";
 
 @import "./component/dice.css";
+@import "./component//codex.css";
+@import "./component/tabs.css";

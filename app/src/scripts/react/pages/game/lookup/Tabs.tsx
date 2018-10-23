@@ -8,20 +8,23 @@ interface TabsProps {
 
 export interface Tab {
     text: string,
-    path: string
+    path: string,
+    icon: string
 }
 
 const Tabs: SFC<TabsProps> = (props) => {
     const { tabs, closeTab } = props;
 
     return (
-        <div>
-            <ul>
+        <div className="tabs-wrapper">
+            <ul className="tabs">
                 {tabs.map((tab, i) => {
+                    const text = tab.text.length > 16 ? `${tab.text.substr(0,16)}...` : tab.text;
                     return (
-                        <li key={i}>
-                            <Link to={tab.path}>{tab.text}</Link>
-                            <i onClick={closeTab.bind(null, i)}>X</i>
+                        <li className="tab" key={i}>
+                            {tab.icon ? <img className="tab-icon" src={tab.icon}/> : null}
+                            <Link to={tab.path} className="tab-text" title={tab.text}>{text}</Link>
+                            <i className="tab-close" onClick={closeTab.bind(null, i)}>X</i>
                         </li>
                     );
                 })}

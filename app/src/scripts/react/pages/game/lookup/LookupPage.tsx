@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import MasterDetailsLayout from "../../../layout/MasterDetailLayout";
 import IPage from "../../../interfaces/IPage";
 import { apiGetCodex } from "../../../actions/codex-actions";
 import { CodexReducer } from "../../../reducers";
@@ -31,6 +32,7 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
 
         this.openTab = this.openTab.bind(this);
         this.closeTab = this.closeTab.bind(this);
+        this.renderMaster = this.renderMaster.bind(this);
     }
 
     componentDidMount() {
@@ -75,13 +77,17 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
     renderCategories(codex:any) {
         if (!codex) return null;
 
-        return Object.keys(codex).map((key) => {
-            if (blockedCategories.indexOf(key) !== -1) return null;
+        return (
+            <div className="codex-categories">
+                {Object.keys(codex).map((key) => {
+                    if (blockedCategories.indexOf(key) !== -1) return null;
 
-            return (
-                <CategoryList key={key} headline={key} items={codex[key]}/>
-            );
-        });
+                    return (
+                        <CategoryList key={key} headline={key} items={codex[key]}/>
+                    );
+                })}
+            </div>
+        );
     }
 
     renderOpenItem(codex:any, category:string, id:number, openTab:any) {
@@ -98,21 +104,30 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
         }
     }
 
+    renderMaster(renderedCategories:any) {
+        return (
+            <div className="codex-master">
+                <div className="codex-input">
+                    <input type="text" placeholder={"search for an entry"} onKeyUp={(event:any) => this.setState({filterText: event.target.value})}/>
+                </div>
+                {renderedCategories}
+            </div>
+        );
+    }
+
     render() {
-        const { codex, match } = this.props;
+        const { codex, match, history } = this.props;
         const { filterText, tabs } = this.state;
         const filteredCodex = filterText ? this.filterEntries(filterText, codex) : codex;
-        const categories = this.renderCategories(filteredCodex);
-        const openItem = this.renderOpenItem(codex, match.params.category, match.params.id, this.openTab)
+        const renderedCategories = this.renderCategories(filteredCodex);
+        const renderedOpenItem = this.renderOpenItem(codex, match.params.category, match.params.id, this.openTab)
         const renderedTabs = <Tabs tabs={tabs} closeTab={this.closeTab}/>
+        const renderedMaster = this.renderMaster(renderedCategories);
 
         return (
-            <div>
+            <div className="layout-page">
                 {renderedTabs}
-                <h1>Lookup Page</h1>
-                <input type="text" onKeyUp={(event:any) => this.setState({filterText: event.target.value})}/>
-                {openItem}
-                {categories}
+                <MasterDetailsLayout master={renderedMaster} details={renderedOpenItem} clearDetails={() => history.push("/game/lookup")} />
             </div>
         );
     }
