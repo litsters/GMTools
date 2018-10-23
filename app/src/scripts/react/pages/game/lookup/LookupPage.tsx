@@ -5,6 +5,7 @@ import { apiGetCodex } from "../../../actions/codex-actions";
 import { CodexReducer } from "../../../reducers";
 import CategoryList from "./CategoryList";
 import MonsterDetails from "./MonsterDetails";
+import Tabs, { Tab } from "./Tabs";
 
 // define categories that should not be rendered
 const blockedCategories = ["config"];
@@ -16,7 +17,7 @@ interface LookupPageProps {
 
 interface LookupPageState {
     filterText: string,
-    tabs: Array<any>
+    tabs: Array<Tab>
 }
 
 class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
@@ -28,10 +29,24 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
             tabs: []
         }
 
+        this.openTab = this.openTab.bind(this);
+        this.closeTab = this.closeTab.bind(this);
     }
 
     componentDidMount() {
         if (!this.props.codex) this.props.apiGetCodex();
+    }
+
+    openTab(tab:Tab) {
+        let tabs = this.state.tabs;
+        tabs.push(tab);
+        this.setState({tabs});
+    }
+
+    closeTab(index:number) {
+        let tabs = this.state.tabs;
+        tabs.splice(index, 1);
+        this.setState({tabs});
     }
 
 
@@ -69,14 +84,14 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
         });
     }
 
-    renderOpenItem(codex:any, category:string, id:number) {
+    renderOpenItem(codex:any, category:string, id:number, openTab:any) {
         if (!category || !id || !codex) return null;
         category = category.toLowerCase();
         let item = this.props.codex[category][id];
 
         switch(category.toLowerCase()) {
             case "creatures":
-                return <MonsterDetails monster={item}/>;
+                return <MonsterDetails monster={item} id={id} openTab={openTab}/>;
             case "items":
                 return null;
             default: return null;
@@ -85,15 +100,15 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
 
     render() {
         const { codex, match } = this.props;
-        const { filterText } = this.state;
+        const { filterText, tabs } = this.state;
         const filteredCodex = filterText ? this.filterEntries(filterText, codex) : codex;
         const categories = this.renderCategories(filteredCodex);
-        const openItem = this.renderOpenItem(codex, match.params.category, match.params.id)
-        const tabs:any = null;
+        const openItem = this.renderOpenItem(codex, match.params.category, match.params.id, this.openTab)
+        const renderedTabs = <Tabs tabs={tabs} closeTab={this.closeTab}/>
 
         return (
             <div>
-                {tabs}
+                {renderedTabs}
                 <h1>Lookup Page</h1>
                 <input type="text" onKeyUp={(event:any) => this.setState({filterText: event.target.value})}/>
                 {openItem}

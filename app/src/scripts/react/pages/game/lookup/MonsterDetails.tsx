@@ -2,7 +2,9 @@ import React, { SFC } from "react";
 import { sizes, xpByChallengeRating } from "./dictionary";
 
 interface ItemDetailsProps {
-    monster:any
+    monster:any,
+    id:any
+    openTab:any
 }
 
 
@@ -31,6 +33,11 @@ const MonsterDetails: SFC<ItemDetailsProps> = (props) => {
 
     return (
         <div>
+            <button type="button" 
+                onClick={props.openTab.bind(null, {text: monster.name, path: `/game/lookup/creatures/${props.id}`})}
+                >
+                Pin
+            </button>
             <h3>{monster.name} - Details</h3>
             {`${sizes[monster.size]} ${monster.type}, ${monster.alignment}`}
             <ul>
