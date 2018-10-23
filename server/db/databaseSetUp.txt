@@ -2,8 +2,9 @@
 Must have nodejs installed. 
 Must have mongodb installed with command 'npm install mongodb'
 
-Pulblic IP Addr to connect to is 10.25.100.89
-In mongo.js replace 'mongodb://localhost:27017/gm-tools' with 'mongodb://10.25.100.89:27017/gm-tools'
+#sudo service mongod start
 
-DB name we are using is 'gm-tools'
+DB name we are using is 'gmtools'
 Collection name we are using is 'plugins'
+
+connect.js is the correct version for the online version of Mongo 3.6 using MongoDBAtlas online. 
