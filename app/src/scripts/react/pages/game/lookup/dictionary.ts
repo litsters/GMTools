@@ -81,6 +81,15 @@ export const xpByChallengeRating:object = {
     '30': '155,000'
 };
 
+
+// export const itemType:object = {
+//     'G': "general",
+//     'LA': "light armor",
+//     'HA': "heavy armor",
+//     'MA': "medium armor",
+//     'M': "melee",
+//     'R': "ranged"
+// }
 /*
 (function(forEach) {
     // Monsters object

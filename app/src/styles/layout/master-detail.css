@@ -23,7 +23,7 @@
     }
     
     .layout-master-details .master {
-        flex: 1 1 auto;
+        flex: 0 0 350px;
     }
     
     .layout-master-details .details {

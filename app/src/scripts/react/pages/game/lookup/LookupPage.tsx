@@ -6,6 +6,7 @@ import { apiGetCodex } from "../../../actions/codex-actions";
 import { CodexReducer } from "../../../reducers";
 import CategoryList from "./CategoryList";
 import MonsterDetails from "./MonsterDetails";
+import ItemDetails from "./ItemDetails";
 import Tabs, { Tab } from "./Tabs";
 
 // define categories that should not be rendered
@@ -99,7 +100,7 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
             case "creatures":
                 return <MonsterDetails monster={item} id={id} openTab={openTab}/>;
             case "items":
-                return null;
+                return <ItemDetails item={item} id={id} openTab={openTab}/>;
             default: return null;
         }
     }

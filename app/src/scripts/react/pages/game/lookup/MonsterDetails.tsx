@@ -1,18 +1,19 @@
 import React, { SFC } from "react";
 import { sizes, xpByChallengeRating } from "./dictionary";
 
-interface ItemDetailsProps {
+interface MonsterDetailsProps {
     monster:any,
     id:any
     openTab:any
 }
 
 
-const MonsterDetails: SFC<ItemDetailsProps> = (props) => {
+const MonsterDetails: SFC<MonsterDetailsProps> = (props) => {
     const { monster } = props;
     console.log(monster);
 
     const renderTraits = (traits:any) => {
+        if (!traits) return null;
         // handles case where 'trait' is a single object, not an array
         if (traits && traits.length === undefined) traits = [ traits ];
         if (traits.length > 0) {

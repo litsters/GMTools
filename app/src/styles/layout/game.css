@@ -7,7 +7,7 @@
 .menu-game {
     background: #ccc;
     height: 100%;
-    flex: 0 1 250px;
+    flex: 0 0 250px;
 }
 .menu-game .menu-item {
     list-style-type: none;
