@@ -14,7 +14,7 @@ const CategoryList: SFC<CategoryListProps> = (props) => {
             <h2>{headline}</h2>
             {items.map((item:any, i:number) => {
                 return (
-                    <li key={i} onClick={onItemClick.bind(null, item)}>{item.name}</li>
+                    <li key={i} onClick={onItemClick.bind(null, headline, item)}>{item.name}</li>
                 );
             })}
         </div>

@@ -7,7 +7,7 @@ interface ItemDetailsProps {
 
 
 const MonsterDetails: SFC<ItemDetailsProps> = (props) => {
-    const monster = props.data;
+    const monster = props.data.item;
     console.log(monster);
 
     const renderTraits = (traits:any) => {

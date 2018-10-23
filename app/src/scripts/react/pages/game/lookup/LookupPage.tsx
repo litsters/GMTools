@@ -37,9 +37,9 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
         if (!this.props.codex) this.props.apiGetCodex();
     }
 
-    openItem(item:object) {
+    openItem(type:string,item:object) {
         let openItems = this.state.openItems;
-        openItems.push(item);
+        openItems.push({type,item});
 
         this.setState({
             openItems,
@@ -89,12 +89,17 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
         });
     }
 
-    renderOpenItem(item:object) {
-        if (!item) return null;
+    renderOpenItem(data:any) {
+        if (!data) return null;
+        console.log(data.type)
 
-        return (
-            <MonsterDetails data={item}/>
-        );
+        switch(data.type.toLowerCase()) {
+            case "creatures":
+                return <MonsterDetails data={data}/>;
+            case "items":
+                return null;
+            default: return null;
+        }
     }
 
     render() {
