@@ -29,18 +29,20 @@ class MainRouter extends Component {
     Object.keys(Config.routes).forEach((key) => {
       let route = Config.routes[key],
         Page = components[route.component],
-        Layout = route.layout ? layouts[route.layout] : null;
+        Layout = route.layout ? layouts[route.layout] : null,
+        path = route.dynamic ? route.dynamic : route.path;
 
       if (route.children) {
         Object.keys(route.children).forEach((childKey) => {
           let childRoute = route.children[childKey],
-            ChildPage = components[childRoute.component];
+            ChildPage = components[childRoute.component],
+            childPath = childRoute.dynamic ? childRoute.dynamic : childRoute.path;
 
-          result.push(this.renderRoute(childKey, childRoute.path, true, ChildPage, Layout));
+          result.push(this.renderRoute(childKey, childPath, (childRoute.exact || childRoute.exact === undefined ? true : false), ChildPage, Layout));
         });
       }
 
-      result.push(this.renderRoute(key, route.path, true, Page, Layout));
+      result.push(this.renderRoute(key, path, (route.exact || route.exact === undefined ? true : false), Page, Layout));
     })
 
     return result;

@@ -2,12 +2,12 @@ import React, { SFC } from "react";
 import { sizes, xpByChallengeRating } from "./dictionary";
 
 interface ItemDetailsProps {
-    data:any
+    monster:any
 }
 
 
 const MonsterDetails: SFC<ItemDetailsProps> = (props) => {
-    const monster = props.data.item;
+    const { monster } = props;
     console.log(monster);
 
     const renderTraits = (traits:any) => {
