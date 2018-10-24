@@ -10,6 +10,8 @@ import InitiativePage from "../pages/game/initiative/InitiativePage";
 import LookupPage from "../pages/game/lookup/LookupPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import Dashboard from "../pages/dashboard/Dashboard";
+import CharactersPage from "../pages/dashboard/CharactersPage";
+import CharacterCreatePage from "../pages/dashboard/CharacterCreatePage";
 import LandingPage from "../pages/landing/LandingPage";
 
 import GameLayout from "../layout/GameLayout";
@@ -18,7 +20,8 @@ import GameLayout from "../layout/GameLayout";
 // used to map configuration to components
 
 const components = { 
-  LoginPage, GamePage, DicePage, GeneratorPage, InitiativePage, LookupPage, NotFoundPage, Dashboard, LandingPage 
+  LoginPage, GamePage, DicePage, GeneratorPage, InitiativePage, LookupPage, NotFoundPage, Dashboard, CharactersPage,
+  CharacterCreatePage, LandingPage 
 };
 
 

@@ -6,7 +6,7 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import MainRouter from './react/routers/main-router';
 import Header from './react/layout/header';
 import Body from './react/layout/body';
-import { updateUser, apiRequest, updateAuth } from './react/actions/user-actions';
+import { updateUser, updateAuth } from './react/actions/user-actions';
 import { updateCodex } from './react/actions/codex-actions';
 
 interface Props {
@@ -46,7 +46,6 @@ const mapStateToProps = createSelector(
 
 const mapActionsToProps = {
   onUpdateUser: updateUser,
-  onApiRequest: apiRequest,
   onUpdateAuth: updateAuth,
   onUpdateCodex: updateCodex,
 }

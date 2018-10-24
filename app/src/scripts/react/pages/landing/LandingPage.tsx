@@ -14,9 +14,9 @@ class LandingPage extends Component<LandingProps, {}> {
         console.log("You clicked log in!");
 
         let auth = new Auth(this.props.history);
-        auth.login();
-
         this.props.updateAuth(auth);
+
+        auth.login();
     }
 
     render() {

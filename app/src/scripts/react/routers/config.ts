@@ -24,6 +24,7 @@
     
 
 */
+import { PlayerType } from "../auth/User";
 
 const gameRoute = "/game";
 
@@ -32,32 +33,53 @@ interface RouteDefs {
 }
 
 interface RouteDef {
-    path: string,
-    dynamic?: string,
-    component: string,
+    path: string,       // specified the path that the router should match
+    dynamic?: string,   // indicates pattern for matching parameters; could use multiple routes as an alternative
+    component: string,  // specifies the component to load when the route is matched
 
     children?: {[key: string]: RouteDef}
 
-    layout?: string,
-    exact?: boolean,
+    layout?: string,    // defines layout to inject content into
+    exact?: boolean,    // determines whether or not the router must match the path exactly
     showInMenu?: boolean,
-    icon?: string
-    text?: string
-    visibleTo?: "gm" | "player"
+    icon?: string       // used to specify an icon for usage in menus, tabs, etc.
+    text?: string       // text to display for usage in menus, tabs, etc.
+    visibleTo?: PlayerType // specifies who the route is accessible to
 }
 
 export const MainRouterConfig: RouteDefs = {
     routes: {
-        login:  { path: "/login",   component: "LoginPage" },
-        dashboard: {path: "/dashboard", component: "Dashboard" },
-        game:   { path: gameRoute,  component: "GamePage",  layout: "GameLayout",   exact: true,
+        login: { 
+            path: "/login",   
+            component: "LoginPage" 
+        },
+        dashboard: {
+            path: "/dashboard", 
+            component: "Dashboard" 
+        },
+        characters: {
+            path:"/characters", 
+            component: "CharactersPage",
             children: {
-                lookup: { path: `${gameRoute}/lookup`,  dynamic: `${gameRoute}/lookup/:category?/:id?`, component: "LookupPage",showInMenu: true,   icon: null, text: "lookup", visibleTo: "gm", exact: false },
-                dice:   { path: `${gameRoute}/dice`,    component: "DicePage",  showInMenu: true,   icon: null, text: "dice",   visibleTo: "gm" },
-                initiative: { path: `${gameRoute}/initiative`,component: "InitiativePage",showInMenu: true,icon: null, text: "initiative",   visibleTo: "gm" },                
-                generator:  { path: `${gameRoute}/generator`,component: "GeneratorPage",showInMenu: true,   icon: null, text: "generator",   visibleTo: "gm" }
-            }},
-        default:{ path: "/",        component: "LandingPage" }
+                create: { path: "/characters/create", component: "CharacterCreatePage" }
+            }
+        },
+        game:   { 
+            path: gameRoute,  
+            component: "GamePage",  
+            layout: "GameLayout",   
+            exact: true,
+            children: {
+                lookup: { path: `${gameRoute}/lookup`,  dynamic: `${gameRoute}/lookup/:category?/:id?`, component: "LookupPage",showInMenu: true,   icon: null, text: "lookup", visibleTo: PlayerType.GameMaster, exact: false },
+                dice:   { path: `${gameRoute}/dice`,    component: "DicePage",  showInMenu: true,   icon: null, text: "dice",   visibleTo: PlayerType.GameMaster },
+                initiative: { path: `${gameRoute}/initiative`,component: "InitiativePage",showInMenu: true,icon: null, text: "initiative",   visibleTo: PlayerType.GameMaster },                
+                generator:  { path: `${gameRoute}/generator`,component: "GeneratorPage",showInMenu: true,   icon: null, text: "generator",   visibleTo: PlayerType.GameMaster }
+            }
+        },
+        default:{ 
+            path: "/",        
+            component: "LandingPage" 
+        }
     }
 };
 
