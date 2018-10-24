@@ -14,6 +14,7 @@ export interface Tab {
 
 const Tabs: SFC<TabsProps> = (props) => {
     const { tabs, closeTab } = props;
+    if (!tabs) return null;
 
     return (
         <div className="tabs-wrapper">

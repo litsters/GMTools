@@ -1,4 +1,5 @@
 export const UPDATE_CODEX = "codex:updateCodex";
+export const UPDATE_TABS = "codex:updateTabs";
 
 export function updateCodex(codex: any) {
     return {
@@ -8,6 +9,16 @@ export function updateCodex(codex: any) {
         }
     }
 }
+
+export function updateTabs(tabs: any) {
+    return {
+        type: UPDATE_TABS,
+        payload: {
+            tabs: tabs
+        }
+    }
+}
+
 
 // note: theoretically apiGetCodex should cache response in the browser, making this unecessary
 // export function loadCodexFromLocal() {

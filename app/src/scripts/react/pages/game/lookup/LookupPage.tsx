@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import MasterDetailsLayout from "../../../layout/MasterDetailLayout";
 import IPage from "../../../interfaces/IPage";
-import { apiGetCodex } from "../../../actions/codex-actions";
+import { apiGetCodex, updateTabs } from "../../../actions/codex-actions";
 import { CodexReducer } from "../../../reducers";
 import CategoryList from "./CategoryList";
 import MonsterDetails from "./MonsterDetails";
@@ -10,16 +10,16 @@ import ItemDetails from "./ItemDetails";
 import Tabs, { Tab } from "./Tabs";
 
 // define categories that should not be rendered
-const blockedCategories = ["config"];
+const blockedCategories = ["config", "tabs"];
 
 interface LookupPageProps {
     codex: any,
-    apiGetCodex: any
+    apiGetCodex: any,
+    updateTabs: any
 }
 
 interface LookupPageState {
-    filterText: string,
-    tabs: Array<Tab>
+    filterText: string
 }
 
 class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
@@ -27,8 +27,7 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
     constructor(props:any) {
         super(props);
         this.state = {
-            filterText: "",
-            tabs: []
+            filterText: ""
         }
 
         this.openTab = this.openTab.bind(this);
@@ -37,21 +36,20 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
     }
 
     componentDidMount() {
-        if (!this.props.codex) this.props.apiGetCodex();
+        if (!this.props.codex.codex) this.props.apiGetCodex();
     }
 
     openTab(tab:Tab) {
-        let tabs = this.state.tabs;
+        let tabs = this.props.codex.tabs;
         tabs.push(tab);
-        this.setState({tabs});
+        this.props.updateTabs(tabs);
     }
 
     closeTab(index:number) {
-        let tabs = this.state.tabs;
+        let tabs = this.props.codex.tabs;
         tabs.splice(index, 1);
-        this.setState({tabs});
+        this.props.updateTabs(tabs);
     }
-
 
     filterEntries(search:string, codex:any) {
         search = search.trim().toLowerCase();
@@ -94,7 +92,7 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
     renderOpenItem(codex:any, category:string, id:number, openTab:any) {
         if (!category || !id || !codex) return null;
         category = category.toLowerCase();
-        let item = this.props.codex[category][id];
+        let item = codex[category][id];
 
         switch(category.toLowerCase()) {
             case "creatures":
@@ -117,8 +115,9 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
     }
 
     render() {
-        const { codex, match, history } = this.props;
-        const { filterText, tabs } = this.state;
+        const { codex, tabs } = this.props.codex;
+        const { match, history } = this.props;
+        const { filterText } = this.state;
         const filteredCodex = filterText ? this.filterEntries(filterText, codex) : codex;
         const renderedCategories = this.renderCategories(filteredCodex);
         const renderedOpenItem = this.renderOpenItem(codex, match.params.category, match.params.id, this.openTab)
@@ -135,7 +134,8 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
 }
 
 const mapDispatchToProps = (dispatch:any) => ({
-    apiGetCodex: () => dispatch(apiGetCodex())
+    apiGetCodex: () => dispatch(apiGetCodex()),
+    updateTabs: (tabs:any) => dispatch(updateTabs(tabs))
 })
 
 export default connect(CodexReducer, mapDispatchToProps)(LookupPage);
