@@ -1,0 +1,32 @@
+.tabs-wrapper {
+    overflow-x: auto;
+    width: 100%;
+    
+}
+
+.tabs-wrapper ul.tabs {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tabs-wrapper .tabs .tab {
+    background: #eee;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    display: flex;
+    padding: 5px 10px;
+
+}
+.tab .tab-icon {
+    height: 20px;
+    margin-right: 5px;
+}
+.tab .tab-text {
+    color: initial;
+    text-decoration: none;
+}
+.tab .tab-close {
+    margin-left: 10px;
+}

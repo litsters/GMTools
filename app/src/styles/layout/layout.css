@@ -17,4 +17,9 @@ body {
     height: 100%;
 }
 
+.layout-page {
+    height: 100%;
+}
+
 @import "./game.css";
+@import "./master-detail.css";

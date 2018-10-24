@@ -7,6 +7,7 @@ import MainRouter from './react/routers/main-router';
 import Header from './react/layout/header';
 import Body from './react/layout/body';
 import { updateUser, apiRequest, updateAuth } from './react/actions/user-actions';
+import { updateCodex } from './react/actions/codex-actions';
 
 interface Props {
 
@@ -30,10 +31,16 @@ const userSelector = createSelector(
   user => user
 )
 
+const codexSelector = createSelector(
+  (state: any) => state.codex,
+  codex => codex
+)
+
 const mapStateToProps = createSelector(
   userSelector,
-  (user) => ({
-    user
+  codexSelector,
+  (user, codex) => ({
+    user, codex
   })
 );
 
@@ -41,6 +48,7 @@ const mapActionsToProps = {
   onUpdateUser: updateUser,
   onApiRequest: apiRequest,
   onUpdateAuth: updateAuth,
+  onUpdateCodex: updateCodex,
 }
 
 export default withRouter(connect(mapStateToProps, mapActionsToProps)(App));
