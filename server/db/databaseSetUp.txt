@@ -1,0 +1,10 @@
+
+Must have nodejs installed. 
+Must have mongodb installed with command 'npm install mongodb'
+
+#sudo service mongod start
+
+DB name we are using is 'gmtools'
+Collection name we are using is 'plugins'
+
+connect.js is the correct version for the online version of Mongo 3.6 using MongoDBAtlas online. 
