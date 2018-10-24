@@ -1,23 +1,26 @@
 import React, { Component } from "react";
-import Auth from "../../auth/Auth";
+
 import io  from "socket.io-client";
 
+import { connect } from "react-redux";
+import { UserReducer } from "../../reducers";
+
+
 interface DashboardProps {
-    auth: Auth,
-    history: History
+    history: History,
+    user: any
 }
 
 class Dashboard extends Component<DashboardProps, {}> {
-    private auth:Auth;
     private socket:any;
 
     constructor(props: any) {
         super(props);
-        this.auth = new Auth(props.history);
+        this.socket = null;
     }
 
     render() {
-        this.auth.handleAuthentication();
+        this.props.user.auth.handleAuthentication();
         return (
             <div className="page-content">
                 <h1>Congrats! You reached the dashboard!</h1>
@@ -29,7 +32,7 @@ class Dashboard extends Component<DashboardProps, {}> {
 
     logout() {
         console.log("you are logging out");
-        this.auth.logout();
+        this.props.user.auth.logout();
     }
 
     send(msg:string){
@@ -70,4 +73,4 @@ class Dashboard extends Component<DashboardProps, {}> {
     }
 }
 
-export default Dashboard;
+export default connect(UserReducer)(Dashboard);
