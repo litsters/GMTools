@@ -20,6 +20,7 @@ import { AuthApi, PluginApi } from "./api";
 import models from './db/models';
 
 import loadPlugin from "./plugins";
+import { IUser } from "./db/schemas/user";
 
 models.User.count({})
   .then( count => console.log(`Found ${count} characters`) );
@@ -78,6 +79,7 @@ const authenticate = async (client:any, data:any, callback:any) => {
             // Add authenticated socket to connections
             let connection = new ClientConnection(token["https://gm-tools.com/user_id"], token["https://gm-tools.com/nickname"], client);
             connections.addConnection(connection);
+
             // connections.print();
         }catch(err){
             console.log(JSON.stringify(err,null,2));
@@ -90,9 +92,21 @@ const authenticate = async (client:any, data:any, callback:any) => {
 
 // Register handlers
 const postAuthenticate = (client:any) => {
+    // Get user information
+    let socketid = client.id;
+    let connection = connections.getConnection(socketid);
+    let userid = connection.getId();
+
+    models.User.findOne({id: userid}).then(function(user:IUser){
+        // Send user info to client
+        console.log(JSON.stringify(user,null,2));
+    }).catch(function(err){
+        console.log(err);
+    });
+
     client.on('greeting', function(data:any){
         console.log(JSON.stringify(data,null,2));
-    })
+    });
 }
 
 // Clean up function
