@@ -1,4 +1,5 @@
 @import "./base/variables.css";
+@import "./base/modifiers.css";
 @import "./base/animations.css";
 @import "./base/inputs.css";
 @import "./base/buttons.css";
@@ -6,3 +7,5 @@
 @import "./layout/layout.css";
 
 @import "./component/dice.css";
+@import "./component//codex.css";
+@import "./component/tabs.css";

@@ -1,6 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { AuthApi } from "./api";
 import socketIOAuth from "socketio-auth";
 import jwt from "jsonwebtoken";
 import fs from "fs";
@@ -15,6 +14,15 @@ const aud = '5j5hV3sMFUstdIOijBgVxGWuSw059kBQ'; // This is the client ID for aut
 
 // Set up the connection tracker
 const connections = new Connections();
+import path from "path";
+import { AuthApi, PluginApi } from "./api";
+
+import loadPlugin from "./plugins";
+
+var dnd5ePlugin = {};
+loadPlugin("dnd-5e", (err: any, result: any) => {
+    dnd5ePlugin = result;//{...dnd5ePlugin, ...result};
+});
 
 const app = express();
 
@@ -30,6 +38,7 @@ app.use(function(req:any, res:any, next:any){
 
 // API Registration
 AuthApi(app);
+PluginApi(app);
 
 // HTML Server
 app.use('/', express.static(__dirname + '/public'));

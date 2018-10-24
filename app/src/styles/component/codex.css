@@ -1,0 +1,27 @@
+
+.codex-master {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.codex-input {
+    flex: 0 1 auto;
+}
+
+.codex-categories {
+    flex: 0 1 auto;
+    overflow: auto;
+    padding-left: 10px;
+}
+.codex-categories .category {
+    padding-bottom: 15px;
+}
+.codex-categories .category .category-items {
+    padding-bottom: 35px;
+}
+.codex-categories .category-collapse {
+    cursor: pointer;
+    float: right;
+    margin: 0 10px; 
+}

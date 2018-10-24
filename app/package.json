@@ -20,6 +20,7 @@
     "socket.io-client": "^2.1.1",
     "socketio-auth": "^0.1.1"
   },
+  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",

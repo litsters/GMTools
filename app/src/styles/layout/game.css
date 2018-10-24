@@ -6,7 +6,8 @@
 
 .menu-game {
     background: #ccc;
-    flex: 0 1 250px;
+    height: 100%;
+    flex: 0 0 250px;
 }
 .menu-game .menu-item {
     list-style-type: none;
@@ -17,5 +18,5 @@
 
 .layout-body {
     flex: 1 1 auto;
-    padding: 10px;
+    height: 100%;
 }

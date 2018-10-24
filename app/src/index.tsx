@@ -10,11 +10,12 @@ import registerServiceWorker from './scripts/registerServiceWorker';
 import { applyMiddleware, createStore, combineReducers, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { UserReducer } from './scripts/react/reducers';
+import { UserReducer, CodexReducer } from './scripts/react/reducers';
 
 
 const allReducers = combineReducers({
-  user: UserReducer
+  user: UserReducer,
+  codex: CodexReducer
 });
 
 const allStoreEnahncers = (window as any).devToolsExtension ?
