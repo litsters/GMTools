@@ -2,7 +2,8 @@ import fs from "fs";
 import path from "path";
 import ICallback from "./interfaces/ICallback";
 
-const pluginsDir = path.resolve(__dirname + "/../") + "/plugins";
+const serverDir = __dirname + (path.basename(__dirname) === "dist" ? "/../" : "");
+const pluginsDir = path.resolve(serverDir) + "/plugins";
 const fileExtensionRegex = /(?:\.([^.]+))?$/;
 
 /*

@@ -5,7 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-const pluginsDir = path_1.default.resolve(__dirname + "/../") + "/plugins";
+const serverDir = __dirname + (path_1.default.basename(__dirname) === "dist" ? "/../" : "");
+const pluginsDir = path_1.default.resolve(serverDir) + "/plugins";
 const fileExtensionRegex = /(?:\.([^.]+))?$/;
 /*
     'loadPlugin()' synchronously creates a plugin object from the `~/server/plugins' directory
