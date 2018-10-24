@@ -17,7 +17,12 @@ const connections = new Connections();
 import path from "path";
 import { AuthApi, PluginApi } from "./api";
 
+import models from './db/models';
+
 import loadPlugin from "./plugins";
+
+models.User.count({})
+  .then( count => console.log(`Found ${count} characters`) );
 
 var dnd5ePlugin = {};
 loadPlugin("dnd-5e", (err: any, result: any) => {

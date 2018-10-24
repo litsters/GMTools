@@ -4,20 +4,22 @@
   "description": "",
   "main": "server.ts",
   "dependencies": {
-    "@types/auth0-js": "^8.11.6",
-    "@types/debug": "0.0.31",
-    "@types/jsonwebtoken": "^7.2.8",
     "auth0-js": "^9.8.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.3.6",
     "socket.io": "^2.1.1",
     "socketio-auth": "^0.1.1"
   },
   "devDependencies": {
+    "@types/auth0-js": "^8.11.6",
     "@types/body-parser": "^1.17.0",
+    "@types/debug": "0.0.31",
     "@types/express": "^4.16.0",
+    "@types/jsonwebtoken": "^7.2.8",
+    "@types/mongoose": "^5.2.19",
     "nodemon": "^1.18.4",
     "ts-node": "^7.0.1",
     "typescript": "^3.1.1"
