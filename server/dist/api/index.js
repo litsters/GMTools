@@ -1,7 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var auth_1 = require("./auth");
-exports.AuthApi = auth_1.default;
-var plugin_1 = require("./plugin");
-exports.PluginApi = plugin_1.default;
+const auth_1 = __importDefault(require("./auth"));
+const plugin_1 = __importDefault(require("./plugin"));
+const user_1 = __importDefault(require("./user"));
+exports.registerAPIs = (app) => {
+    auth_1.default(app);
+    plugin_1.default(app);
+    user_1.default(app);
+};
 //# sourceMappingURL=index.js.map

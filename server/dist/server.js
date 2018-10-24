@@ -16,8 +16,7 @@ const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 // API Registration
-api_1.AuthApi(app);
-api_1.PluginApi(app);
+api_1.registerAPIs(app);
 // HTML Server
 app.use('/', express_1.default.static(__dirname + '/public'));
 // Start Server
