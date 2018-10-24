@@ -19,7 +19,8 @@ interface LookupPageProps {
 }
 
 interface LookupPageState {
-    filterText: string
+    filterText: string,
+    loadingCategories: boolean
 }
 
 class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
@@ -27,7 +28,8 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
     constructor(props:any) {
         super(props);
         this.state = {
-            filterText: ""
+            filterText: "",
+            loadingCategories: true
         }
 
         this.openTab = this.openTab.bind(this);
@@ -37,6 +39,9 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
 
     componentDidMount() {
         if (!this.props.codex.codex) this.props.apiGetCodex();
+
+        // fixes latency from large render when switching back to component
+        setTimeout(() => this.setState({loadingCategories: false}), 100);
     }
 
     openTab(tab:Tab) {
@@ -58,9 +63,6 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
         Object.keys(codex).forEach((key) => {
             if (blockedCategories.indexOf(key) !== -1) return;
 
-            // results[key] = codex[key].filter((item:any) => {
-            //     return item.name && item.name.toLowerCase().indexOf(search) !== -1;
-            // });
             results[key] = [];
             for (let i = 0; i < codex[key].length; i++) {
                 let item = codex[key][i];
@@ -73,7 +75,8 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
         return results;
     }
 
-    renderCategories(codex:any) {
+    renderCategories(isLoading:boolean, codex:any) {
+        if (isLoading) return <h3>loading...</h3>
         if (!codex) return null;
 
         return (
@@ -117,9 +120,9 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
     render() {
         const { codex, tabs } = this.props.codex;
         const { match, history } = this.props;
-        const { filterText } = this.state;
+        const { filterText, loadingCategories } = this.state;
         const filteredCodex = filterText ? this.filterEntries(filterText, codex) : codex;
-        const renderedCategories = this.renderCategories(filteredCodex);
+        const renderedCategories = this.renderCategories(loadingCategories, filteredCodex);
         const renderedOpenItem = this.renderOpenItem(codex, match.params.category, match.params.id, this.openTab)
         const renderedTabs = <Tabs tabs={tabs} closeTab={this.closeTab}/>
         const renderedMaster = this.renderMaster(renderedCategories);

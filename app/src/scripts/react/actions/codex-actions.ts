@@ -19,19 +19,6 @@ export function updateTabs(tabs: any) {
     }
 }
 
-
-// note: theoretically apiGetCodex should cache response in the browser, making this unecessary
-// export function loadCodexFromLocal() {
-//     let json = localStorage.getItem("codex");
-//     let codex = JSON.parse(json);
-//     updateCodex(codex);
-// }
-
-// function saveCodexToLocal(codex:any) {
-//     let json = JSON.stringify(codex);
-//     localStorage.setItem("codex", json);
-// }
-
 export function apiGetCodex() {
     console.log("getting codex from api")
     return (dispatch: any) => {
