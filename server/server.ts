@@ -98,8 +98,20 @@ const postAuthenticate = (client:any) => {
     let userid = connection.getId();
 
     models.User.findOne({id: userid}).then(function(user:IUser){
-        // Send user info to client
-        console.log(JSON.stringify(user,null,2));
+        if(user !== null){
+            // If user is not null, send it to client
+            console.log("user data retrieved!");
+            console.log(JSON.stringify(user,null,2));
+        } else {
+            // Else, create new user and sent to client
+            console.log("no user data available");
+            let nickname = connection.getNickname();
+            models.User.create({id: userid, nickname: nickname}).then(function(user:IUser){
+                console.log("successful create: " + JSON.stringify(user,null,2));
+            }).catch(function(err){
+                console.log("err while creating: " + err);
+            });
+        }
     }).catch(function(err){
         console.log(err);
     });
