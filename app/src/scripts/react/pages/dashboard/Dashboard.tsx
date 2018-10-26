@@ -54,6 +54,13 @@ class Dashboard extends Component<DashboardProps, {}> {
                 // Add handlers for different types of events here (I think)
                 // Until the socket receives an 'authenticated' event, it 
                 // shouldn't be sending any more events to the server.
+                skt.on('data.retrieved', function(event:any){
+                    console.log('data retrieved: ' + JSON.stringify(event,null,2));
+                });
+
+                skt.on('app.error', function(event:any){
+                    console.log('error: ' + JSON.stringify(event,null,2));
+                });
             });
             skt.on('unauthorized', function(data:any){
                 console.log('authorization failed: ' + JSON.stringify(data,null,2));

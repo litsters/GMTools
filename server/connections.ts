@@ -1,4 +1,5 @@
 import ClientConnection from "./clientconnection";
+import EventWrapper from "./event";
 
 export default class Connections {
     private connectionMap: Map<string, Map<string, ClientConnection>>;  // Each userid is associated with a set of connections, each of which is also identified by its socket id.
@@ -61,5 +62,23 @@ export default class Connections {
 
     print(){
         console.log(this.connectionMap);
+    }
+
+    sendEvent(eventWrapper:EventWrapper){
+        let userids = eventWrapper.getUsers();
+        let type = eventWrapper.getType();
+        let event = eventWrapper.getEvent();
+
+        // Get connections for each user
+        userids.forEach(function(userid){
+            // Get connections for user
+            let connections = this.connectionMap.get(userid);
+
+            // Send event to each connection
+            for(let skt of connections.keys()){
+                let connection = connections.get(skt);
+                connection.getSocket().emit(type, event);
+            }
+        });
     }
 }

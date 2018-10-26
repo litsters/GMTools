@@ -21,6 +21,7 @@ import models from './db/models';
 
 import loadPlugin from "./plugins";
 import { IUser } from "./db/schemas/user";
+import EventWrapper from "./event";
 
 models.User.count({})
   .then( count => console.log(`Found ${count} characters`) );
@@ -100,20 +101,47 @@ const postAuthenticate = (client:any) => {
     models.User.findOne({id: userid}).then(function(user:IUser){
         if(user !== null){
             // If user is not null, send it to client
-            console.log("user data retrieved!");
-            console.log(JSON.stringify(user,null,2));
+            // console.log("user data retrieved!");
+            // console.log(JSON.stringify(user,null,2));
+            let event = {
+                namespace: "user",
+                key: "current-data",
+                data: user
+            };
+            client.emit('data.retrieved', event);
         } else {
             // Else, create new user and sent to client
-            console.log("no user data available");
+            // console.log("no user data available");
             let nickname = connection.getNickname();
             models.User.create({id: userid, nickname: nickname}).then(function(user:IUser){
-                console.log("successful create: " + JSON.stringify(user,null,2));
+                // console.log("successful create: " + JSON.stringify(user,null,2));
+                let event = {
+                    namespace: "user",
+                    key: "current-data",
+                    data: user
+                };
+                client.emit('data.retrieved', event);
             }).catch(function(err){
+                // Error while creating a new user
                 console.log("err while creating: " + err);
+                let event = {
+                    error: "An error occurred while loading your user information.",
+                    details:{
+                        mongomsg: err
+                    }
+                }
+                client.emit('app.error', event);
             });
         }
     }).catch(function(err){
-        console.log(err);
+        // Error while finding existing user
+        let event = {
+            error: "An error occurred while loading your user information.",
+            details: {
+                mongomsg: err
+            }
+        };
+        client.emit('app.error', event);
     });
 
     client.on('greeting', function(data:any){
