@@ -1,4 +1,4 @@
-import express from "express";
+import express from 'express';
 import bodyParser from "body-parser";
 import socketIOAuth from "socketio-auth";
 import jwt from "jsonwebtoken";
@@ -37,11 +37,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Allow CORS for localhost:3000 for development purposes
-app.use(function(req:any, res:any, next:any){
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header("Access-Control-Allow-Origin", "Origin, X-Requested-With, Content-Type, Accept");
-});
 
 // API Registration
 AuthApi(app);
