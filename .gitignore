@@ -1,5 +1,5 @@
+*/node_modules/
 .idea
 */dist/
 server/gm-tools.pem
 gm-tools.pem
-node_modules/

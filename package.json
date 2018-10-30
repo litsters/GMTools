@@ -16,11 +16,5 @@
   "bugs": {
     "url": "https://github.com/litsters/GMTools/issues"
   },
-  "homepage": "https://github.com/litsters/GMTools#readme",
-  "devDependencies": {
-    "i18n-webpack-plugin": "^1.0.0",
-    "progress-bar-webpack-plugin": "^1.11.0",
-    "sass-loader": "^7.1.0",
-    "webpack-merge": "^4.1.4"
-  }
+  "homepage": "https://github.com/litsters/GMTools#readme"
 }
