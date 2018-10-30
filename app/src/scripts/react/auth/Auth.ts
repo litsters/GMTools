@@ -11,7 +11,7 @@ class Auth {
         this.auth0 = new auth0.WebAuth({
             domain: 'gm-tools.auth0.com',
             clientID: '5j5hV3sMFUstdIOijBgVxGWuSw059kBQ',
-            redirectUri: 'http://localhost:3000/dashboard',
+            redirectUri: location.origin + '/dashboard',
             responseType: 'token id_token',
             scope: 'openid'
         });
