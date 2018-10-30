@@ -1,11 +1,13 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from "body-parser";
 import socketIOAuth from "socketio-auth";
 import jwt from "jsonwebtoken";
 import fs from "fs";
+import path from "path";
 import Token from "./token";
 import Connections from "./connections";
 import ClientConnection from "./clientconnection";
+import { AuthApi, PluginApi } from "./api";
 
 const port = 8080;
 const key = 'gm-tools.pem';
@@ -14,8 +16,11 @@ const aud = '5j5hV3sMFUstdIOijBgVxGWuSw059kBQ'; // This is the client ID for aut
 
 // Set up the connection tracker
 const connections = new Connections();
-import path from "path";
-import { AuthApi, PluginApi } from "./api";
+
+const __serverDir = __dirname + (path.basename(__dirname) === "dist" ? "/../" : "");
+const __publicDir = path.join(__serverDir, "/dist/public");
+
+
 
 import models from './db/models';
 
@@ -43,7 +48,10 @@ AuthApi(app);
 PluginApi(app);
 
 // HTML Server
-app.use('/', express.static(__dirname + '/public'));
+app.use('/static', express.static(path.join(__publicDir, "/static")));
+app.get('/*', (request:Request, response:Response) => {
+    response.sendFile(path.join(__publicDir, "/index.html"));
+});
 
 // Socket server
 const server = require('http').createServer(app);
