@@ -31,7 +31,7 @@ const __publicDir = path_1.default.join(__serverDir, "/dist/public");
 const models_1 = __importDefault(require("./db/models"));
 const plugins_1 = __importDefault(require("./plugins"));
 models_1.default.User.count({})
-    .then(count => console.log(`Found ${count} characters`));
+    .then((count) => console.log(`Found ${count} characters`));
 var dnd5ePlugin = {};
 plugins_1.default("dnd-5e", (err, result) => {
     dnd5ePlugin = result; //{...dnd5ePlugin, ...result};
@@ -45,6 +45,7 @@ api_1.AuthApi(app);
 api_1.PluginApi(app);
 // HTML Server
 app.use('/static', express_1.default.static(path_1.default.join(__publicDir, "/static")));
+app.use('/plugins', express_1.default.static(path_1.default.join(__serverDir, "/plugins")));
 app.get('/*', (request, response) => {
     response.sendFile(path_1.default.join(__publicDir, "/index.html"));
 });

@@ -29,7 +29,7 @@ import { IUser } from "./db/schemas/user";
 import EventWrapper from "./event";
 
 models.User.count({})
-  .then( count => console.log(`Found ${count} characters`) );
+  .then( (count:number) => console.log(`Found ${count} characters`) );
 
 var dnd5ePlugin = {};
 loadPlugin("dnd-5e", (err: any, result: any) => {
@@ -49,6 +49,7 @@ PluginApi(app);
 
 // HTML Server
 app.use('/static', express.static(path.join(__publicDir, "/static")));
+app.use('/plugins', express.static(path.join(__serverDir, "/plugins")));
 app.get('/*', (request:Request, response:Response) => {
     response.sendFile(path.join(__publicDir, "/index.html"));
 });
