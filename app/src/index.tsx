@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router } from "react-router-dom";
 import history from './scripts/react/routers/history';
-import './styles/app.css';
+import './styles/app.scss';
 import App from './scripts/App';
 import registerServiceWorker from './scripts/registerServiceWorker';
 
