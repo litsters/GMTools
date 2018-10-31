@@ -33,35 +33,41 @@ const MonsterDetails: SFC<MonsterDetailsProps> = (props) => {
     }
 
     return (
-        <div>
-            <button type="button" 
-                onClick={props.openTab.bind(null, {text: monster.name, path: `/game/lookup/creatures/${props.id}`, icon: "https://i1.wp.com/www.pixelmatortemplates.com/wp-content/uploads/2014/11/cartoon-icon-final.jpg"})}
-                >
-                Pin
-            </button>
-            <h3>{monster.name} - Details</h3>
-            {`${sizes[monster.size]} ${monster.type}, ${monster.alignment}`}
-            <ul>
-                <li><strong>Armor class</strong> {monster.ac}</li>
-                <li><strong>Hit Points</strong> {monster.hp}</li>
-                <li><strong>Speed</strong> {monster.speed}</li>
-            </ul>
-            <ul>
-                <li><strong>STR</strong>{monster.str}</li>
-                <li><strong>DEX</strong>{monster.dex}</li>
-                <li><strong>CON</strong>{monster.con}</li>
-                <li><strong>INT</strong>{monster.int}</li>
-                <li><strong>WIS</strong>{monster.wis}</li>
-                <li><strong>CHA</strong>{monster.cha}</li>
+        <div className="details-page">
+            <div className="panel">
+                <button type="button" 
+                    onClick={props.openTab.bind(null, {text: monster.name, path: `/game/lookup/creatures/${props.id}`, icon: "https://i1.wp.com/www.pixelmatortemplates.com/wp-content/uploads/2014/11/cartoon-icon-final.jpg"})}
+                    >
+                    Pin
+                </button>
+                <h2>{monster.name}</h2>
+                <i>{`${sizes[monster.size]} ${monster.type}, ${monster.alignment}`}</i>
+                <div className="divider"></div>
+                <ul className="color-text">
+                    <li><strong>Armor class</strong> {monster.ac}</li>
+                    <li><strong>Hit Points</strong> {monster.hp}</li>
+                    <li><strong>Speed</strong> {monster.speed}</li>
+                </ul>
+                <div className="divider"></div>
+                <ul className="ul-horizontal color-text">
+                    <li><strong>STR</strong>{monster.str}</li>
+                    <li><strong>DEX</strong>{monster.dex}</li>
+                    <li><strong>CON</strong>{monster.con}</li>
+                    <li><strong>INT</strong>{monster.int}</li>
+                    <li><strong>WIS</strong>{monster.wis}</li>
+                    <li><strong>CHA</strong>{monster.cha}</li>
 
-            </ul>
-            <ul>
-                <li><strong>Skills</strong> {monster.skill}</li>
-                <li><strong>Senses</strong> {monster.senses}</li>
-                <li><strong>Languages</strong> {monster.languages}</li>
-                <li><strong>Challenge</strong> {monster.cr} ({xpByChallengeRating[monster.cr]} XP)</li>
-            </ul>
-            {renderTraits(monster.trait)}
+                </ul>
+                <div className="divider"></div>
+                <ul className="color-text">
+                    <li><strong>Skills</strong> {monster.skill}</li>
+                    <li><strong>Senses</strong> {monster.senses}</li>
+                    <li><strong>Languages</strong> {monster.languages}</li>
+                    <li><strong>Challenge</strong> {monster.cr} ({xpByChallengeRating[monster.cr]} XP)</li>
+                </ul>
+                <div className="divider"></div>
+                {renderTraits(monster.trait)}
+            </div>
         </div>
     );
 }

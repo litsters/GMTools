@@ -1,0 +1,15 @@
+body {
+    --panel-color-bg: #FDF1DC;
+    --panel-color-txt: #58180D;
+}
+
+
+.panel .hr {
+
+}
+.panel .hr:after {
+    background: var(--panel-color-text);
+    height: 7px;
+    position: absolute;
+    width: 100%;
+}
