@@ -54,7 +54,6 @@ class AdvancedDiceTool extends Component {
         let dice = GenerateDice(value),
             result = RollDiceGroups(dice);
         
-        console.log(result);
         this.setState({result});
         this.props.addHistory(result);
     }

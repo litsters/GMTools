@@ -36,9 +36,8 @@ function ParseDefinition(def: string) {
   let result: DiceDefinition = {num_dice: 0, operator: "", num_sides: 0, operand: 0};
 
   const parts = def.split('d');
-  result.num_dice = parseInt(parts[0], 10);
-  //result.num_dice = parts[0].length > 0 ? Number(parts[0]) : 1;
-  result.operator = parts[1].replace(/[1-9]/g, '');
+  result.num_dice = parseInt(parts[0], 10) || 1;
+  result.operator = parts[1].replace(/[0-9]/g, '');
   if (result.operator) {
     const subparts = parts[1].split(result.operator);
     result.num_sides = parseInt(subparts[0], 10);
@@ -47,7 +46,7 @@ function ParseDefinition(def: string) {
   else {
     result.num_sides = parseInt(parts[1], 10);
   }
-
+  console.log(result)
   return result;
 }
 
