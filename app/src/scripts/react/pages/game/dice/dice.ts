@@ -54,7 +54,7 @@ function ParseDefinition(def: string) {
 export function ValidateDefinition(def: string) {
   if (def.length === 0) return null;
 
-  const template = /([1-9]*d[0-9]+([+-/*][0-9])?)(,([1-9]*d[0-9]+([+-/*][0-9])?))*$/;
+  const template = /^([1-9]*d[0-9]+([+-/*][0-9])?)(,([1-9]*d[0-9]+([+-/*][0-9])?))*$/;
   const test = template.test(def);
 
   if (!test) return false;

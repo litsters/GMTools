@@ -15,7 +15,7 @@ class AdvancedDiceTool extends Component {
 
         this.append = this.append.bind(this);
         this.backspace = this.backspace.bind(this);
-        this.clear = () => {this.setState({value: "", isValid: null})};
+        this.clear = () => {this.setState({value: "", isValid: null, result: null})};
         this.submit = this.submit.bind(this);
     }
 
@@ -49,10 +49,12 @@ class AdvancedDiceTool extends Component {
     }
 
     submit() {
-        const val = this.state.value;
-        let dice = GenerateDice(val),
+        const { value, isValid } = this.state;
+        if (!isValid) return;
+        let dice = GenerateDice(value),
             result = RollDiceGroups(dice);
         
+        console.log(result);
         this.setState({result});
         this.props.addHistory(result);
     }
