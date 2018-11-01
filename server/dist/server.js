@@ -45,7 +45,7 @@ api_1.AuthApi(app);
 api_1.PluginApi(app);
 // HTML Server
 app.use('/static', express_1.default.static(path_1.default.join(__publicDir, "/static")));
-app.use('/plugins', express_1.default.static(path_1.default.join(__serverDir, "/plugins")));
+app.use('/plugins', express_1.default.static(path_1.default.join(__serverDir, "/plugins"), { index: false, extensions: ['png', 'svg', 'jpg'] }));
 app.get('/*', (request, response) => {
     response.sendFile(path_1.default.join(__publicDir, "/index.html"));
 });

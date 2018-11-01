@@ -13,7 +13,6 @@ class GameMenu extends Component<IPage, {}> {
         const routes = Config.routes.game.children
         return (
             <div className="menu-game">
-                <h2>menu</h2>
                 <ul>
                 {Object.keys(routes).map((key) => {
                     let route = routes[key],
@@ -22,6 +21,7 @@ class GameMenu extends Component<IPage, {}> {
                     return (
                         <li className={"menu-item" +(isActive ? " active" : "")} key={key}>
                             <Link to={route.path}>
+                                {route.icon ? <img src={`/plugins/dnd-5e/assets/icons/${route.icon}`}/> : null}
                                 <span>{route.text}</span>
                             </Link>
                         </li>

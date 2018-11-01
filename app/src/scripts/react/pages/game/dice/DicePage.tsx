@@ -31,17 +31,36 @@ class DicePage extends Component<IPage, MainState> {
         this.setState({history});
     }
 
+    renderTool(mode:DiceToolMode) {
+        switch(mode) {
+            case DiceToolMode.Basic: 
+                return null;
+            case DiceToolMode.Advanced:
+                return <AdvancedDiceTool addHistory={this.addHistory}/>;
+            default:
+                return null;
+        }
+    }
+
     render() {
-        const { history }: any = this.state;
+        const { mode, history }: any = this.state;
+        const tool = this.renderTool(mode);
+
         return (
             <div>
                 <h1>Dice Page</h1>
-                <AdvancedDiceTool addHistory={this.addHistory}/>
-                <ul>
-                    {history.map((data:any, i:number) => {
-                        return <li>{data.value}</li>
-                    })}
-                </ul>
+                {tool}
+
+                {history.length > 0 ?
+                    <div>
+                        <h2>history</h2>
+                        <ul>
+                            {history.map((data:any, i:number) => {
+                                return <li key={i}><strong>{data.value}</strong> {data.details}</li>
+                            })}
+                        </ul>
+                    </div>
+                : null}
             </div>
         );
     }

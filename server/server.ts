@@ -49,7 +49,7 @@ PluginApi(app);
 
 // HTML Server
 app.use('/static', express.static(path.join(__publicDir, "/static")));
-app.use('/plugins', express.static(path.join(__serverDir, "/plugins")));
+app.use('/plugins', express.static(path.join(__serverDir, "/plugins"), {index:false, extensions: ['png', 'svg', 'jpg']}));
 app.get('/*', (request:Request, response:Response) => {
     response.sendFile(path.join(__publicDir, "/index.html"));
 });

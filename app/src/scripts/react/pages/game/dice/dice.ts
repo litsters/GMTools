@@ -46,7 +46,7 @@ function ParseDefinition(def: string) {
   else {
     result.num_sides = parseInt(parts[1], 10);
   }
-  console.log(result)
+
   return result;
 }
 
