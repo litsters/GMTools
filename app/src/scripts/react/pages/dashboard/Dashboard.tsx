@@ -49,13 +49,14 @@ class Dashboard extends Component<DashboardProps, {}> {
     scrollTo(element:String) {
         // NOTE: bug when animating scroll with 'scroll-snap-type' disabled; so must remove css prop
             // before animation, then re-enable after animation is complete
-        $(this.contentWrapper)
-            .css("scroll-snap-type", "none")
+        var content = $(this.contentWrapper);
+        content
+            .css({"scroll-snap-type": "none", "-webkit-scroll-snap-type": "none"})
             .animate({
                 scrollTop: $(element).position().top
-            }, 500, (() => {
-                $(this.contentWrapper).css("scroll-snap-type", "y mandatory");
-            }).bind(this));
+            }, 500, () => {
+                content.css({"scroll-snap-type": "y mandatory", "-webkit-scroll-snap-type": "y mandatory"});
+            });
     }
 
     registerContentScrollEvent() {
@@ -136,7 +137,7 @@ class Dashboard extends Component<DashboardProps, {}> {
         );
 
         const details = (
-            <div className="content" ref={el => this.contentWrapper = el}>
+            <div className="content snap" ref={el => this.contentWrapper = el}>
                 <div className="content-page campaigns" id="campaigns">
                     <h1>Here are your Campaigns</h1>
                     <Link to={MainRouterConfig.routes.game.path}>go to demo</Link>

@@ -5,8 +5,9 @@
 .dashboard .details .content {
     height: 100%;
     overflow-y: scroll;
+}
+.dashboard .details .content.snap {
     scroll-snap-type: y mandatory;
-    transform: rotate(0deg);
 }
 .dashboard .details .content-page {
     height: 100vh;
