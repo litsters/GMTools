@@ -16,6 +16,7 @@
     list-style-type: none;
     margin: 15px 0 5px 0;
     text-align: center;
+    text-transform: capitalize;
 }
 .menu-game .menu-item img {
     display: block;

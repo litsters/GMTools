@@ -1,3 +1,4 @@
+import express, { Application } from "express";
 import fs from "fs";
 import path from "path";
 import ICallback from "./interfaces/ICallback";
@@ -14,7 +15,7 @@ const fileExtensionRegex = /(?:\.([^.]+))?$/;
     It scans the plugin's directory for json files that is stores as properties of the plugin 
     object.ß
 */
-const loadPlugin = (pluginName: string, callback: ICallback) => {
+export const loadPlugin = (pluginName: string, callback: ICallback) => {
     const path = `${pluginsDir}/${pluginName}`;
     let plugin: any = {}, 
         items = fs.readdirSync(path);
@@ -34,4 +35,6 @@ const loadPlugin = (pluginName: string, callback: ICallback) => {
     callback(null, plugin);
 }
 
-export default loadPlugin;
+export const registerPluginAssetServer = (app:Application) => {
+    app.use('/plugins', express.static(path.join(serverDir, "/plugins"), {index:false, extensions: ['png', 'svg', 'jpg']}));
+}

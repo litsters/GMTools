@@ -7,7 +7,8 @@ import path from "path";
 import Token from "./token";
 import Connections from "./connections";
 import ClientConnection from "./clientconnection";
-import { AuthApi, PluginApi } from "./api";
+import registerAPIs from "./api";
+import { loadPlugin, registerPluginAssetServer } from "./plugins";
 
 const port = 8080;
 const key = 'gm-tools.pem';
@@ -24,17 +25,11 @@ const __publicDir = path.join(__serverDir, "/dist/public");
 
 import models from './db/models';
 
-import loadPlugin from "./plugins";
 import { IUser } from "./db/schemas/user";
 import EventWrapper from "./event";
 
 models.User.count({})
   .then( (count:number) => console.log(`Found ${count} characters`) );
-
-var dnd5ePlugin = {};
-loadPlugin("dnd-5e", (err: any, result: any) => {
-    dnd5ePlugin = result;//{...dnd5ePlugin, ...result};
-});
 
 const app = express();
 
@@ -44,12 +39,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 // API Registration
-AuthApi(app);
-PluginApi(app);
+registerAPIs(app);
 
 // HTML Server
 app.use('/static', express.static(path.join(__publicDir, "/static")));
-app.use('/plugins', express.static(path.join(__serverDir, "/plugins"), {index:false, extensions: ['png', 'svg', 'jpg']}));
+registerPluginAssetServer(app);
 app.get('/*', (request:Request, response:Response) => {
     response.sendFile(path.join(__publicDir, "/index.html"));
 });
