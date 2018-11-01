@@ -1,0 +1,68 @@
+.dashboard .layout-master-details .master {
+    flex: 0 0 250px;
+}
+
+.dashboard .details .content {
+    height: 100%;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    transform: rotate(0deg);
+}
+.dashboard .details .content-page {
+    height: 100vh;
+    padding: 30px;
+    scroll-snap-align: start;
+}
+
+.menu-dashboard {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+    position: relative;
+}
+.menu-dashboard:after {
+    background: red;
+    border-radius: 10px;
+    content: '';
+    height: 90%;
+    position: absolute;
+    margin: auto;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+}
+
+.menu-dashboard .menu-top {
+    flex: 1 1 auto;
+}
+
+.menu-dashboard .menu-bottom {
+    flex: 0 1 auto;
+}
+
+.menu-dashboard ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.menu-dashboard ul li {
+    cursor: pointer;
+    font-size: 1.6em;
+    padding: 10px;
+    position: relative;
+}
+.menu-dashboard ul li.active:after {
+    background: red;
+    border-radius: 10px;
+    content: '';
+    height: 90%;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 100%;
+    bottom: 0;
+    width: 5px;  
+}

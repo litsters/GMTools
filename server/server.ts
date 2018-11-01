@@ -8,7 +8,7 @@ import Token from "./token";
 import Connections from "./connections";
 import ClientConnection from "./clientconnection";
 import registerAPIs from "./api";
-import { loadPlugin, registerPluginAssetServer } from "./plugins";
+import { registerPluginAssetServer } from "./plugins";
 
 const port = 8080;
 const key = 'gm-tools.pem';
