@@ -1,3 +1,10 @@
+.layout-master-details {
+    height: 100%;
+}
+.layout-master-details .details {
+    height: 100%;
+}
+
 @media screen and (max-width: 899px) {
     .layout-master-details {
         position: relative;

@@ -1,3 +1,7 @@
 body {
     --default: #ccc;
+
+    --screen-mobile-min: 0px;
+    --screen-tablet-min: 899px;
+    --screen-desktop-min: 1199px;
 }

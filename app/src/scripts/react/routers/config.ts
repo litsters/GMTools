@@ -52,6 +52,7 @@ export const MainRouterConfig: RouteDefs = {
         dashboard: {path: "/dashboard", component: "Dashboard" },
         game:   { path: gameRoute,  component: "GamePage",  layout: "GameLayout",   exact: true,
             children: {
+                players: { path: `${gameRoute}/players`, component: "PlayersPage", showInMenu: true, icon: "placeholder-light", text: "players", visibleTo: "gm", exact: true},
                 lookup: { path: `${gameRoute}/lookup`,  dynamic: `${gameRoute}/lookup/:category?/:id?`, component: "LookupPage",showInMenu: true,   icon: "lookup", text: "lookup", visibleTo: "gm", exact: false },
                 dice:   { path: `${gameRoute}/dice`,    component: "DicePage",  showInMenu: true,   icon: "dice", text: "dice",   visibleTo: "gm" },
                 initiative: { path: `${gameRoute}/initiative`,component: "InitiativePage",showInMenu: true,icon: "placeholder-light", text: "initiative",   visibleTo: "gm" },                

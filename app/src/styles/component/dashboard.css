@@ -1,3 +1,8 @@
+.dashboard {
+    --accent: red;
+    --item-background: rgba(75,75,75,.1)
+}
+
 .dashboard .layout-master-details .master {
     flex: 0 0 250px;
 }
@@ -10,12 +15,13 @@
     scroll-snap-type: y mandatory;
 }
 .dashboard .details .content-page {
-    height: 100vh;
+    min-height: 100vh;
     padding: 30px;
     scroll-snap-align: start;
 }
 
 .menu-dashboard {
+    animation: .5s slide-in-right;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -55,7 +61,7 @@
     padding: 10px;
     position: relative;
 }
-.menu-dashboard ul li.active:after {
+.menu-dashboard ul li:after {
     background: red;
     border-radius: 10px;
     content: '';
@@ -63,7 +69,50 @@
     position: absolute;
     margin: auto;
     top: 0;
+    transition: width .2s;
     right: 100%;
     bottom: 0;
-    width: 5px;  
+    width: 0px;  
+}
+.menu-dashboard ul li.active:after {
+    width: 5px !important;  
+}
+
+.menu-dashboard ul li:hover:after {
+    width: 2px;    
+}
+
+
+
+.content-page.characters .previews {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.content-page.campaigns .previews {
+    display: flex;
+    flex-direction: column;
+}
+.content-page.campaigns .previews .campaign-preview {
+    flex: 0 0 auto;
+}
+
+.character-preview,
+.campaign-preview {
+    background: var(--item-background);
+    backdrop-filter: blur(5px);
+    margin: 10px;
+    padding: 15px;
+}
+
+@media screen and (min-width: 889px) {
+    .content-page.characters .previews {
+        grid-template-columns: 1fr 1fr 1fr;
+    }   
+}
+
+@media screen and (min-width: 1199px) {
+    .content-page.characters .previews {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }   
 }

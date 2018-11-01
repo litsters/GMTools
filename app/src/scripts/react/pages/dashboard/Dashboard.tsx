@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import io  from "socket.io-client";
 import { connect } from "react-redux";
 import { UserReducer } from "../../reducers";
 import Auth from "../../auth/Auth";
 import { updateAuth } from "../../actions/user-actions";
 import MasterDetailsLayout from "../../layout/MasterDetailLayout";
-import { MainRouterConfig } from "../../routers/config";
 import * as $ from "jquery";
+
+import CampaignsSection from "./CampaignsSection";
+import CharactersSection from "./CharactersSection";
 
 
 interface DashboardProps {
@@ -138,13 +139,11 @@ class Dashboard extends Component<DashboardProps, {}> {
 
         const details = (
             <div className="content snap" ref={el => this.contentWrapper = el}>
-                <div className="content-page campaigns" id="campaigns">
-                    <h1>Here are your Campaigns</h1>
-                    <Link to={MainRouterConfig.routes.game.path}>go to demo</Link>
-                </div>
-                <div className="content-page characters" id="characters">
-                    <h1>Here are your Characters</h1>
-                </div>
+
+                <CampaignsSection />
+
+                <CharactersSection />
+
                 <button onClick={()=> this.connectToServer()}>Connect to server</button>
                 <button onClick={()=> this.logout()}>Click me to log out</button>
             </div>
