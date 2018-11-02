@@ -9,8 +9,19 @@
     height: 100%;
     flex: 0 0 250px;
 }
+.menu-game ul {
+    padding: 0;
+}
 .menu-game .menu-item {
     list-style-type: none;
+    margin: 15px 0 5px 0;
+    text-align: center;
+    text-transform: capitalize;
+}
+.menu-game .menu-item img {
+    display: block;
+    margin: auto;
+    margin-bottom: 5px;
 }
 .menu-game .menu-item.active {
     font-size: 1.4em;

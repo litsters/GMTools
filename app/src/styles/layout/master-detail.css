@@ -1,3 +1,10 @@
+.layout-master-details {
+    height: 100%;
+}
+.layout-master-details .details {
+    height: 100%;
+}
+
 @media screen and (max-width: 899px) {
     .layout-master-details {
         position: relative;
@@ -28,6 +35,7 @@
     
     .layout-master-details .details {
         flex: 1 1 auto;
+        overflow-y: auto;
         padding: 30px;
     }
     .layout-master-details .details-close {

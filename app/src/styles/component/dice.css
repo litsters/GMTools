@@ -4,13 +4,13 @@
         "display"
         "buttons";
     width: 100%;
-
-    border: 1px dashed red;
 }
 
 .dice-roller.advanced .display {
+    border: 1px solid #ccc;
     display: flex;
     font-size: 1.4em;
+    margin: 0 10px;
 }
 .dice-roller.advanced .display.valid {
     background: green;
@@ -20,9 +20,11 @@
 }
 .dice-roller.advanced .display input {
     background: none;
+    border: none;
     padding: 10px 0;
     flex: 1 1 auto;
     font-size: 1.4em;
+    padding-left: 12px; 
     width: 100%;
 }
 .dice-roller.advanced .display .result {

@@ -6,6 +6,9 @@
 
 @import "./layout/layout.css";
 
+@import "./component/dashboard.css";
 @import "./component/dice.css";
 @import "./component//codex.css";
 @import "./component/tabs.css";
+
+@import "./temp.theme.css";

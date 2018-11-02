@@ -8,6 +8,7 @@ import CategoryList from "./CategoryList";
 import MonsterDetails from "./MonsterDetails";
 import ItemDetails from "./ItemDetails";
 import Tabs, { Tab } from "./Tabs";
+import Loading from "../../../common/Loading";
 
 // define categories that should not be rendered
 const blockedCategories = ["config", "tabs"];
@@ -76,7 +77,7 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
     }
 
     renderCategories(isLoading:boolean, codex:any) {
-        if (isLoading) return <h3>loading...</h3>
+        if (isLoading) return <Loading />
         if (!codex) return null;
 
         return (

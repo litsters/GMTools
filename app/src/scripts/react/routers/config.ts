@@ -52,10 +52,11 @@ export const MainRouterConfig: RouteDefs = {
         dashboard: {path: "/dashboard", component: "Dashboard" },
         game:   { path: gameRoute,  component: "GamePage",  layout: "GameLayout",   exact: true,
             children: {
-                lookup: { path: `${gameRoute}/lookup`,  dynamic: `${gameRoute}/lookup/:category?/:id?`, component: "LookupPage",showInMenu: true,   icon: null, text: "lookup", visibleTo: "gm", exact: false },
-                dice:   { path: `${gameRoute}/dice`,    component: "DicePage",  showInMenu: true,   icon: null, text: "dice",   visibleTo: "gm" },
-                initiative: { path: `${gameRoute}/initiative`,component: "InitiativePage",showInMenu: true,icon: null, text: "initiative",   visibleTo: "gm" },                
-                generator:  { path: `${gameRoute}/generator`,component: "GeneratorPage",showInMenu: true,   icon: null, text: "generator",   visibleTo: "gm" }
+                players: { path: `${gameRoute}/players`, component: "PlayersPage", showInMenu: true, icon: "placeholder-light", text: "players", visibleTo: "gm", exact: true},
+                lookup: { path: `${gameRoute}/lookup`,  dynamic: `${gameRoute}/lookup/:category?/:id?`, component: "LookupPage",showInMenu: true,   icon: "lookup", text: "lookup", visibleTo: "gm", exact: false },
+                dice:   { path: `${gameRoute}/dice`,    component: "DicePage",  showInMenu: true,   icon: "dice", text: "dice",   visibleTo: "gm" },
+                initiative: { path: `${gameRoute}/initiative`,component: "InitiativePage",showInMenu: true,icon: "placeholder-light", text: "initiative",   visibleTo: "gm" },                
+                generator:  { path: `${gameRoute}/generator`,component: "GeneratorPage",showInMenu: true,   icon: "placeholder-light", text: "generator",   visibleTo: "gm" }
             }},
         default:{ path: "/",        component: "LandingPage" }
     }

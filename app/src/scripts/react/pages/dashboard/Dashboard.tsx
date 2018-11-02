@@ -4,6 +4,11 @@ import { connect } from "react-redux";
 import { UserReducer } from "../../reducers";
 import Auth from "../../auth/Auth";
 import { updateAuth } from "../../actions/user-actions";
+import MasterDetailsLayout from "../../layout/MasterDetailLayout";
+import * as $ from "jquery";
+
+import CampaignsSection from "./CampaignsSection";
+import CharactersSection from "./CharactersSection";
 
 
 interface DashboardProps {
@@ -13,23 +18,22 @@ interface DashboardProps {
 
 class Dashboard extends Component<DashboardProps, {}> {
     private socket:any;
+    private contentWrapper:HTMLDivElement;
+    private btnCampaigns:HTMLLIElement;
+    private btnCharacters:HTMLLIElement
+    private positions:any;
 
     constructor(props: any) {
         super(props);
         this.socket = null;
+        this.positions = {};
+
+        this.scrollTo = this.scrollTo.bind(this);
     }
 
-    render() {
-        let auth = new Auth(this.props.history);
-        auth.handleAuthentication();
-        return (
-            <div className="page-content">
-                <h1>Congrats! You reached the dashboard!</h1>
-                <button onClick={()=> this.connectToServer()}>Connect to server</button>
-                <button onClick={()=> this.generateTestCharacter()}>Generate test character</button>
-                <button onClick={()=> this.logout()}>Click me to log out</button>
-            </div>
-        )
+    componentDidMount() {
+        this.calculateElementPositions();
+        this.registerContentScrollEvent();
     }
 
     logout() {
@@ -41,6 +45,36 @@ class Dashboard extends Component<DashboardProps, {}> {
 
     send(msg:string){
         this.socket.emit('greeting', {msg: msg});
+    }
+
+    scrollTo(element:String) {
+        // NOTE: bug when animating scroll with 'scroll-snap-type' disabled; so must remove css prop
+            // before animation, then re-enable after animation is complete
+        var content = $(this.contentWrapper);
+        content
+            .css({"scroll-snap-type": "none", "-webkit-scroll-snap-type": "none"})
+            .animate({
+                scrollTop: $(element).position().top
+            }, 500, () => {
+                content.css({"scroll-snap-type": "y mandatory", "-webkit-scroll-snap-type": "y mandatory"});
+            });
+    }
+
+    registerContentScrollEvent() {
+        $(this.contentWrapper).scroll(() => {
+            let pos = $(this.contentWrapper).scrollTop();
+
+            $(".menu-dashboard ul li.active").removeClass("active");
+            if (pos <=this.positions.characters && pos < this.positions.characters) 
+                $(this.btnCampaigns).addClass("active");
+            else if (pos >= this.positions.characters)
+                $(this.btnCharacters).addClass("active");
+        })
+    }
+
+    calculateElementPositions() {
+        this.positions.campaigns = $("#campaigns").position().top;
+        this.positions.characters = $("#characters").position().top;
     }
 
     connectToServer() {
@@ -107,6 +141,45 @@ class Dashboard extends Component<DashboardProps, {}> {
             expires_at: localStorage.getItem('expires_at')
         }
         return credentials;
+    }
+
+    render() {
+        let auth = new Auth(this.props.history);
+        auth.handleAuthentication();
+        
+        const menu = (
+            <div className="menu-dashboard">
+                <div className="menu-top">
+                    <ul>
+                        <li className="active" ref={el => this.btnCampaigns = el} onClick={this.scrollTo.bind(null, "#campaigns")}>Campaigns</li> 
+                        <li ref={el => this.btnCharacters = el} onClick={this.scrollTo.bind(null, "#characters")}>Characters</li>
+                    </ul>
+                </div>
+                <div className="menu-bottom">
+                    <ul>
+                        <li>Settings</li>
+                    </ul>
+                </div>
+            </div>
+        );
+
+        const details = (
+            <div className="content snap" ref={el => this.contentWrapper = el}>
+
+                <CampaignsSection />
+
+                <CharactersSection />
+
+                <button onClick={()=> this.connectToServer()}>Connect to server</button>
+                <button onClick={()=> this.logout()}>Click me to log out</button>
+            </div>
+        );
+
+        return (
+            <div className="dashboard layout-page">
+                <MasterDetailsLayout master={menu} details={details} clearDetails={() => alert("not implemented")} />
+            </div>
+        )
     }
 }
 
