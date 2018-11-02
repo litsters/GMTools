@@ -13,7 +13,7 @@ export default function(state = initialState, { type, payload }: {type: any, pay
                 codex: {
                     ...payload.codex
                 }
-            }
+            };
         case UPDATE_TABS:
             return {
                 ...state,
