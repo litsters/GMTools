@@ -26,6 +26,7 @@ class Dashboard extends Component<DashboardProps, {}> {
             <div className="page-content">
                 <h1>Congrats! You reached the dashboard!</h1>
                 <button onClick={()=> this.connectToServer()}>Connect to server</button>
+                <button onClick={()=> this.generateTestCharacter()}>Generate test character</button>
                 <button onClick={()=> this.logout()}>Click me to log out</button>
             </div>
         )
@@ -56,6 +57,13 @@ class Dashboard extends Component<DashboardProps, {}> {
                 // shouldn't be sending any more events to the server.
                 skt.on('data.retrieved', function(event:any){
                     console.log('data retrieved: ' + JSON.stringify(event,null,2));
+                    if(event.data.id !== undefined){
+                        localStorage.setItem('userid', event.data.id);
+                    }
+                });
+
+                skt.on('data.persisted', function(event:any){
+                    console.log('data persisted: ' + JSON.stringify(event,null,2));
                 });
 
                 skt.on('app.error', function(event:any){
@@ -71,6 +79,25 @@ class Dashboard extends Component<DashboardProps, {}> {
             });
         });
         this.socket = skt;
+    }
+
+    generateTestCharacter(){
+        console.log("generating a test character");
+        if(this.socket === null){
+            console.log("no server connection!");
+        } else if(localStorage.getItem('userid') === null){
+            console.log("no user id available!");
+        } else {
+            let event = {
+                namespace: "character",
+                key: "new_character",
+                data: {
+                    name: "Billy Bob",
+                    userid: localStorage.getItem('userid')
+                }
+            }
+            this.socket.emit('data.persist', event);
+        }
     }
 
     generateCredentials():any {

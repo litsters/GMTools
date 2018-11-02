@@ -68,11 +68,12 @@ export default class Connections {
         let userids = eventWrapper.getUsers();
         let type = eventWrapper.getType();
         let event = eventWrapper.getEvent();
+        let connectionMap = this.connectionMap;
 
         // Get connections for each user
         userids.forEach(function(userid){
             // Get connections for user
-            let connections = this.connectionMap.get(userid);
+            let connections = connectionMap.get(userid);
 
             // Send event to each connection
             for(let skt of connections.keys()){

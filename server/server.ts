@@ -8,6 +8,8 @@ import Token from "./token";
 import Connections from "./connections";
 import ClientConnection from "./clientconnection";
 import { AuthApi, PluginApi } from "./api";
+import Handlers from "./handlers";
+import CharacterHandler from "./character_handler";
 
 const port = 8080;
 const key = 'gm-tools.pem';
@@ -19,8 +21,6 @@ const connections = new Connections();
 
 const __serverDir = __dirname + (path.basename(__dirname) === "dist" ? "/../" : "");
 const __publicDir = path.join(__serverDir, "/dist/public");
-
-
 
 import models from './db/models';
 
@@ -54,9 +54,25 @@ app.get('/*', (request:Request, response:Response) => {
     response.sendFile(path.join(__publicDir, "/index.html"));
 });
 
+// Set up event handler modules
+const handler_modules = new Handlers();
+handler_modules.addHandler(new CharacterHandler("character"));
+
 // Socket server
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+
+// This is just a general function for sending errors to a socket to avoid
+// needing to copy and paste a hundred times.
+const sendError = (socket:any, error:any) => {
+    let event = {
+        error: "An internal error occurred.",
+        details: {
+            error: error
+        }
+    };
+    socket.emit("app.error", event);
+}
 
 // Authentication function
 const authenticate = async (client:any, data:any, callback:any) => {
@@ -127,29 +143,44 @@ const postAuthenticate = (client:any) => {
                 client.emit('data.retrieved', event);
             }).catch(function(err){
                 // Error while creating a new user
-                console.log("err while creating: " + err);
-                let event = {
-                    error: "An error occurred while loading your user information.",
-                    details:{
-                        mongomsg: err
-                    }
-                }
-                client.emit('app.error', event);
+                sendError(client, err);
             });
         }
     }).catch(function(err){
         // Error while finding existing user
-        let event = {
-            error: "An error occurred while loading your user information.",
-            details: {
-                mongomsg: err
-            }
-        };
-        client.emit('app.error', event);
+        sendError(client, err);
     });
 
-    client.on('greeting', function(data:any){
-        console.log(JSON.stringify(data,null,2));
+    // Set up event handlers for the socket
+    client.on('data.persist', function(data:any){
+        handler_modules.handleEvent('data.persist', data).then(function(events:EventWrapper[]){
+            if(events !== null) events.forEach(function(event){
+                try{
+                    connections.sendEvent(event);
+                }catch(err){
+                    console.log(err);
+                }
+            });
+        }).catch(function(err:any){
+            // Something went wrong while persisting data
+            sendError(client, err);
+        });
+    });
+        
+
+    client.on('data.get', function(data:any){
+        handler_modules.handleEvent('data.get', data).then(function(events:EventWrapper[]){
+            if(events !== null) events.forEach(function(event){
+                try{
+                    connections.sendEvent(event);
+                }catch(err){
+                    console.log(err);
+                }
+            });
+        }).catch(function(err:any){
+            // Something went wrong while getting data
+            sendError(client, err);
+        });
     });
 }
 
