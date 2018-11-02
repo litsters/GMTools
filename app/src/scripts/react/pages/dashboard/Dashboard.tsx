@@ -134,6 +134,26 @@ class Dashboard extends Component<DashboardProps, {}> {
         }
     }
 
+    generateTestCampaign(){
+        console.log("generating test campaign");
+        if(this.socket === null){
+            console.log("no server connection");
+        } else if(localStorage.getItem('userid') === null){
+            console.log("no user id available");
+        } else {
+            let event = {
+                namespace: "campaign",
+                key: "new_campaign",
+                data: {
+                    name: "Crazy Fun",
+                    plugin: "dnd-5e",
+                    userid: localStorage.getItem('userid')
+                }
+            };
+            this.socket.emit('data.persist', event);
+        }
+    }
+
     generateCredentials():any {
         let credentials = {
             access_token: localStorage.getItem('access_token'),

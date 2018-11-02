@@ -48,16 +48,32 @@ export default class CharacterHandler extends Handler{
                         // Save operation failed, reject promise
                         reject("Save operation failed.")
                     } else {
-                        // Save operation succeeded, resolve with data.persisted event
-                        let successEvent = {
-                            namespace: event.namespace,
-                            key: event.key,
-                            data: doc
-                        };
-                        let userids = [event.data.userid]
-                        let wrapper = new EventWrapper(userids, successEvent, "data.persisted");
-                        let wrappers = [wrapper];
-                        resolve(wrappers);
+                        // Update user with character
+                        models.User.findOneAndUpdate({_id:user._id},{$push: {characters: doc._id}}).then(function(data:any){
+                            let events:EventWrapper[] = [];
+
+                            let userids = [event.data.userid];
+                            // Save operation successful; send two events:
+                            // one to acknowledge that the character was saved,
+                            // another to update the user object with the new new character.
+                            let characterSavedEvent = {
+                                namespace: event.namespace,
+                                key: event.key,
+                                data: doc
+                            };
+                            events.push(new EventWrapper(userids, characterSavedEvent, "data.persisted"));
+
+                            let updateUserEvent = {
+                                namespace: "user",
+                                key: "current-data",
+                                data: data
+                            };
+                            events.push(new EventWrapper(userids, updateUserEvent, "data.retrieved"));
+
+                            resolve(events);
+                        }).catch(function(err){
+                            reject(err);
+                        });
                     }
                 }).catch(function(err){
                     reject(err);

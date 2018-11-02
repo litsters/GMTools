@@ -7,9 +7,9 @@ import path from "path";
 import Token from "./token";
 import Connections from "./connections";
 import ClientConnection from "./clientconnection";
-// import { AuthApi, PluginApi } from "./api";
 import Handlers from "./handlers";
 import CharacterHandler from "./character_handler";
+import CampaignHandler from "./campaign_handler";
 import registerAPIs from "./api";
 import { registerPluginAssetServer } from "./plugins";
 
@@ -52,6 +52,7 @@ app.get('/*', (request:Request, response:Response) => {
 // Set up event handler modules
 const handler_modules = new Handlers();
 handler_modules.addHandler(new CharacterHandler("character"));
+handler_modules.addHandler(new CampaignHandler("campaign"));
 
 // Socket server
 const server = require('http').createServer(app);
