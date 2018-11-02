@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import bodyParser from "body-parser";
 import socketIOAuth from "socketio-auth";
 import jwt from "jsonwebtoken";
-import fs from "fs";
+import jwksRsa, {Jwk} from "jwks-rsa";
 import path from "path";
 import Token from "./token";
 import Connections from "./connections";
@@ -14,9 +14,22 @@ import registerAPIs from "./api";
 import { registerPluginAssetServer } from "./plugins";
 
 const port = 8080;
-const key = 'gm-tools.pem';
-const iss = 'https://gm-tools.auth0.com/';      // This is the issuer's domain
-const aud = '5j5hV3sMFUstdIOijBgVxGWuSw059kBQ'; // This is the client ID for auth0
+
+// Authentication
+const jwtVerificationOptions = {
+    algorithms: [ 'RS256' ],
+    issuer: 'https://gm-tools.auth0.com/',        // This is the issuer's domain
+    audience: '5j5hV3sMFUstdIOijBgVxGWuSw059kBQ', // This is the client ID for auth0
+    ignoreExpiration: false
+};
+const jwksClient = jwksRsa({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 10,
+    strictSsl: true,
+    jwksUri: 'https://gm-tools.auth0.com/.well-known/jwks.json',
+});
+const keyId = 'OTIzQTlDNjZFNDYwNDMxQUJENUUxQTE3OTMxODNCREMyMjY5OURFQw'; // The key ID for the auth0 rsa key
 
 // Set up the connection tracker
 const connections = new Connections();
@@ -68,43 +81,40 @@ const sendError = (socket:any, error:any) => {
         }
     };
     socket.emit("app.error", event);
-}
+};
 
 // Authentication function
-const authenticate = async (client:any, data:any, callback:any) => {
-    // validate credentials
-    // Verify that token hasn't expired
-    if(!data.expires_at) return callback(new Error("Invalid credentials"));
-    else if(data.expires_at < new Date().getTime()){
+const authenticate = async (client:any, data:any, callback:Function) => {
+    // Verify the access token
+    if(!data.id_token) {
         return callback(new Error("Invalid credentials"));
-    } 
+    }
 
-    // Verify that access token is valid
-    if(!data.id_token) return callback(new Error("Invalid credentials"));
-    else {
-        try{
-            let options = {
-                algorithms: ['RS256'],
-                issuer: iss,
-                audience: aud
-            };
-            let cert = fs.readFileSync(key);
-            let decoded = jwt.verify(data.id_token, cert, options);
+    jwksClient.getSigningKey(keyId, (err:Error, key:Jwk) => {
+        if (err) {
+            console.log(JSON.stringify(err,null,2));
+            return callback(new Error("Invalid credentials"));
+        }
+        const signingKey = key.publicKey || key.rsaPublicKey;
+
+        jwt.verify(data.id_token, signingKey, jwtVerificationOptions, (err:Error, decoded:any) => {
+            if (err) {
+                console.log(JSON.stringify(err,null,2));
+                return callback(new Error("Invalid credentials"));
+            }
+
             // Cast decoded to a Token to make it easier to work with
             let token = (<Token> decoded);
-            
+
             // Add authenticated socket to connections
             let connection = new ClientConnection(token["https://gm-tools.com/user_id"], token["https://gm-tools.com/nickname"], client);
             connections.addConnection(connection);
 
             // connections.print();
-        }catch(err){
-            console.log(JSON.stringify(err,null,2));
-            return callback(new Error("Invalid credentials"));
-        }
-    }
-
-    return callback(null, true);
+            // Authentication successful
+            return callback(null, true);
+        });
+    });
 };
 
 // Register handlers
