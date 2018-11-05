@@ -60,7 +60,12 @@ export function ValidateDefinition(def: string) {
   else return true;
 }
 
-export function RollDiceGroups(diceGroups: any) {
+export interface RollDiceResult {
+  value: number,
+  details: string
+}
+
+export function RollDiceGroups(diceGroups: any): RollDiceResult {
   let result = {
     value: 0,
     details: ""

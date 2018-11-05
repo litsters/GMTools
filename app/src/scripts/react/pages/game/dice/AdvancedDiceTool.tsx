@@ -1,11 +1,22 @@
 import React, { Component } from "react";
-import { GenerateDice, RollDiceGroups, ValidateDefinition } from "./dice";
+import { GenerateDice, RollDiceGroups, RollDiceResult, ValidateDefinition } from './dice';
 
 const validKeys = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "d", "Backspace", ",", "+", "-", "/", "*"];
 
-class AdvancedDiceTool extends Component {
-    constructor(props) {
+interface DiceToolState {
+  history: any[],
+  value: string,
+  isValid?: boolean,
+  result?: RollDiceResult
+}
+
+class AdvancedDiceTool extends Component<any, DiceToolState> {
+
+    eventListener: EventListener = null;
+
+    constructor(props: any) {
         super(props);
+
         this.state = {
             history: [],
             value: "",
@@ -15,25 +26,31 @@ class AdvancedDiceTool extends Component {
 
         this.append = this.append.bind(this);
         this.backspace = this.backspace.bind(this);
-        this.clear = () => {this.setState({value: "", isValid: null, result: null})};
         this.submit = this.submit.bind(this);
     }
 
+    clear()
+    {
+      this.setState({value: "", isValid: null, result: null})
+    }
+
     componentDidMount() {
-        this.eventListener = document.addEventListener("keyup", (event) => {
-            let key = event.key;
-            
-            if (validKeys.indexOf(key) === -1) return;
-            else if (key === "Backspace") this.backspace();
-            else this.append(key);
-        });
+        this.eventListener = (event: KeyboardEvent) => {
+          let key = event.key;
+
+          if (validKeys.indexOf(key) === -1) return;
+          else if (key === "Backspace") this.backspace();
+          else this.append(key);
+        };
+
+        document.addEventListener("keyup", this.eventListener);
     }
 
     componentWillUnmount() {
         document.removeEventListener("keyup", this.eventListener);
     }
 
-    append(val) {
+    append(val: string) {
         const newVal = this.state.value + val;
         const isValid = ValidateDefinition(this.state.value + val);
         this.setState({value: newVal, isValid});
@@ -54,7 +71,7 @@ class AdvancedDiceTool extends Component {
         let dice = GenerateDice(value),
             result = RollDiceGroups(dice);
         
-        this.setState({result});
+        this.setState({...this.state, result});
         this.props.addHistory(result);
     }
 
