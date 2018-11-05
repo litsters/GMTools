@@ -3,7 +3,9 @@ import codexReducer from './codex-reducer';
 
 test('has an initial state', () => {
     const expectedState = {
+        // @ts-ignore
         codex: null,
+        // @ts-ignore
         tabs: [],
     };
     let state = codexReducer(undefined, { type: 'initialize', payload: undefined });
@@ -15,6 +17,7 @@ test('updates codex', () => {
         codex: {
             value: 'Jester'
         },
+        // @ts-ignore
         tabs: [],
     };
     const action = {
@@ -29,6 +32,7 @@ test('updates codex', () => {
 
 test('updates tabs', () => {
     const expectedState = {
+        // @ts-ignore
         codex: null,
         tabs: ['Redux'],
     };
