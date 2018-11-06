@@ -1,12 +1,15 @@
 import React, { SFC } from "react";
 
-
-const CampaignPreview: SFC<{}> = (props) => {
-    return (
-        <div className="character-preview">
-            Character Preview
-        </div>
-    );
+interface CharacterProps {
+    name: string,
 }
 
-export default CampaignPreview;
+const CharacterPreview: SFC<CharacterProps> = (props) => {
+    return (
+        <div className="character-preview">
+            {props.name}
+        </div>
+    );
+};
+
+export default CharacterPreview;
