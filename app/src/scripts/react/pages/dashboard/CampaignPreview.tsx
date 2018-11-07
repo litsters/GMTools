@@ -1,12 +1,15 @@
 import React, { SFC } from "react";
 
+interface CampaignProps {
+    name: string,
+}
 
-const CampaignPreview: SFC<{}> = (props) => {
+const CampaignPreview: SFC<CampaignProps> = (props) => {
     return (
         <div className="campaign-preview">
-            Campaign Preview
+            {props.name}
         </div>
     );
-}
+};
 
 export default CampaignPreview;
