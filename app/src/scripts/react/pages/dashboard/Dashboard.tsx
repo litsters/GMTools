@@ -116,6 +116,26 @@ class Dashboard extends Component<DashboardProps, {}> {
     }
 
     /*
+    Adds a character to a campaign. The ids passed in are the character and
+    campaign mongo ids.
+    */
+    addCharacterToCampaign(charId:any, campId: any){
+        console.log("adding character to campaign");
+        if(this.socket === null) console.log("no server connection");
+        else {
+            let updateEvent = {
+                namespace: "campaign",
+                key: "add_character",
+                data: {
+                    character: charId,
+                    campaign: campId,
+                }
+            };
+            this.socket.emit('data.persist', updateEvent);
+        }
+    }
+
+    /*
     Gets character info. The id passed in is the character's mongo id.
     */
     getCharacter(id:any){
@@ -130,6 +150,9 @@ class Dashboard extends Component<DashboardProps, {}> {
         }
     }
 
+    /*
+    Gets campaign info. The id passed in is the campaign's mongo id.
+    */
     getCampaign(id:any){
         console.log("getting a campaign");
         if(this.socket === null) console.log("no server connection");
