@@ -1,4 +1,4 @@
-import { mergeObject, mergeArray } from "./index";
+import { updateState } from "./index";
 import { UPDATE_USER, UPDATE_AUTH, UPDATE_CAMPAIGNS, UPDATE_CHARACTERS } from "../actions/user-actions";
 
 var initialState: any = { 
@@ -12,11 +12,11 @@ export default function(state = initialState, { type, payload }: {type: any, pay
         case UPDATE_USER:
             return state;
         case UPDATE_AUTH:
-            return mergeObject(state, "auth", payload.auth);
+            return updateState(state, payload);
         case UPDATE_CAMPAIGNS:
-            return mergeArray(state, "campaigns", payload.campaigns);
+            return updateState(state, payload);
         case UPDATE_CHARACTERS:
-            return mergeArray(state, "characters", payload.characters);
+            return updateState(state, payload);
         default:
             return state;
     }
