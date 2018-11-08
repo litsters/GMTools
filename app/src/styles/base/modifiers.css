@@ -7,3 +7,7 @@
     list-style-type: none;
     padding: 0;
 }
+
+.float-right { float: right }
+
+.pointer { cursor: pointer }

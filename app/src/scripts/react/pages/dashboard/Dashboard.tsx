@@ -7,6 +7,7 @@ import { updateAuth, updateCampaigns, updateCharacters } from "../../actions/use
 import MasterDetailsLayout from "../../layout/MasterDetailLayout";
 import * as $ from "jquery";
 
+import HomeSection from "./HomeSection";
 import CampaignsSection from "./CampaignsSection";
 import CharactersSection from "./CharactersSection";
 
@@ -23,6 +24,7 @@ interface DashboardProps {
 class Dashboard extends Component<DashboardProps, {}> {
     private socket:any;
     private contentWrapper:HTMLDivElement;
+    private btnHome:HTMLLIElement;
     private btnCampaigns:HTMLLIElement;
     private btnCharacters:HTMLLIElement
     private positions:any;
@@ -69,7 +71,10 @@ class Dashboard extends Component<DashboardProps, {}> {
             let pos = $(this.contentWrapper).scrollTop();
 
             $(".menu-dashboard ul li.active").removeClass("active");
-            if (pos <=this.positions.characters && pos < this.positions.characters) 
+
+            if (pos >= this.positions.home && pos < this.positions.campaigns) 
+                $(this.btnHome).addClass("active");
+            else if (pos >= this.positions.campaigns && pos < this.positions.characters) 
                 $(this.btnCampaigns).addClass("active");
             else if (pos >= this.positions.characters)
                 $(this.btnCharacters).addClass("active");
@@ -77,6 +82,7 @@ class Dashboard extends Component<DashboardProps, {}> {
     }
 
     calculateElementPositions() {
+        this.positions.home = $("#home").position().top;
         this.positions.campaigns = $("#campaigns").position().top;
         this.positions.characters = $("#characters").position().top;
     }
@@ -204,7 +210,8 @@ class Dashboard extends Component<DashboardProps, {}> {
             <div className="menu-dashboard">
                 <div className="menu-top">
                     <ul>
-                        <li className="active" ref={el => this.btnCampaigns = el} onClick={this.scrollTo.bind(null, "#campaigns")}>Campaigns</li> 
+                        <li className="active" ref={el => this.btnHome = el} onClick={this.scrollTo.bind(null, "#home")}>Home</li>
+                        <li ref={el => this.btnCampaigns = el} onClick={this.scrollTo.bind(null, "#campaigns")}>Campaigns</li> 
                         <li ref={el => this.btnCharacters = el} onClick={this.scrollTo.bind(null, "#characters")}>Characters</li>
                     </ul>
                 </div>
@@ -218,6 +225,8 @@ class Dashboard extends Component<DashboardProps, {}> {
 
         const details = (
             <div className="content snap" ref={el => this.contentWrapper = el}>
+
+                <HomeSection />
 
                 <CampaignsSection campaigns={campaigns} updateCampaigns={updateCampaigns} />
 

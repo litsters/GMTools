@@ -17,6 +17,7 @@
 }
 .dashboard .details .content-page {
     min-height: 100vh;
+    position: relative;
     padding: 30px;
     scroll-snap-align: start;
 }
@@ -133,6 +134,15 @@
 .content-page .previews .add-item span {
     display: block;
     margin: auto;
+}
+
+.content-page .slide-panel {
+    animation: slide-in-left .4s;
+    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, .9);
+    padding: 25px;
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
 }
 
 @media screen and (min-width: 889px) {

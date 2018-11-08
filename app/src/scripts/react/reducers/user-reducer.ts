@@ -4,7 +4,7 @@ import { UPDATE_USER, UPDATE_AUTH, UPDATE_CAMPAIGNS, UPDATE_CHARACTERS } from ".
 var initialState: any = { 
     auth: null,
     campaigns: ['Campaign 1', 'Campaign 2'],
-    characters: ['character 1', 'character 2', 'character 3']
+    characters: []
 };
 
 export default function(state = initialState, { type, payload }: {type: any, payload: any}) {
