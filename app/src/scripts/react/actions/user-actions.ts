@@ -1,8 +1,9 @@
 import Auth from "../auth/Auth";
 
 export const UPDATE_USER = "user:updateUser";
-
 export const UPDATE_AUTH = "user:updateAuth";
+export const UPDATE_CAMPAIGNS = "user:updateCampaigns";
+export const UPDATE_CHARACTERS = "user:updateCharacters";
 
 export function updateUser(newUser: any) {
     return {
@@ -24,6 +25,24 @@ export function updateAuth(auth:Auth) {
         type: UPDATE_AUTH,
         payload: {
             auth: auth
+        }
+    }
+}
+
+export function updateCampaigns(campaigns:any) {
+    return {
+        type: UPDATE_CAMPAIGNS,
+        payload: {
+            campaigns
+        }
+    }
+}
+
+export function updateCharacters(characters:any) {
+    return {
+        type: UPDATE_CHARACTERS,
+        payload: {
+            characters
         }
     }
 }

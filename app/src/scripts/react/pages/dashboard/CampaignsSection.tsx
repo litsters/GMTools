@@ -4,27 +4,19 @@ import CampaignPreview from "./CampaignPreview";
 import { MainRouterConfig } from "../../routers/config";
 
 
-interface CampaignSectionState {
-    campaigns:string[],
+interface CampaignSectionProps {
+	campaigns:string[],
+	updateCampaigns:any
 }
 
-class CampaignsSection extends Component<{}, CampaignSectionState> {
-
-    constructor(props:any) {
-		super(props);
-
-		this.state = {
-			// TODO load from the server
-			campaigns: ['Campaign 1', 'Campaign 2'],
-		};
-    }
+class CampaignsSection extends Component<CampaignSectionProps, {}> {
 
     addCampaign() {
 		// TODO send new campaign to the server or open a new campaign page?
-		const campaigns = this.state.campaigns.slice();
+		let campaigns = this.props.campaigns;
 		campaigns.push('Campaign ' + (campaigns.length + 1));
 
-		this.setState({campaigns});
+		this.props.updateCampaigns(campaigns);
     }
 
     render() {
@@ -33,8 +25,8 @@ class CampaignsSection extends Component<{}, CampaignSectionState> {
                 <h1>Here are your Campaigns</h1>
                 <Link to={MainRouterConfig.routes.game.path}>go to demo</Link>
 				<div className="previews">
-					{this.state.campaigns.map((campaign:string) => <CampaignPreview key={campaign} name={campaign}/>)}
-					<div className="campaign-preview add-item" onClick={() => this.addCampaign()}>
+					{this.props.campaigns.map((campaign:string) => <CampaignPreview key={campaign} name={campaign}/>)}
+					<div className="campaign-preview add-item" onClick={this.addCampaign.bind(this)}>
 						<span>+</span>
 					</div>
 				</div>

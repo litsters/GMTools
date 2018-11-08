@@ -3,7 +3,7 @@ import io  from "socket.io-client";
 import { connect } from "react-redux";
 import { UserReducer } from "../../reducers";
 import Auth from "../../auth/Auth";
-import { updateAuth } from "../../actions/user-actions";
+import { updateAuth, updateCampaigns, updateCharacters } from "../../actions/user-actions";
 import MasterDetailsLayout from "../../layout/MasterDetailLayout";
 import * as $ from "jquery";
 
@@ -13,7 +13,11 @@ import CharactersSection from "./CharactersSection";
 
 interface DashboardProps {
     history: History,
-    updateAuth: any
+    user: any
+
+    updateAuth: any,
+    updateCampaigns: any,
+    updateCharacters: any
 }
 
 class Dashboard extends Component<DashboardProps, {}> {
@@ -191,6 +195,8 @@ class Dashboard extends Component<DashboardProps, {}> {
     }
 
     render() {
+        const { user, updateCharacters, updateCampaigns } = this.props;
+        const { campaigns, characters } = user;
         let auth = new Auth(this.props.history);
         auth.handleAuthentication();
         
@@ -213,9 +219,9 @@ class Dashboard extends Component<DashboardProps, {}> {
         const details = (
             <div className="content snap" ref={el => this.contentWrapper = el}>
 
-                <CampaignsSection />
+                <CampaignsSection campaigns={campaigns} updateCampaigns={updateCampaigns} />
 
-                <CharactersSection />
+                <CharactersSection characters={characters} updateCharacters={updateCharacters} />
 
                 <button onClick={()=> this.connectToServer()}>Connect to server</button>
                 <button onClick={()=> this.logout()}>Click me to log out</button>
@@ -231,7 +237,9 @@ class Dashboard extends Component<DashboardProps, {}> {
 }
 
 const mapActionsToProps = {
-    updateAuth
+    updateAuth,
+    updateCampaigns,
+    updateCharacters
 }
 
 export default connect(UserReducer, mapActionsToProps)(Dashboard);
