@@ -1,15 +1,40 @@
 import React, { Component } from "react";
 import CharacterPreview from "./CharacterPreview";
 
-class CharactersSection extends Component<{}> {
+interface CharacterSectionState {
+    characters:string[],
+}
+
+class CharactersSection extends Component<{}, CharacterSectionState> {
+
+    constructor(props:any) {
+        super(props);
+
+        this.state = {
+            // TODO load from the server
+            characters: ['Character 1', 'Character 2'],
+        };
+    }
+
+    addCharacter() {
+        // TODO send the new character to the server? Open a new character page?
+        const characters = this.state.characters.slice();
+        characters.push('Character ' + (characters.length + 1));
+
+        this.setState({
+            characters: characters
+        });
+    }
+
     render() {
         return (
             <div className="content-page characters" id="characters">
                 <h1>Here are your Characters</h1>
                 <div className="previews">
-                    <CharacterPreview />
-                    <CharacterPreview />
-                    <CharacterPreview />
+                    {this.state.characters.map((character:string) => <CharacterPreview key={character} name={character}/>)}
+                </div>
+                <div className="newCharacter">
+                    <button title="New Character" onClick={() => this.addCharacter()}>+</button>
                 </div>
             </div>
         );
