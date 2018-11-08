@@ -8,11 +8,39 @@ export default class CampaignHandler extends Handler {
     handleEvent(eventType:string, event:any): Promise<EventWrapper[]>{
         switch(eventType){
             case 'data.persist': return this.saveCampaign(event);
+            case 'data.get': return this.getCampaign(event);
             default:
                 return new Promise<EventWrapper[]>((resolve,reject) => {
                     reject("Unrecognized operation for campaign: " + eventType);
                 });
         }
+    }
+
+    /*
+    Gets a campaign. Note that it doesn't set the userids field for the
+    EventWrapper, since we don't know in here who is requesting information.
+    */
+    private getCampaign(event:any): Promise<EventWrapper[]>{
+        return new Promise<EventWrapper[]>((resolve, reject) => {
+            // Get campaign data from mongo
+            // event key should be campaign id
+            let campaignId = event.key;
+            models.Campaign.findOne({_id: campaignId}).then(function(campaign:ICampaign){
+                // Generate event to send to client
+                let successEvent = {
+                    namespace: event.namespace,
+                    key: event.key,
+                    data: campaign
+                };
+
+                let userids:string[] = [];
+                let events:EventWrapper[] = [];
+                events.push(new EventWrapper(userids, successEvent, "data.retrieved"));
+                resolve(events);
+            }).catch(function(err){
+                reject(err);
+            });
+        });
     }
 
     /*

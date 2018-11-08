@@ -8,11 +8,38 @@ export default class CharacterHandler extends Handler{
     handleEvent(eventType:string, event:any): Promise<EventWrapper[]>{
         switch(eventType){
             case 'data.persist': return this.saveCharacter(event);
+            case 'data.get': return this.getCharacter(event);
             default:
                 return new Promise<EventWrapper[]>((resolve,reject) => {
                     reject("Unrecognized operation for character: " + eventType);
                 });
         }
+    }
+
+    /*
+    Gets a character. Note that we don't set the userids field in the
+    Event Wrapper since we don't know who is requesting info.
+    */
+    private getCharacter(event:any): Promise<EventWrapper[]> {
+        return new Promise<EventWrapper[]>((resolve, reject) => {
+            // Get character data from mongo; key should be the character's mongo id
+            let id = event.key;
+            models.Character.findOne({_id: id}).then(function(character:ICharacter){
+                // Generate event to send to client
+                let successEvent = {
+                    namespace: event.namespace,
+                    key: event.key,
+                    data: character
+                };
+
+                let events:EventWrapper[] = [];
+                let userids:string[] = [];
+                events.push(new EventWrapper(userids, successEvent, "data.retrieved"));
+                resolve(events);
+            }).catch(function(err){
+                reject(err);
+            });
+        });
     }
 
     /*

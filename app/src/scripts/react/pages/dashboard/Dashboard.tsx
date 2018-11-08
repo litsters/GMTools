@@ -91,7 +91,7 @@ class Dashboard extends Component<DashboardProps, {}> {
                 // shouldn't be sending any more events to the server.
                 skt.on('data.retrieved', function(event:any){
                     console.log('data retrieved: ' + JSON.stringify(event,null,2));
-                    if(event.data.id !== undefined){
+                    if(event.data.id !== undefined && event.namespace === 'user'){
                         localStorage.setItem('userid', event.data.id);
                     }
                 });
@@ -113,6 +113,33 @@ class Dashboard extends Component<DashboardProps, {}> {
             });
         });
         this.socket = skt;
+    }
+
+    /*
+    Gets character info. The id passed in is the character's mongo id.
+    */
+    getCharacter(id:any){
+        console.log("getting a character");
+        if(this.socket === null) console.log("no server connection");
+        else {
+            let retrievalEvent = {
+                namespace: "character",
+                key: id
+            };
+            this.socket.emit('data.get', retrievalEvent);
+        }
+    }
+
+    getCampaign(id:any){
+        console.log("getting a campaign");
+        if(this.socket === null) console.log("no server connection");
+        else {
+            let retrievalEvent = {
+                namespace: "campaign",
+                key: id
+            };
+            this.socket.emit('data.get', retrievalEvent);
+        }
     }
 
     generateTestCharacter(){

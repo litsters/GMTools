@@ -173,12 +173,13 @@ const postAuthenticate = (client:any) => {
         });
     });
         
-
+    // Data.get events only return to the client who sent them.
     client.on('data.get', function(data:any){
         handler_modules.handleEvent('data.get', data).then(function(events:EventWrapper[]){
             if(events !== null) events.forEach(function(event){
                 try{
-                    connections.sendEvent(event);
+                    client.emit(event.getType(), event.getEvent());
+                    // connections.sendEvent(event);
                 }catch(err){
                     console.log(err);
                 }
