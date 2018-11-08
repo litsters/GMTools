@@ -4,3 +4,4 @@
 server/gm-tools.pem
 gm-tools.pem
 /server/node_modules/
+/.vscode/
