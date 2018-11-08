@@ -1,0 +1,10 @@
+
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "compile server",
+        "command": "tsc --build ./server/tsconfig.json",
+        "args": [],
+        "type": "shell"
+    }]
+}
