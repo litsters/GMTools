@@ -41,6 +41,13 @@ export const updateState = (state:any, newState:any) => {
                 }
             }
         }
+
+        else {
+            state = {
+                ...state,
+                [key]: value
+            }
+        }
     })
 
     return state;
