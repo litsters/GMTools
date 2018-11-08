@@ -1,6 +1,7 @@
 .dashboard {
     --accent: red;
-    --item-background: rgba(75,75,75,.1)
+    --item-background: rgba(75,75,75,.1);
+    --item-outline: rgba(0, 0, 0, .1);
 }
 
 .dashboard .layout-master-details .master {
@@ -99,10 +100,39 @@
 
 .character-preview,
 .campaign-preview {
+    align-items: center;
     background: var(--item-background);
     backdrop-filter: blur(5px);
+    border-radius: 2px;
+    display: flex;
     margin: 10px;
-    padding: 15px;
+    min-height: 50px;
+    outline: 2px solid var(--item-outline);
+    outline-offset: -13px;
+    padding: 25px;
+    transition: .2s all;
+}
+.character-preview:hover {
+    transform: scale(1.07);
+}
+.campaign-preview:hover {
+    transform: scale(1.02);
+}
+
+.content-page .previews .add-item {
+    color: var(--item-outline);
+    cursor: pointer;
+    font-size: 3em;
+    font-weight: bolder;
+    outline: none;
+    padding: 20px;
+    background: none;
+    border: 3px dashed var(--item-outline);
+    transform: none !important;
+}
+.content-page .previews .add-item span {
+    display: block;
+    margin: auto;
 }
 
 @media screen and (min-width: 889px) {

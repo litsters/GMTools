@@ -32,9 +32,9 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
                 <h1>Here are your Characters</h1>
                 <div className="previews">
                     {this.state.characters.map((character:string) => <CharacterPreview key={character} name={character}/>)}
-                </div>
-                <div className="newCharacter">
-                    <button title="New Character" onClick={() => this.addCharacter()}>+</button>
+                    <div className="character-preview add-item" onClick={() => this.addCharacter()}>
+                        <span>+</span>
+                    </div>
                 </div>
             </div>
         );
