@@ -28,7 +28,7 @@ export default class CharacterHandler extends Handler{
                 // Generate event to send to client
                 let successEvent = {
                     namespace: event.namespace,
-                    key: event.key,
+                    key: "current-data",
                     data: character
                 };
 

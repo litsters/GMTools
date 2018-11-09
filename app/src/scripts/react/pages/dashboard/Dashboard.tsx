@@ -116,6 +116,26 @@ class Dashboard extends Component<DashboardProps, {}> {
     }
 
     /*
+    Removes a character from a campaign. The ids passed in are the character
+    and campaign mongo ids.
+    */
+    removeCharacterFromCampaign(charId:any, campId:any){
+        console.log("removing character from campaign");
+        if(this.socket === null) console.log("no server connection");
+        else {
+            let updateEvent = {
+                namespace: "campaign",
+                key: "remove_character",
+                data: {
+                    character: charId,
+                    campaign: campId
+                }
+            };
+            this.socket.emit('data.persist', updateEvent);
+        }
+    }
+
+    /*
     Adds a character to a campaign. The ids passed in are the character and
     campaign mongo ids.
     */

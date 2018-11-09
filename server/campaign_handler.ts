@@ -31,7 +31,7 @@ export default class CampaignHandler extends Handler {
                 // Generate event to send to client
                 let successEvent = {
                     namespace: event.namespace,
-                    key: event.key,
+                    key: "current-data",
                     data: campaign
                 };
 
@@ -53,6 +53,7 @@ export default class CampaignHandler extends Handler {
         switch(event.key){
             case 'new_campaign': return this.newCampaign(event);
             case 'add_character':return this.addCharacter(event);
+            case 'remove_character': return this.removeCharacter(event);
             default:
                 return new Promise<EventWrapper[]>((resolve,reject) => {
                     reject("Unrecognized key for campaign: " + event.key);
@@ -60,6 +61,59 @@ export default class CampaignHandler extends Handler {
         }
     }
 
+    /*
+    Removes a character from a campaign. If the character isn't already
+    in that campaign nothing is changed, but players still receive an 
+    update.  Also, users are not automatically removed from campaigns
+    when their characters are removed.
+    */
+    private removeCharacter(event:any):Promise<EventWrapper[]>{
+        return new Promise<EventWrapper[]>((resolve,reject) => {
+            let charId = event.data.character;
+            let campId = event.data.campaign;
+
+            // Remove character from campaign; this does not automatically
+            // remove the user from the campaign, just their character
+            models.Campaign.findOneAndUpdate({_id:campId},
+                {$pull: {characters:charId}},{new:true}).then(function(campaign:ICampaign){
+                    // Update users and GM that character has been removed
+
+                    // Get mongo ids for the GM and players
+                    let mongoIds:Types.ObjectId[] = [];
+                    mongoIds.push(campaign.gm);
+                    campaign.users.forEach(id => mongoIds.push(id));
+
+                    // Build condition array
+                    let conditions:any[] = [];
+                    mongoIds.forEach(id => conditions.push({_id: id}));
+
+                    // Get list of users from mongo
+                    models.User.find({$or: conditions}).then(function(users:IUser[]){
+                        // Build events to send to users
+                        let userids:string[] = [];
+                        users.forEach(user => userids.push(user.id));
+
+                        let updateEvent = {
+                            namespace: event.namespace,
+                            key: "campaign_updated",
+                            data: campaign
+                        };
+
+                        let events:EventWrapper[] = [];
+                        events.push(new EventWrapper(userids, updateEvent, "data.persisted"));
+                        resolve(events);
+                    }).catch(function(err){
+                        reject(err);
+                    });
+            }).catch(function(err){
+                reject(err);
+            });
+        });
+    };
+
+    /*
+    Adds a character to a pre-existing campaign, along with their associated user.
+    */
     private addCharacter(event:any):Promise<EventWrapper[]>{
         return new Promise<EventWrapper[]>((resolve, reject) => {
             let charId = event.data.character;
