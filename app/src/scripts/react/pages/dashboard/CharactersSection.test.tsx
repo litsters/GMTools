@@ -11,7 +11,7 @@ test('characters section renders', () => {
 test('adds character', () => {
     // Setup to add the character
     const expectedState = {
-        characters: ['Character 1', 'Character 2', 'Character 3'],
+        characters: ['Character 1', 'Character 2', ''],
     };
     const mockSetState = jest.fn();
 

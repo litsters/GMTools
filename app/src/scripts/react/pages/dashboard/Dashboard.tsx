@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import io  from "socket.io-client";
 import { connect } from "react-redux";
 import { UserReducer } from "../../reducers";
 import Auth from "../../auth/Auth";
 import { updateAuth } from "../../actions/user-actions";
 import MasterDetailsLayout from "../../layout/MasterDetailLayout";
 import * as $ from "jquery";
+import getBus, {EventBus} from '../../common/Events';
 
 import CampaignsSection from "./CampaignsSection";
 import CharactersSection from "./CharactersSection";
@@ -17,15 +17,15 @@ interface DashboardProps {
 }
 
 class Dashboard extends Component<DashboardProps, {}> {
-    private socket:any;
+    private events: EventBus;
     private contentWrapper:HTMLDivElement;
     private btnCampaigns:HTMLLIElement;
-    private btnCharacters:HTMLLIElement
+    private btnCharacters:HTMLLIElement;
     private positions:any;
 
     constructor(props: any) {
         super(props);
-        this.socket = null;
+        this.events = null;
         this.positions = {};
 
         this.scrollTo = this.scrollTo.bind(this);
@@ -36,6 +36,15 @@ class Dashboard extends Component<DashboardProps, {}> {
         this.registerContentScrollEvent();
     }
 
+    componentWillUnmount() {
+        if (this.events !== null) {
+            // Cleanup our event listeners
+            this.events
+                .removeListener('data.retrieved', Dashboard.dataRetrieved)
+                .removeListener('data.persisted', Dashboard.dataPersisted);
+        }
+    }
+
     logout() {
         console.log("you are logging out");
         let auth = new Auth(this.props.history);
@@ -44,7 +53,7 @@ class Dashboard extends Component<DashboardProps, {}> {
     }
 
     send(msg:string){
-        this.socket.emit('greeting', {msg: msg});
+        this.events.emit('greeting', {msg: msg});
     }
 
     scrollTo(element:String) {
@@ -78,41 +87,20 @@ class Dashboard extends Component<DashboardProps, {}> {
     }
 
     connectToServer() {
-        console.log('connecting to server!');
-        let skt = io.connect("http://localhost:8080");
-        let credentials = this.generateCredentials();
-        skt.on('connect', function(){
-            console.log('connection established');
-            skt.emit('authentication', credentials);
-            skt.on('authenticated', function() {
-                console.log('authenticated!');
-                // Add handlers for different types of events here (I think)
-                // Until the socket receives an 'authenticated' event, it 
-                // shouldn't be sending any more events to the server.
-                skt.on('data.retrieved', function(event:any){
-                    console.log('data retrieved: ' + JSON.stringify(event,null,2));
-                    if(event.data.id !== undefined && event.namespace === 'user'){
-                        localStorage.setItem('userid', event.data.id);
-                    }
-                });
+        this.events = getBus()
+            .on('data.retrieved', Dashboard.dataRetrieved)
+            .on('data.persisted', Dashboard.dataPersisted);
+    }
 
-                skt.on('data.persisted', function(event:any){
-                    console.log('data persisted: ' + JSON.stringify(event,null,2));
-                });
+    static dataRetrieved(event: any) {
+        console.log('data retrieved: ' + JSON.stringify(event,null,2));
+        if(event.data.id !== undefined && event.namespace === 'user') {
+            localStorage.setItem('userid', event.data.id);
+        }
+    }
 
-                skt.on('app.error', function(event:any){
-                    console.log('error: ' + JSON.stringify(event,null,2));
-                });
-            });
-            skt.on('unauthorized', function(data:any){
-                console.log('authorization failed: ' + JSON.stringify(data,null,2));
-                skt.disconnect();
-            });
-            skt.on('disconnect', function(){
-                console.log('connection lost');
-            });
-        });
-        this.socket = skt;
+    static dataPersisted(event: any) {
+        console.log('data persisted: ' + JSON.stringify(event,null,2));
     }
 
     /*
@@ -121,7 +109,7 @@ class Dashboard extends Component<DashboardProps, {}> {
     */
     removeCharacterFromCampaign(charId:any, campId:any){
         console.log("removing character from campaign");
-        if(this.socket === null) console.log("no server connection");
+        if (this.events === null) console.log("no server connection");
         else {
             let updateEvent = {
                 namespace: "campaign",
@@ -131,7 +119,7 @@ class Dashboard extends Component<DashboardProps, {}> {
                     campaign: campId
                 }
             };
-            this.socket.emit('data.persist', updateEvent);
+            this.events.emit('data.persist', updateEvent);
         }
     }
 
@@ -141,7 +129,7 @@ class Dashboard extends Component<DashboardProps, {}> {
     */
     addCharacterToCampaign(charId:any, campId: any){
         console.log("adding character to campaign");
-        if(this.socket === null) console.log("no server connection");
+        if(this.events === null) console.log("no server connection");
         else {
             let updateEvent = {
                 namespace: "campaign",
@@ -151,7 +139,7 @@ class Dashboard extends Component<DashboardProps, {}> {
                     campaign: campId,
                 }
             };
-            this.socket.emit('data.persist', updateEvent);
+            this.events.emit('data.persist', updateEvent);
         }
     }
 
@@ -160,13 +148,13 @@ class Dashboard extends Component<DashboardProps, {}> {
     */
     getCharacter(id:any){
         console.log("getting a character");
-        if(this.socket === null) console.log("no server connection");
+        if(this.events === null) console.log("no server connection");
         else {
             let retrievalEvent = {
                 namespace: "character",
                 key: id
             };
-            this.socket.emit('data.get', retrievalEvent);
+            this.events.emit('data.get', retrievalEvent);
         }
     }
 
@@ -175,19 +163,19 @@ class Dashboard extends Component<DashboardProps, {}> {
     */
     getCampaign(id:any){
         console.log("getting a campaign");
-        if(this.socket === null) console.log("no server connection");
+        if(this.events === null) console.log("no server connection");
         else {
             let retrievalEvent = {
                 namespace: "campaign",
                 key: id
             };
-            this.socket.emit('data.get', retrievalEvent);
+            this.events.emit('data.get', retrievalEvent);
         }
     }
 
     generateTestCharacter(){
         console.log("generating a test character");
-        if(this.socket === null){
+        if(this.events === null){
             console.log("no server connection!");
         } else if(localStorage.getItem('userid') === null){
             console.log("no user id available!");
@@ -200,13 +188,13 @@ class Dashboard extends Component<DashboardProps, {}> {
                     userid: localStorage.getItem('userid')
                 }
             }
-            this.socket.emit('data.persist', event);
+            this.events.emit('data.persist', event);
         }
     }
 
     generateTestCampaign(){
         console.log("generating test campaign");
-        if(this.socket === null){
+        if(this.events === null){
             console.log("no server connection");
         } else if(localStorage.getItem('userid') === null){
             console.log("no user id available");
@@ -220,17 +208,8 @@ class Dashboard extends Component<DashboardProps, {}> {
                     userid: localStorage.getItem('userid')
                 }
             };
-            this.socket.emit('data.persist', event);
+            this.events.emit('data.persist', event);
         }
-    }
-
-    generateCredentials():any {
-        let credentials = {
-            access_token: localStorage.getItem('access_token'),
-            id_token: localStorage.getItem('id_token'),
-            expires_at: localStorage.getItem('expires_at')
-        }
-        return credentials;
     }
 
     render() {
