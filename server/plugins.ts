@@ -35,6 +35,29 @@ export const loadPlugin = (pluginName: string, callback: ICallback) => {
     callback(null, plugin);
 }
 
+export const loadPluginNames = (callback: any) => {
+    const path = `${pluginsDir}`;
+    const items = fs.readdirSync(path);
+    let plugins:any = {};
+
+    items.forEach((item: string, idx: number) => {
+        try {
+            let buffer = fs.readFileSync(`${path}/${item}/config.json`);
+            if (buffer) {
+                let data:any = JSON.parse(buffer.toString());
+                let metadata = data.metadata;
+                
+                plugins[item] = metadata;
+            }
+        }
+        catch (exception) {
+            console.log(exception);
+        }
+    });
+    
+    callback(plugins);
+}
+
 export const registerPluginAssetServer = (app:Application) => {
     app.use('/plugins', express.static(path.join(serverDir, "/plugins"), {index:false, extensions: ['png', 'svg', 'jpg']}));
 }

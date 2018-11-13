@@ -9,7 +9,19 @@ interface CampaignSectionProps {
 	updateCampaigns:any
 }
 
-class CampaignsSection extends Component<CampaignSectionProps, {}> {
+interface CampaignSectionState {
+
+}
+
+class CampaignsSection extends Component<CampaignSectionProps, CampaignSectionState> {
+
+	constructor(props:CampaignSectionProps) {
+		super(props);
+
+		this.state = {
+		}
+
+	}
 
     addCampaign() {
 		// TODO send new campaign to the server or open a new campaign page?
@@ -20,12 +32,15 @@ class CampaignsSection extends Component<CampaignSectionProps, {}> {
     }
 
     render() {
+
         return (
             <div className="content-page campaigns" id="campaigns">
                 <h1>Here are your Campaigns</h1>
                 <Link to={MainRouterConfig.routes.game.path}>go to demo</Link>
 				<div className="previews">
-					{this.props.campaigns.map((campaign:string) => <CampaignPreview key={campaign} name={campaign}/>)}
+					{this.props.campaigns.map((campaign:string) => 
+						<CampaignPreview key={campaign} name={campaign}/>
+					)}
 					<div className="campaign-preview add-item" onClick={this.addCampaign.bind(this)}>
 						<span>+</span>
 					</div>

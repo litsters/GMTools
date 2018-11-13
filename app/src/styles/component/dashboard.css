@@ -145,6 +145,22 @@
     top: 0; right: 0; bottom: 0; left: 0;
 }
 
+.content-page .campaign-image {
+    animation: fade-in .3s;
+    position: absolute;
+    right: 0; bottom: 0;
+    width: 50vw;
+    height: auto;
+
+}
+.content-page .campaign-image:after {
+    background: rgba(255, 255, 255, .8);
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+
+}
+
 @media screen and (min-width: 889px) {
     .content-page.characters .previews {
         grid-template-columns: 1fr 1fr 1fr;
