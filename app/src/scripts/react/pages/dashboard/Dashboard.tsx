@@ -96,11 +96,50 @@ class Dashboard extends Component<DashboardProps, {}> {
         console.log('data retrieved: ' + JSON.stringify(event,null,2));
         if(event.data.id !== undefined && event.namespace === 'user') {
             localStorage.setItem('userid', event.data.id);
+            localStorage.setItem('campaign', event.data.campaigns[0]);
         }
     }
 
     static dataPersisted(event: any) {
         console.log('data persisted: ' + JSON.stringify(event,null,2));
+    }
+
+    /*
+    Gets a note from the database. The id passed in is the note's mongo id.
+    */
+    getNote(noteId:any){
+        console.log("getting note");
+        if(this.events === null) console.log("no server connection");
+        else {
+            let event = {
+                namespace: "note",
+                key: noteId
+            };
+            this.events.emit("data.get", event, true);
+        }
+    }
+
+    /*
+    Creates a new note. The userid passed in is the user's id, but the
+    campaign id is the mongo id for the campaign the note is to be
+    affiliated with.
+    */
+    createNote(content:string, title:string, userid:string, campaignid:any){
+        console.log("creating note");
+        if(this.events === null) console.log("no server connection");
+        else {
+            let noteEvent = {
+                namespace: "note",
+                key: "new_note",
+                data: {
+                    content: content,
+                    title: title,
+                    userid: userid,
+                    campaignid: campaignid
+                }
+            };
+            this.events.emit("data.persist", noteEvent, true);
+        }
     }
 
     /*
@@ -246,6 +285,7 @@ class Dashboard extends Component<DashboardProps, {}> {
 
         return (
             <div className="dashboard layout-page">
+                
                 <MasterDetailsLayout master={menu} details={details} clearDetails={() => alert("not implemented")} />
             </div>
         )

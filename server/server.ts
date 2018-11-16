@@ -10,6 +10,7 @@ import ClientConnection from "./clientconnection";
 import Handlers from "./handlers";
 import CharacterHandler from "./character_handler";
 import CampaignHandler from "./campaign_handler";
+import NoteHandler from "./note_handler";
 import registerAPIs from "./api";
 import { registerPluginAssetServer } from "./plugins";
 
@@ -66,6 +67,7 @@ app.get('/*', (request:Request, response:Response) => {
 const handler_modules = new Handlers();
 handler_modules.addHandler(new CharacterHandler("character"));
 handler_modules.addHandler(new CampaignHandler("campaign"));
+handler_modules.addHandler(new NoteHandler("note"));
 
 // Socket server
 const server = require('http').createServer(app);
