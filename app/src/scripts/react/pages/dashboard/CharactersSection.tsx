@@ -1,35 +1,73 @@
 import React, { Component } from "react";
 import CharacterPreview from "./CharacterPreview";
+import getBus, { EventBus } from "../../common/Events";
+import { each } from "jquery"
+
+interface Character {
+    _id: string
+    campaigns: string[]
+    name: string
+    user: string
+}
 
 interface CharacterSectionState {
-    showNew:boolean,
-    characterName:string,
-    characterSystem:string,
-    characters:string[],
+    showNew: boolean,
+    characterName: string,
+    characterSystem: string,
+    characters: Character[],
 }
 
 class CharactersSection extends Component<{}, CharacterSectionState> {
+    private events: EventBus;
+    private readonly eventListeners: object;
 
     constructor(props:any) {
         super(props);
 
+        // Declare what events we listen to and what method will handle them
+        this.eventListeners = {
+            'data.retrieved': this.dataRetrieved.bind(this),
+            'data.persisted': this.dataPersisted.bind(this),
+        };
+
+        // Bind events
+        this.events = getBus();
+        each(this.eventListeners, (event, callback) => {
+            this.events.on(event, callback);
+        });
+
         this.state = {
-            // TODO load from the server
             showNew: false,
             characterName: '',
             characterSystem: '',
-            characters: ['Character 1', 'Character 2'],
+            characters: [],
         };
     }
 
-    addCharacter() {
-        // TODO send the new character to the server? Open a new character page?
-        const characters = this.state.characters.slice();
-        characters.push(this.state.characterName);
+    componentDidMount() {
+        // Ask the server to get all our characters
+        this.events.emit('data.get', { namespace: 'character', key: 'get_characters' }, true);
+    }
 
-        this.setState({
-            characters: characters
-        });
+    componentWillUnmount() {
+        if (this.events !== null) {
+            each(this.eventListeners, (event, callback) => {
+                this.events.removeListener(event, callback);
+            });
+        }
+    }
+
+    addCharacter() {
+        // Send the new character to be persisted to the server
+        const payload = {
+            namespace: 'character',
+            key: 'new_character',
+            data: {
+                name: this.state.characterName,
+                system: this.state.characterSystem,
+            },
+        };
+        this.events.emit('data.persist', payload, true);
     }
 
     updateInputState(key:string, event:any) {
@@ -47,12 +85,33 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         });
     }
 
+    dataRetrieved(event: any) {
+        if (event.namespace === "character" && event.key === "get_characters" && event.data) {
+            // Character data retrieved, add to the UI
+            this.setState({
+                characters: event.data,
+            });
+        }
+    }
+
+    dataPersisted(event: any) {
+        if (event.namespace === "character" && event.key === "new_character" && event.data) {
+            // New character added, update the state to show this character
+            const characters = this.state.characters.slice();
+            characters.push(event.data);
+
+            this.setState({
+                characters: characters,
+            });
+        }
+    }
+
     render() {
         return (
             <div className="content-page characters" id="characters">
                 <h1>Here are your Characters</h1>
                 <div className="previews">
-                    {this.state.characters.map((character:string) => <CharacterPreview key={character} name={character}/>)}
+                    {this.state.characters.map((character: Character) => <CharacterPreview key={character._id} name={character.name}/>)}
                 </div>
                 <div className="newCharacter">
                     {this.state.showNew ? (
