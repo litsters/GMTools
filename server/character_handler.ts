@@ -23,7 +23,6 @@ export default class CharacterHandler extends Handler{
     private getCharacter(event: any): Promise<EventWrapper[]> {
         switch (event.key) {
             case 'get_characters':
-                console.log('get_characters', event);
                 // Get all characters for the user
                 // First get the user's ID and then find all characters for that user's ID
                 return models.User.findOne({ id: event.userId })
