@@ -160,7 +160,10 @@ const postAuthenticate = (client:any) => {
     });
 
     // Set up event handlers for the socket
-    client.on('data.persist', function(data:any){
+    client.on('data.persist', (data: any) => {
+        // Save the userId into the event data
+        data.userId = userid;
+
         handler_modules.handleEvent('data.persist', data).then(function(events:EventWrapper[]){
             if(events !== null) events.forEach(function(event){
                 try{
@@ -176,7 +179,10 @@ const postAuthenticate = (client:any) => {
     });
         
     // Data.get events only return to the client who sent them.
-    client.on('data.get', function(data:any){
+    client.on('data.get', (data: any) => {
+        // Save the userId into the event data
+        data.userId = userid;
+
         handler_modules.handleEvent('data.get', data).then(function(events:EventWrapper[]){
             if(events !== null) events.forEach(function(event){
                 try{

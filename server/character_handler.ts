@@ -20,26 +20,47 @@ export default class CharacterHandler extends Handler{
     Gets a character. Note that we don't set the userids field in the
     Event Wrapper since we don't know who is requesting info.
     */
-    private getCharacter(event:any): Promise<EventWrapper[]> {
-        return new Promise<EventWrapper[]>((resolve, reject) => {
-            // Get character data from mongo; key should be the character's mongo id
-            let id = event.key;
-            models.Character.findOne({_id: id}).then(function(character:ICharacter){
-                // Generate event to send to client
-                let successEvent = {
-                    namespace: event.namespace,
-                    key: "current-data",
-                    data: character
-                };
+    private getCharacter(event: any): Promise<EventWrapper[]> {
+        switch (event.key) {
+            case 'get_characters':
+                console.log('get_characters', event);
+                // Get all characters for the user
+                // First get the user's ID and then find all characters for that user's ID
+                return models.User.findOne({ id: event.userId })
+                    .then((user: IUser) => {
+                        return models.Character.find({ user: user._id }).exec();
+                    })
+                    .then((characters: ICharacter[]) => {
+                        let successEvent = {
+                            namespace: event.namespace,
+                            key: event.key,
+                            data: characters
+                        };
 
-                let events:EventWrapper[] = [];
-                let userids:string[] = [];
-                events.push(new EventWrapper(userids, successEvent, "data.retrieved"));
-                resolve(events);
-            }).catch(function(err){
-                reject(err);
-            });
-        });
+                        let events:EventWrapper[] = [];
+                        let userIds = [event.userId];
+
+                        events.push(new EventWrapper(userIds, successEvent, "data.retrieved"));
+
+                        return events;
+                    });
+            default:
+                // Attempt to get the character by ID
+                return models.Character.findById(event.key).exec()
+                    .then((character: ICharacter) => {
+                        let successEvent = {
+                            namespace: event.namespace,
+                            key: "current-data",
+                            data: character
+                        };
+
+                        let events:EventWrapper[] = [];
+                        let userids:string[] = [];
+                        events.push(new EventWrapper(userids, successEvent, "data.retrieved"));
+
+                        return events;
+                    });
+        }
     }
 
     /*
@@ -60,54 +81,54 @@ export default class CharacterHandler extends Handler{
     Creates a new character for a user. It doesn't check if they already have
     one with that name.
     */
-    private newCharacter(event:any):Promise<EventWrapper[]>{
-        return new Promise<EventWrapper[]>((resolve, reject) => {
-            // Get user id for the character
-            models.User.findOne({id: event.data.userid}).then(function(user:IUser){
-                // Generate object to save to database
-                let character = {
+    private newCharacter(event: any): Promise<EventWrapper[]> {
+        let character: ICharacter;
+
+        // Get the userid
+        return models.User.findOne({ id: event.userId })
+            .then((user: IUser) => {
+                // Save the character
+                const newCharacter = {
                     name: event.data.name,
-                    user: user._id
+                    user: user._id,
                 };
-                // Save object
-                models.Character.create(character).then(function(doc:ICharacter){
-                    if(doc === null){
-                        // Save operation failed, reject promise
-                        reject("Save operation failed.")
-                    } else {
-                        // Update user with character
-                        models.User.findOneAndUpdate({_id:user._id},{$push: {characters: doc._id}}).then(function(data:any){
-                            let events:EventWrapper[] = [];
+                return models.Character.create(newCharacter);
+            })
+            .then((c: ICharacter) => {
+                if (c === null) {
+                    throw "Save operation failed."
+                }
+                character = c;
 
-                            let userids = [event.data.userid];
-                            // Save operation successful; send two events:
-                            // one to acknowledge that the character was saved,
-                            // another to update the user object with the new new character.
-                            let characterSavedEvent = {
-                                namespace: event.namespace,
-                                key: event.key,
-                                data: doc
-                            };
-                            events.push(new EventWrapper(userids, characterSavedEvent, "data.persisted"));
+                // Update user with the character Id
+                return models.User.findOneAndUpdate(
+                    { _id: character.user },
+                    { $push: { characters: character._id }}
+                    ).exec();
+            })
+            .then((data: any) => {
+                // Success
+                let events:EventWrapper[] = [];
 
-                            let updateUserEvent = {
-                                namespace: "user",
-                                key: "current-data",
-                                data: data
-                            };
-                            events.push(new EventWrapper(userids, updateUserEvent, "data.retrieved"));
+                let userids = [event.userId];
+                // Save operation successful; send two events:
+                // one to acknowledge that the character was saved,
+                // another to update the user object with the new new character.
+                let characterSavedEvent = {
+                    namespace: event.namespace,
+                    key: event.key,
+                    data: character
+                };
+                events.push(new EventWrapper(userids, characterSavedEvent, "data.persisted"));
 
-                            resolve(events);
-                        }).catch(function(err){
-                            reject(err);
-                        });
-                    }
-                }).catch(function(err){
-                    reject(err);
-                });
-            }).catch(function(err){
-                reject(err);
-            });            
-        });
+                let updateUserEvent = {
+                    namespace: "user",
+                    key: "current-data",
+                    data: data
+                };
+                events.push(new EventWrapper(userids, updateUserEvent, "data.retrieved"));
+
+                return events;
+            });
     }
 }
