@@ -11,14 +11,22 @@ test('characters section renders', () => {
 test('adds character', () => {
     // Setup to add the character
     const expectedState = {
-        characters: ['Character 1', 'Character 2', ''],
+        characters: [{
+            name: 'Jest',
+        }],
     };
     const mockSetState = jest.fn();
 
     // Create the object, mock setState, and run the test
     const section = new CharactersSection({});
     section.setState = mockSetState;
-    section.addCharacter();
+    section.dataPersisted({
+        namespace: 'character',
+        key: 'new_character',
+        data: {
+            name: 'Jest',
+        },
+    });
 
     // Validate
     expect(mockSetState.mock.calls.length).toBe(1);
