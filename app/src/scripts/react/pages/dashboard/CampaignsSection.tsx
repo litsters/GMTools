@@ -2,37 +2,74 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import CampaignPreview from "./CampaignPreview";
 import { MainRouterConfig } from "../../routers/config";
+import getBus, { EventBus } from "../../common/Events";
+import { each } from "jquery"
 
+interface Campaign {
+    _id: string
+    users: string[]
+    characters: string[]
+    name: string
+    gm: string //use the GM's id
+}
 
 interface CampaignSectionState {
     showNew:boolean,
-    campaigns:string[],
+    campaigns:Campaign[],
     campaignName:string,
     campaignSystem:string,
 }
 
 class CampaignsSection extends Component<{}, CampaignSectionState> {
 
+    private events: EventBus;
+    private readonly eventListeners: object;
+
     constructor(props:any) {
 	super(props);
+
+	this.eventListeners = {
+	    'data.retrieved': this.dataRetrieved.bind(this),
+	    'data.persisted': this.dataPersisted.bind(this),
+	};
+
+	this.events = getBus();
+	each(this.eventListeners, (event, callback) => {
+	    this.events.on(event, callback);
+	});
 
 	this.state = {
 	    // TODO load from the server
 	    showNew: false,
 	    campaignName: '',
 	    campaignSystem: '',
-	    campaigns: ['Campaign 1', 'Campaign 2'],
+	    campaigns: [],
 	};
     }
 
-    addCampaign() {
-	// TODO send new campaign to the server or open a new campaign page?
-	const campaigns = this.state.campaigns.slice();
-	campaigns.push(this.state.campaignName);
+    componentDidMount() {
+	this.events.emit('data.get', { namespace: 'campaign', key: 'get_campaigns' }, true);
+    }
 
-	this.setState({
-	    campaigns: campaigns
-	});
+    componentWillUnmount() {
+	if (this.events !== null) {
+	    each(this.eventListeners, (event, callback) => {
+		this.events.removeListener(event, callback);
+	    });
+	}
+    }
+
+    addCampaign() {
+	
+	const payload = {
+	    namespace: 'campaign',
+	    key: 'new_campaign', 
+	    data: {
+		name: this.state.campaignName,
+		system: this.state.campaignSystem,
+	    },
+	};
+	this.events.emit('data.persist', payload, true);
     }
 
     updateInputState(key:string, event:any) {
@@ -50,13 +87,31 @@ class CampaignsSection extends Component<{}, CampaignSectionState> {
 	});
     }
 
+    dataRetrieved(event: any) {
+	if (event.namespace === "campaign" && event.key === "get_campaigns" && event.data) {
+	    this.setState({
+		campaigns: event.data,
+	    });
+	}
+    }
+
+    dataPersisted(event: any) {
+	if (event.namespace === "campaign" && event.key === "new_campaign" && event.data) {
+	    const campaigns = this.state.campaigns.slice();
+	    campaigns.push(event.data);
+	    this.setState({
+		campaigns: campaigns,
+	    });
+	}
+    }
+
     render() {
         return (
             <div className="content-page campaigns" id="campaigns">
                 <h1>Here are your Campaigns</h1>
                 <Link to={MainRouterConfig.routes.game.path}>go to demo</Link>
 		<div className="previews">
-		    {this.state.campaigns.map((campaign:string) => <CampaignPreview key={campaign} name={campaign}/>)}
+		    {this.state.campaigns.map((campaign: Campaign) => <CampaignPreview key={campaign._id} name={campaign.name}/>)}
 		</div>
 		<div className="newCampaign">
 		    {this.state.showNew ? (
