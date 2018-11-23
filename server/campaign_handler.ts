@@ -134,53 +134,80 @@ export default class CampaignHandler extends Handler {
     /*
     Adds a character to a pre-existing campaign, along with their associated user.
     */
-    private addCharacter(event:any):Promise<EventWrapper[]>{
-        return new Promise<EventWrapper[]>((resolve, reject) => {
-            let charId = event.data.character;
-            let campId = event.data.campaign;
+    private addCharacter(event: any): Promise<EventWrapper[]> {
+        const characterId = Types.ObjectId(event.data.character);
+        const campaignId = Types.ObjectId(event.data.campaign);
+        let character: ICharacter;
+        let campaign: ICampaign;
+        let user: IUser;
 
-            // Get user id for character
-            models.Character.findOne({_id: charId}).then(function(character:ICharacter){
-                let userid = character.user;
+        // Add the campaign to the character
+        return models.Character.findOneAndUpdate(
+                { _id: characterId },
+                { $addToSet: { campaigns: campaignId } },
+                { new: true }
+            ).exec()
+            .then((c: ICharacter) => {
+                // Save the character
+                character = c;
 
-                // Add character to campaign
-                models.Campaign.findOneAndUpdate({_id: campId},
-                    {$addToSet: {characters: charId, users: userid}}, {new:true})
-                    .then(function(campaign:ICampaign){
-                        
-                        // Update users and GM that character has been added to campaign
-                        let updateEvent = {
-                            namespace: event.namespace,
-                            key: "campaign_updated",
-                            data: campaign
-                        };
+                // Add the character to the campaign
+                return models.Campaign.findOneAndUpdate(
+                    { _id: campaignId },
+                    { $addToSet: { characters: characterId, users: character.user } },
+                    { new: true }
+                    ).exec();
+            })
+            .then((c: ICampaign) => {
+                // Save the campaign
+                campaign = c;
 
-                        // Get all user ids that need to be updated
-                        let mongoIds:Types.ObjectId[] = [];
-                        mongoIds.push(campaign.gm);
-                        campaign.users.forEach(id => mongoIds.push(id));
-                        
-                        // Build $or condition array
-                        let conditions:any[] = [];
-                        mongoIds.forEach(id => conditions.push({_id: id}));
+                // Add the campaign to the user in case they are not already in the campaign
+                return models.User.findOneAndUpdate(
+                    { _id: character.user },
+                    { $addToSet: { campaigns: campaign._id } },
+                    { new: true }
+                ).exec();
+            })
+            .then((u: IUser) => {
+                // Save the updated user
+                user = u;
 
-                        models.User.find({$or: conditions}).then(function(users:IUser[]){
-                            let userids:string[] = [];
-                            users.forEach(user => userids.push(user.id));
+                // Get the ids of all the users that need to be notified of the update event
+                let mongoIds: Types.ObjectId[] = [
+                    campaign.gm,
+                ];
+                campaign.users.forEach(id => mongoIds.push(id));
 
-                            let events:EventWrapper[] = [];
-                            events.push(new EventWrapper(userids, updateEvent, "data.persisted"));
-                            resolve(events);
-                        }).catch(function(err){
-                            reject(err);
-                        });
-                }).catch(function(err){
-                    reject(err);
-                });
-            }).catch(function(err){
-                reject(err);
+                return models.User.find({ _id: { $in: mongoIds } }).exec();
+            })
+            .then((users: IUser[]) => {
+                // Return the events for this updated
+                let updateCampaignEvent = {
+                    namespace: event.namespace,
+                    key: "campaign_updated",
+                    data: campaign,
+                };
+
+                let updateCharacterEvent = {
+                    namespace: "character",
+                    key: "character_updated",
+                    data: character,
+                };
+                let updateUserEvent = {
+                    namespace: "user",
+                    key: "current-data",
+                    data: user
+                };
+
+                let userIds: string[] = users.map(u => u.id);
+
+                return [
+                    new EventWrapper(userIds, updateCampaignEvent, "data.persisted"),
+                    new EventWrapper([event.userId], updateCharacterEvent, "data.persisted"),
+                    new EventWrapper([event.userId], updateUserEvent, "data.retrieved"),
+                ];
             });
-        });
     };
 
     /*
@@ -190,8 +217,10 @@ export default class CampaignHandler extends Handler {
    private newCampaign(event: any): Promise<EventWrapper[]> {
        let campaign: ICampaign;
 
+       // Get the user
        return models.User.findOne({ id: event.userId })
            .then((user: IUser) => {
+               // Create and save the campaign to the data store
                let campaign = {
                    name: event.data.name,
                    plugin: event.data.plugin,
@@ -206,6 +235,7 @@ export default class CampaignHandler extends Handler {
                }
                campaign = c;
 
+               // Add the campaign to the user
                return models.User.findOneAndUpdate(
                    { _id: c.gm },
                    { $push: { campaigns: campaign._id } },
@@ -213,6 +243,7 @@ export default class CampaignHandler extends Handler {
                ).exec();
            })
            .then((user: IUser) => {
+               // Generate the events to send back
                let userIds: string[] = [event.userId];
 
                let events: EventWrapper[] = [];
