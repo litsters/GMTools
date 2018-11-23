@@ -39,7 +39,6 @@ class CampaignsSection extends Component<{}, CampaignSectionState> {
 	});
 
 	this.state = {
-	    // TODO load from the server
 	    showNew: false,
 	    campaignName: '',
 	    campaignSystem: '',
