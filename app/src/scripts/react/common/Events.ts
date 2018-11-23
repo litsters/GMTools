@@ -30,6 +30,7 @@ export class EventBus {
     socket: SocketIOClient.Socket;
     isAuthenticated: boolean;
     private readonly events: any;
+    private socketInitialized: boolean;
 
     /**
      * Create a new EventBus
@@ -116,40 +117,45 @@ export class EventBus {
 
         // Handle authentication
         this.socket.emit('authentication', getCredentials());
-        this.socket.on('authenticated', () => {
-            console.log('authenticated!');
-            this.isAuthenticated = true;
-        });
-        this.socket.on('unauthorized', (data:any) => {
-            console.log('authorization failed:', data);
-            this.socket.disconnect();
-        });
 
-        // Bind to some basic events
-        this.socket.on('disconnect', () => {
-            console.log('connection lost');
-        });
-        this.socket.on('app.error', (event: any) => {
-            console.log('app error:', event);
-        });
-        this.socket.on('error', (err: any) => {
-            console.log('socket error:', err)
-        });
+        if (!this.socketInitialized) {
+            this.socket.on('authenticated', () => {
+                console.log('authenticated!');
+                this.isAuthenticated = true;
+            });
+            this.socket.on('unauthorized', (data:any) => {
+                console.log('authorization failed:', data);
+                this.socket.disconnect();
+            });
 
-        // Replace the onevent handler with our own so we can catch all messages
-        // @ts-ignore
-        const onEvent = this.socket.onevent;
+            // Bind to some basic events
+            this.socket.on('disconnect', () => {
+                console.log('connection lost');
+            });
+            this.socket.on('app.error', (event: any) => {
+                console.log('app error:', event);
+            });
+            this.socket.on('error', (err: any) => {
+                console.log('socket error:', err)
+            });
 
-        // @ts-ignore
-        this.socket.onevent = (packet) => {
-            let args = packet.data || [];
+            // Replace the onevent handler with our own so we can catch all messages
+            // @ts-ignore
+            const onEvent = this.socket.onevent;
 
-            // Send this out to any of our event listeners
-            this.doEmit.apply(this, args);
+            // @ts-ignore
+            this.socket.onevent = (packet) => {
+                let args = packet.data || [];
 
-            // Send the event to any of the socket listeners
-            onEvent.call(this.socket, packet);
-        };
+                // Send this out to any of our event listeners
+                this.doEmit.apply(this, args);
+
+                // Send the event to any of the socket listeners
+                onEvent.call(this.socket, packet);
+            };
+
+            this.socketInitialized = true;
+        }
     }
 }
 

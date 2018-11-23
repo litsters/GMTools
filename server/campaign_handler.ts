@@ -29,7 +29,7 @@ export default class CampaignHandler extends Handler {
                 // First get the user's ID and then find all campaigns for that user's ID
                 return models.User.findOne({ id: event.userId })
                     .then((user: IUser) => {
-                        return models.Campaign.find({ user: user._id }).exec();
+                        return models.Campaign.find({ _id: { $in: user.campaigns } }).exec();
                     })
                     .then((campaigns: ICampaign[]) => {
                         let successEvent = {
