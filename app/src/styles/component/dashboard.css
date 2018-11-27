@@ -1,4 +1,8 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
 .dashboard {
+    font-family: "Raleway", sans-serif;
+
     --accent: red;
     --item-background: rgba(75,75,75,.1);
     --item-outline: rgba(0, 0, 0, .1);

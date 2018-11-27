@@ -4,14 +4,8 @@ import CampaignPreview from "./CampaignPreview";
 import { MainRouterConfig } from "../../routers/config";
 import getBus, { EventBus } from "../../common/Events";
 import { each } from "jquery"
+import { Campaign } from "../../interfaces";
 
-interface Campaign {
-    _id: string
-    users: string[]
-    characters: string[]
-    name: string
-    gm: string //use the GM's id
-}
 
 interface CampaignSectionProps {
 	campaigns:string[],

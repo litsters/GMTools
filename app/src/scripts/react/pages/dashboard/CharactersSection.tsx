@@ -1,40 +1,39 @@
 import React, { Component } from "react";
-//import CharacterPreview from "./CharacterPreview";
+import CharacterPreview from "./CharacterPreview";
+import CharacterCreate from "./CharacterCreate";
 import getBus, { EventBus } from "../../common/Events";
 import { each } from "jquery"
+import { Character, Campaign } from "../../interfaces";
 
-interface Character {
-    _id: string,
-    campaigns: string[],
-    characters: any,
-    name: string,
-    user: string
-}
-interface Campaign {
-    _id: string,
-    users: string[],
-    characters: string[],
-    name: string,
-    gm: string // User._id of the GM
-}
 
 interface CharacterSectionState {
-    showNew: boolean,
     characterName: string,
     characterSystem: string,
     characters: Character[],
     joinCharacter: Character,
     campaigns: Campaign[],
     selectedCampaign: string,
+    isCreating: boolean
 }
 
 class CharactersSection extends Component<{}, CharacterSectionState> {
     private readonly events: EventBus;
     private readonly campaignsMap: {[id: string]: Campaign};
     private readonly eventListeners: object;
+    private setCreatePanelOpen: any;
 
     constructor(props:any) {
         super(props);
+        
+        this.state = {
+            characterName: '',
+            characterSystem: '',
+            characters: [],
+            joinCharacter: null,
+            campaigns: [],
+            selectedCampaign: "",
+            isCreating: false
+        };
 
         // Declare what events we listen to and what method will handle them
         this.eventListeners = {
@@ -47,17 +46,12 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         each(this.eventListeners, (event, callback) => {
             this.events.on(event, callback);
         });
-
-        this.state = {
-            showNew: false,
-            characterName: '',
-            characterSystem: '',
-            characters: [],
-            joinCharacter: null,
-            campaigns: [],
-            selectedCampaign: "",
-        };
+    
         this.campaignsMap = {};
+
+        this.setCreatePanelOpen = (val:boolean = true) => this.setState({isCreating: val});
+        this.renderCharacterCreate = this.renderCharacterCreate.bind(this);
+
     }
 
     componentDidMount() {
@@ -98,7 +92,7 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
             case "newCharacter":
                 this.addCharacter();
                 this.setState({
-                    showNew: false,
+                    isCreating: false,
                     characterName: '',
                 });
                 break;
@@ -179,27 +173,38 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         });
     }
 
+    renderCharacterCreate(isCreating:boolean) {
+        if (!isCreating) return null;
+
+        return (
+            <CharacterCreate createCharacter={this.addCharacter.bind(this)} 
+                close={this.setCreatePanelOpen.bind(null, false)} 
+                existing={null} />
+        );
+    }
+
     render() {
         //const { characters } = this.props;
-        //const { isCreating } = this.state;
+        const { characters, isCreating } = this.state;
 
-        //const renderedCharacterCreate = this.renderCharacterCreate(isCreating);
+        const renderedCharacterCreate = this.renderCharacterCreate(isCreating);
 
         return (
             <div className="content-page characters" id="characters">
                 <h1>Here are your Characters</h1>
                 <div className="previews">
-                    {/*characters ? characters.map((character:any) => <CharacterPreview key={character.name} name={character.name}/>) : null }
+                    {characters ? characters.map((character:any) => 
+                        <CharacterPreview key={character.name} name={character.name} 
+                            campaign={this.getCampaign(character)} 
+                            join={() => this.initializeJoin(character)}/>) : null 
+                    }
                     <div className="character-preview add-item" onClick={this.setCreatePanelOpen.bind(null, true)}>
                         <span>+</span>
                     </div>
                 </div>
                 {renderedCharacterCreate}
-                    {this.state.characters.map((character: Character) =>
-                    <CharacterPreview key={character._id} name={character.name} campaign={this.getCampaign(character)} join={() => this.initializeJoin(character)}/>)*/}
-                    </div>
                 <div className="newCharacter">
-                    {this.state.showNew ? (
+                    {isCreating ? (
                         <form onSubmit={(event) => this.handleSubmit(event, "newCharacter")}>
                             <select value={this.state.characterSystem} onChange={(event) => this.updateInputState('characterSystem', event)}>
                                 <option value="dnd5e">D&amp;D 5e</option>
@@ -207,9 +212,7 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
                             <input type="text" placeholder="Name" value={this.state.characterName} onChange={(event) => this.updateInputState('characterName', event)}/>
                             <button title="Create Character" type="submit">Create</button>
                         </form>
-                    ) : (
-                        <button title="New Character" onClick={() => this.setState({showNew: true})}>+</button>
-                    )}
+                    ) : null}
                 </div>
                 {this.state.joinCharacter && <form onSubmit={() => this.handleSubmit(event, "joinCampaign")} className="joinCampaign">
                     <span>{this.state.joinCharacter.name}</span>
