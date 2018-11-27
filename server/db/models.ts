@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import User from './schemas/user';
 import Campaign from './schemas/campaign';
 import Character from './schemas/character';
+import Note from './schemas/note';
 
 const uri = "mongodb+srv://gmuser:gm-tools@gm-tools-ig9xf.mongodb.net/gm-tools";
 
@@ -17,7 +18,8 @@ mongo.on("error", err => console.error(`Connection error:`, err));
 const models = {
    User,
    Campaign,
-   Character
+   Character,
+   Note
 };
 
 export default models;

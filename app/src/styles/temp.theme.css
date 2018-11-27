@@ -59,11 +59,16 @@ body {
 .panel:before { top: 0; }
 .panel:after { bottom: 0; }
 
-.panel h2 {
+.panel h2, .panel h3 {
     color: var(--panel-color-txt);
-    font-family: MrJeeves, "sans serif";
+    font-family: MrJeeves, sans-serif;
     font-size: 2em;
     margin: 5px 0;
+}
+.panel h3 {
+    border-bottom: 1px solid #58180D;
+    font-size: 1.4em;
+    margin-top: 15px;
 }
 .panel .color-text {
     color: var(--panel-color-txt);

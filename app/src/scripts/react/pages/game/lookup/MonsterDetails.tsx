@@ -12,6 +12,14 @@ const MonsterDetails: SFC<MonsterDetailsProps> = (props) => {
     const { monster } = props;
     console.log(monster);
 
+    function formatModifier(modifier:number) {
+        return (modifier >= 0 ? '+' : '') + modifier;
+    }
+
+    function getModifier(attributeScore:number) {
+        return formatModifier(Math.floor(attributeScore/2 - 5))
+    }
+
     const renderTraits = (traits:any) => {
         if (!traits) return null;
         // handles case where 'trait' is a single object, not an array
@@ -30,7 +38,33 @@ const MonsterDetails: SFC<MonsterDetailsProps> = (props) => {
             );
         }
         return null;
-    }
+    };
+
+    const renderActions = (title:string, actions:any) => {
+        if (!actions) {
+            return null;
+        }
+        // Make sure the actions is an array
+        if (!Array.isArray(actions)) {
+            actions = [ actions ];
+        }
+
+        if (actions.length > 0) {
+            return (
+                <div>
+                    <h3>{title}</h3>
+                    {actions.map((action:any) => {
+                        return (
+                            <p key={action.name}>
+                                <strong><em>{action.name}.</em></strong> {action.text}
+                            </p>
+                        );
+                    })}
+                </div>
+            );
+        }
+        return null;
+    };
 
     return (
         <div className="details-page">
@@ -50,26 +84,34 @@ const MonsterDetails: SFC<MonsterDetailsProps> = (props) => {
                 </ul>
                 <div className="divider"></div>
                 <ul className="ul-horizontal color-text">
-                    <li><strong>STR</strong>{monster.str}</li>
-                    <li><strong>DEX</strong>{monster.dex}</li>
-                    <li><strong>CON</strong>{monster.con}</li>
-                    <li><strong>INT</strong>{monster.int}</li>
-                    <li><strong>WIS</strong>{monster.wis}</li>
-                    <li><strong>CHA</strong>{monster.cha}</li>
+                    <li><strong>STR</strong>{monster.str} ({getModifier(monster.str)})</li>
+                    <li><strong>DEX</strong>{monster.dex} ({getModifier(monster.dex)})</li>
+                    <li><strong>CON</strong>{monster.con} ({getModifier(monster.con)})</li>
+                    <li><strong>INT</strong>{monster.int} ({getModifier(monster.int)})</li>
+                    <li><strong>WIS</strong>{monster.wis} ({getModifier(monster.wis)})</li>
+                    <li><strong>CHA</strong>{monster.cha} ({getModifier(monster.cha)})</li>
 
                 </ul>
                 <div className="divider"></div>
                 <ul className="color-text">
-                    <li><strong>Skills</strong> {monster.skill}</li>
-                    <li><strong>Senses</strong> {monster.senses}</li>
-                    <li><strong>Languages</strong> {monster.languages}</li>
+                    {monster.save && <li><strong>Saving Throws</strong> {monster.save}</li>}
+                    {monster.skill && <li><strong>Skills</strong> {monster.skill}</li>}
+                    {monster.vulnerable && <li><strong>Damage Vulnerabilities</strong> {monster.vulnerable}</li>}
+                    {monster.resist && <li><strong>Damage Resistances</strong> {monster.resist}</li>}
+                    {monster.immune && <li><strong>Damage Immunities</strong> {monster.immune}</li>}
+                    {monster.conditionImmune && <li><strong>Damage Immunities</strong> {monster.conditionImmune}</li>}
+                    <li><strong>Senses</strong> {monster.senses && monster.senses + ','} passive Perception {monster.passive}</li>
+                    {monster.languages && <li><strong>Languages</strong> {monster.languages}</li>}
                     <li><strong>Challenge</strong> {monster.cr} ({xpByChallengeRating[monster.cr]} XP)</li>
                 </ul>
                 <div className="divider"></div>
                 {renderTraits(monster.trait)}
+                {renderActions("Actions", monster.action)}
+                {renderActions("Reactions", monster.reaction)}
+                {renderActions("Legendary Actions", monster.legendary)}
             </div>
         </div>
     );
-}
+};
 
 export default MonsterDetails;
