@@ -10,6 +10,7 @@ import ClientConnection from "./clientconnection";
 import Handlers from "./handlers";
 import CharacterHandler from "./character_handler";
 import CampaignHandler from "./campaign_handler";
+import InitiativeHandler from "./initiative_handler";
 import NoteHandler from "./note_handler";
 import registerAPIs from "./api";
 import { registerPluginAssetServer } from "./plugins";
@@ -68,6 +69,7 @@ const handler_modules = new Handlers();
 handler_modules.addHandler(new CharacterHandler("character"));
 handler_modules.addHandler(new CampaignHandler("campaign"));
 handler_modules.addHandler(new NoteHandler("note"));
+handler_modules.addHandler(new InitiativeHandler("initiative"));
 
 // Socket server
 const server = require('http').createServer(app);
@@ -174,6 +176,21 @@ const postAuthenticate = (client:any) => {
             });
         }).catch(function(err:any){
             // Something went wrong while persisting data
+            sendError(client, err);
+        });
+    });
+
+    client.on("initiative.turn", (data: any) => {
+        handler_modules.handleEvent("initiative.turn", data).then(function(events:EventWrapper[]){
+            if(events !== null) events.forEach(function(event){
+                try{
+                    connections.sendEvent(event);
+                }catch(err){
+                    console.log(err);
+                }
+            });
+        }).catch(function(err:any){
+            // Something went wrong
             sendError(client, err);
         });
     });
