@@ -3,6 +3,7 @@ import EventWrapper from "./event";
 import models from "./db/models";
 import { IUser } from "./db/schemas/user";
 import { INote } from "./db/schemas/note";
+import { ICampaign } from "./db/schemas/campaign";
 
 export default class NoteHandler extends Handler {
     handleEvent(eventType:string, event:any): Promise<EventWrapper[]>{
@@ -17,27 +18,54 @@ export default class NoteHandler extends Handler {
     }
 
     /*
-    Gets the data for a note; event.key should be the note's mongo id
+    Gets the data for a note; event.key should be the note's mongo id;
+    Alternatively, it could be a campaign id, in which case it will retrieve all
+    of the user's notes for that campaign.
     */
     private getNote(event:any): Promise<EventWrapper[]>{
         return new Promise<EventWrapper[]>((resolve, reject) => {
             let id = event.key;
 
             models.Note.findOne({_id: id}).then(function(note:INote){
-                // Create return event; don't worry about user id. This is
-                // a get operation, so will only be returned to the client who
-                // requested it.
+                if(!note){
+                    // Note wasn't found; this may be a campaign id instead.
+                    models.Campaign.findById(id).then(function(campaign:ICampaign){
+                        if(!campaign) reject("No note or campaign found.");
 
-                let successEvent = {
-                    namespace: event.namespace,
-                    key: "current-data",
-                    data: note
-                };
+                        // Find all notes that belong to the user
+                        models.Note.find({author: event.userId, campaign: campaign._id}).then((notes:INote[]) => {
+                            let successEvent = {
+                                namespace: event.namespace,
+                                key: "current-data",
+                                data: {
+                                    notes: notes
+                                }
+                            };
 
-                let userids:string[] = [];
-                let events:EventWrapper[] = [];
-                events.push(new EventWrapper(userids, successEvent, "data.retrieved"));
-                resolve(events);
+                            let userids:string[] = [event.userId];
+                            let events:EventWrapper[] = [];
+                            events.push(new EventWrapper(userids, successEvent, "data.retrieved"));
+                            resolve(events);
+                        }).catch(function(err){
+                            reject(err);
+                        });
+                    });
+                } else {
+                    // Create return event; don't worry about user id. This is
+                    // a get operation, so will only be returned to the client who
+                    // requested it.
+
+                    let successEvent = {
+                        namespace: event.namespace,
+                        key: "current-data",
+                        data: note
+                    };
+
+                    let userids:string[] = [];
+                    let events:EventWrapper[] = [];
+                    events.push(new EventWrapper(userids, successEvent, "data.retrieved"));
+                    resolve(events);
+                }
             }).catch(function(err){
                 reject(err);
             });
@@ -50,12 +78,59 @@ export default class NoteHandler extends Handler {
     private saveNote(event:any): Promise<EventWrapper[]>{
         switch(event.key){
             case 'new_note': return this.newNote(event);
+            case 'update_note': return this.updateNote(event);
+            case 'delete_note': return this.deleteNote(event);
             default:
                 return new Promise<EventWrapper[]>((resolve, reject) => {
                     reject("Unrecognized operation for note persist: " + event.key);
                 });
         }
     }
+
+    /*
+    Delete a note
+    */
+    private deleteNote(event:any): Promise<EventWrapper[]>{
+        return models.Note.findByIdAndDelete(event.data.id).then((note:INote) => {
+            let events:EventWrapper[] = [];
+
+            // Return success message to user
+            let successEvent = {
+                namespace: event.namespace,
+                key: "data-deleted",
+                data: note
+            };
+
+            let userids = [event.userId];
+            events.push(new EventWrapper(userids, successEvent, "data.persisted"));
+
+            return events;
+        });
+    }
+
+    /*
+    Update an existing note
+    */
+    private updateNote(event:any): Promise<EventWrapper[]>{
+        return models.Note.findOneAndUpdate({_id: event.data.id}, 
+            {content: event.data.content, title: event.data.title},{new:true})
+            .then((note:INote) => {
+
+                // Return updated note to user
+                let events:EventWrapper[] = [];
+
+                let successEvent = {
+                    namespace: event.namespace,
+                    key: "current-data",
+                    data: note
+                };
+
+                let userids = [event.userId];
+                events.push(new EventWrapper(userids, successEvent, "data.persisted"));
+
+                return events;
+        }); 
+    };
 
     /*
     Create a new note
@@ -81,8 +156,7 @@ export default class NoteHandler extends Handler {
                     };
 
                     // Send to user who owns the note
-                    let userids:string[] = [];
-                    userids.push(event.data.userid);
+                    let userids:string[] = [event.data.userid];
 
                     let events:EventWrapper[] = [];
                     events.push(new EventWrapper(userids, successEvent, "data.persisted"));
