@@ -40,6 +40,11 @@ class Dashboard extends Component<DashboardProps, {}> {
     componentDidMount() {
         this.calculateElementPositions();
         this.registerContentScrollEvent();
+
+        // if hash is provided, jump to it
+        if (window.location.hash) {
+            this.scrollTo(window.location.hash, 0);
+        }
     }
 
     componentWillUnmount() {
@@ -62,7 +67,7 @@ class Dashboard extends Component<DashboardProps, {}> {
         this.events.emit('greeting', {msg: msg});
     }
 
-    scrollTo(element:String) {
+    scrollTo(element:string, duration:number = 500) {
         // NOTE: bug when animating scroll with 'scroll-snap-type' disabled; so must remove css prop
             // before animation, then re-enable after animation is complete
         const content = $(this.contentWrapper);
@@ -71,9 +76,11 @@ class Dashboard extends Component<DashboardProps, {}> {
             .css({"scroll-snap-type": "none", "-webkit-scroll-snap-type": "none"})
             .animate({
                 scrollTop: pos
-            }, 500, () => {
+            }, duration, () => {
                 content.css({"scroll-snap-type": "y mandatory", "-webkit-scroll-snap-type": "y mandatory"});
             });
+
+        if (element[0] === '#') window.location.hash = element;
     }
 
     registerContentScrollEvent() {
