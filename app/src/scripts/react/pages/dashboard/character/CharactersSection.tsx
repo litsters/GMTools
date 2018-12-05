@@ -1,10 +1,15 @@
 import React, { Component } from "react";
 import CharacterPreview from "./CharacterPreview";
 import CharacterCreate from "./CharacterCreate";
-import EventBus from "../../common/Events";
+import EventBus from "../../../common/Events";
 import { each } from "jquery"
-import { Character, Campaign } from "../../interfaces";
+import { Character, Campaign } from "../../../interfaces";
 
+enum ComponentMode {
+    Default,
+    Create,
+    Join
+}
 
 interface CharacterSectionState {
     characterName: string,
@@ -13,14 +18,14 @@ interface CharacterSectionState {
     joinCharacter: Character,
     campaigns: Campaign[],
     selectedCampaign: string,
-    isCreating: boolean
+    mode: ComponentMode
 }
 
 class CharactersSection extends Component<{}, CharacterSectionState> {
     private events: EventBus;
     private readonly campaignsMap: {[id: string]: Campaign};
     private readonly eventListeners: object;
-    private setCreatePanelOpen: any;
+    private setComponentMode: any;
 
     constructor(props:any) {
         super(props);
@@ -32,7 +37,7 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
             joinCharacter: null,
             campaigns: [],
             selectedCampaign: "",
-            isCreating: false
+            mode: ComponentMode.Default
         };
 
         // Declare what events we listen to and what method will handle them
@@ -51,20 +56,10 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
                 });
             });
 
-        this.state = {
-            isCreating: false,
-            characterName: '',
-            characterSystem: '',
-            characters: [],
-            joinCharacter: null,
-            campaigns: [],
-            selectedCampaign: "",
-        };
         this.campaignsMap = {};
 
-        this.setCreatePanelOpen = (val:boolean = true) => this.setState({isCreating: val});
-        this.renderCharacterCreate = this.renderCharacterCreate.bind(this);
-
+        this.setComponentMode = (val:ComponentMode = ComponentMode.Default) => this.setState({mode: val});
+        this.handleCreateCharacter = this.handleCreateCharacter.bind(this);
     }
 
     componentDidMount() {
@@ -80,14 +75,14 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         }
     }
 
-    addCharacter() {
+    addCharacter(character:any) {
         // Send the new character to be persisted to the server
         const payload = {
             namespace: 'character',
             key: 'new_character',
             data: {
-                name: this.state.characterName,
-                system: this.state.characterSystem,
+                name: character.name,
+                system: character.system,
             },
         };
         this.events.emit('data.persist', payload, true);
@@ -99,15 +94,18 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         this.setState(newState);
     }
 
-    handleSubmit(event: any, formName: string) {
-        event.preventDefault();
+    handleCreateCharacter(character:any) {
+        this.addCharacter(character);
+        this.setState({
+            mode: ComponentMode.Default,
+            characterName: '',
+        });
+    }
+
+    handleSubmit(formName: string) {
         switch (formName) {
             case "newCharacter":
-                this.addCharacter();
-                this.setState({
-                    isCreating: false,
-                    characterName: '',
-                });
+                alert("deprecated")
                 break;
             case "joinCampaign":
                 if (this.state.selectedCampaign in this.campaignsMap) {
@@ -186,21 +184,9 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         });
     }
 
-    renderCharacterCreate(isCreating:boolean) {
-        if (!isCreating) return null;
-
-        return (
-            <CharacterCreate createCharacter={this.addCharacter.bind(this)} 
-                close={this.setCreatePanelOpen.bind(null, false)} 
-                existing={null} />
-        );
-    }
-
     render() {
         //const { characters } = this.props;
-        const { characters, isCreating } = this.state;
-
-        const renderedCharacterCreate = this.renderCharacterCreate(isCreating);
+        const { characters, mode } = this.state;
 
         return (
             <div className="content-page characters" id="characters">
@@ -211,12 +197,17 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
                             campaign={this.getCampaign(character)} 
                             join={() => this.initializeJoin(character)}/>) : null 
                     }
-                    <div className="character-preview add-item" onClick={this.setCreatePanelOpen.bind(null, true)}>
+                    <div className="character-preview add-item" onClick={this.setComponentMode.bind(null, ComponentMode.Create)}>
                         <span>+</span>
                     </div>
                 </div>
-                {renderedCharacterCreate}
-                <div className="newCharacter">
+                {mode === ComponentMode.Create
+                    ? <CharacterCreate createCharacter={this.handleCreateCharacter} 
+                        close={this.setComponentMode} 
+                        existing={null} />
+                    : null
+                }
+                {/*<div className="newCharacter">
                     {isCreating ? (
                         <form onSubmit={(event) => this.handleSubmit(event, "newCharacter")}>
                             <select value={this.state.characterSystem} onChange={(event) => this.updateInputState('characterSystem', event)}>
@@ -234,7 +225,7 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
                         {this.state.campaigns.map((campaign: Campaign) => <option key={campaign._id} value={campaign._id}>{campaign.name}</option>)}
                     </select>
                     <button title="Join Campaign" type="submit">Join</button>
-                </form>}
+                    </form>*/}
             </div>
         );
     }

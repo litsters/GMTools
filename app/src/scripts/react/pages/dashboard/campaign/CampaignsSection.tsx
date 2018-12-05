@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import CampaignPreview from "./CampaignPreview";
-import { MainRouterConfig } from "../../routers/config";
-import EventBus from "../../common/Events";
+import { MainRouterConfig } from "../../../routers/config";
+import EventBus from "../../../common/Events";
 import { each } from "jquery"
-import { Campaign } from "../../interfaces";
+import { Campaign } from "../../../interfaces";
 import CampaignCreate from "./CampaignCreate";
 
 

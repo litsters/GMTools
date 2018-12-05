@@ -8,8 +8,8 @@ import * as $ from "jquery";
 import EventBus from '../../common/Events';
 
 import HomeSection from "./HomeSection";
-import CampaignsSection from "./CampaignsSection";
-import CharactersSection from "./CharactersSection";
+import CampaignsSection from "./campaign/CampaignsSection";
+import CharactersSection from "./character/CharactersSection";
 
 
 interface DashboardProps {

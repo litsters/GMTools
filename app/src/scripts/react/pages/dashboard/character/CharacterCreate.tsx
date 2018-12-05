@@ -53,8 +53,8 @@ class CharacterCreate extends Component<CharacterCreateProps, CharacterCreateSta
         let character:any = { };
         
         character.name = this.txtbName.value.trim();
-        character.game = this.ddnGame.value;
-        if (character.game === "none") character.game = null;
+        character.system = this.ddnGame.value;
+        if (character.system === "none") character.system = null;
 
         return character;
     }
@@ -64,11 +64,11 @@ class CharacterCreate extends Component<CharacterCreateProps, CharacterCreateSta
         let validation:any = {};
         
         validation.name = character.name === "" ? "Please enter a valid name" : null;
-        validation.game = !character.game ? "Please select a game" : null;
+        validation.system = !character.system ? "Please select a game" : null;
 
         this.setState({validation});
 
-        if (validation.name || validation.game) return false;
+        if (validation.name || validation.system) return false;
         return true;
     }
 
@@ -96,7 +96,7 @@ class CharacterCreate extends Component<CharacterCreateProps, CharacterCreateSta
                 <br/>
                 <div>
                     <label>Game</label>
-                    {validation.game ? <p>{validation.game}</p> : null}
+                    {validation.system ? <p>{validation.system}</p> : null}
                     <select ref={el => this.ddnGame = el}>
                         <option value={"none"}>Select Game...</option>
                         {Object.keys(plugins).map((key) => {
