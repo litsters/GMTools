@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CharacterPreview from "./CharacterPreview";
 import CharacterCreate from "./CharacterCreate";
+import CharacterDetails from "./CharacterDetails";
 import EventBus from "../../../common/Events";
 import { each } from "jquery"
 import { Character, Campaign } from "../../../interfaces";
@@ -8,16 +9,15 @@ import { Character, Campaign } from "../../../interfaces";
 enum ComponentMode {
     Default,
     Create,
-    Join
+    Details
 }
 
 interface CharacterSectionState {
-    characterName: string,
-    characterSystem: string,
     characters: Character[],
     joinCharacter: Character,
     campaigns: Campaign[],
     selectedCampaign: string,
+    selectedCharacter: Character,
     mode: ComponentMode
 }
 
@@ -31,12 +31,11 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         super(props);
         
         this.state = {
-            characterName: '',
-            characterSystem: '',
             characters: [],
             joinCharacter: null,
             campaigns: [],
             selectedCampaign: "",
+            selectedCharacter: null,
             mode: ComponentMode.Default
         };
 
@@ -60,6 +59,8 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
 
         this.setComponentMode = (val:ComponentMode = ComponentMode.Default) => this.setState({mode: val});
         this.handleCreateCharacter = this.handleCreateCharacter.bind(this);
+        this.handleJoinCampaign = this.handleJoinCampaign.bind(this);
+        this.renderPanel = this.renderPanel.bind(this);
     }
 
     componentDidMount() {
@@ -97,30 +98,23 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
     handleCreateCharacter(character:any) {
         this.addCharacter(character);
         this.setState({
-            mode: ComponentMode.Default,
-            characterName: '',
+            mode: ComponentMode.Default
         });
     }
 
-    handleSubmit(formName: string) {
-        switch (formName) {
-            case "newCharacter":
-                alert("deprecated")
-                break;
-            case "joinCampaign":
-                if (this.state.selectedCampaign in this.campaignsMap) {
-                    const payload = {
-                        namespace: "campaign",
-                        key: "add_character",
-                        data: {
-                            campaign: this.state.selectedCampaign,
-                            character: this.state.joinCharacter._id,
-                        },
-                    };
-                    this.events.emit("data.persist", payload, true);
-                }
-                break;
-        }
+    handleJoinCampaign(character:Character, campaign:any) {
+        if (!character || !campaign) return;
+
+        const payload = {
+            namespace: "campaign",
+            key: "add_character",
+            data: {
+                campaign: campaign._id,
+                character: character._id,
+            },
+        };
+
+        this.events.emit("data.persist", payload, true);
     }
 
     dataRetrieved(event: any) {
@@ -184,40 +178,47 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         });
     }
 
+    renderPanel(mode:ComponentMode) {
+        switch(mode) {
+            case ComponentMode.Create: return (
+                    <CharacterCreate 
+                    createCharacter={this.handleCreateCharacter} 
+                    close={this.setComponentMode} existing={null} />
+            )
+            case ComponentMode.Details: return (
+                <CharacterDetails
+                    character={this.state.selectedCharacter}
+                    campaigns={this.state.campaigns}
+                    close={this.setComponentMode}
+                    joinCampaign={this.handleJoinCampaign}
+                />
+            )
+            default: return null;
+        }
+    }
+
     render() {
         //const { characters } = this.props;
+        const self = this;
         const { characters, mode } = this.state;
+
+        const renderedPanel = this.renderPanel(mode);
 
         return (
             <div className="content-page characters" id="characters">
                 <h1>Here are your Characters</h1>
                 <div className="previews">
-                    {characters ? characters.map((character:any) => 
+                    {characters.map((character:any) => 
                         <CharacterPreview key={character.name} name={character.name} 
-                            campaign={this.getCampaign(character)} 
-                            join={() => this.initializeJoin(character)}/>) : null 
-                    }
+                            campaignName={self.getCampaign(character)} 
+                            onClick={() => self.setState({selectedCharacter:character, mode:ComponentMode.Details})}/>
+                    )}
                     <div className="character-preview add-item" onClick={this.setComponentMode.bind(null, ComponentMode.Create)}>
                         <span>+</span>
                     </div>
                 </div>
-                {mode === ComponentMode.Create
-                    ? <CharacterCreate createCharacter={this.handleCreateCharacter} 
-                        close={this.setComponentMode} 
-                        existing={null} />
-                    : null
-                }
-                {/*<div className="newCharacter">
-                    {isCreating ? (
-                        <form onSubmit={(event) => this.handleSubmit(event, "newCharacter")}>
-                            <select value={this.state.characterSystem} onChange={(event) => this.updateInputState('characterSystem', event)}>
-                                <option value="dnd5e">D&amp;D 5e</option>
-                            </select>
-                            <input type="text" placeholder="Name" value={this.state.characterName} onChange={(event) => this.updateInputState('characterName', event)}/>
-                            <button title="Create Character" type="submit">Create</button>
-                        </form>
-                    ) : null}
-                </div>
+                {renderedPanel}
+                {/*
                 {this.state.joinCharacter && <form onSubmit={() => this.handleSubmit(event, "joinCampaign")} className="joinCampaign">
                     <span>{this.state.joinCharacter.name}</span>
                     <select onChange={(event) => this.updateInputState("selectedCampaign", event)}>
