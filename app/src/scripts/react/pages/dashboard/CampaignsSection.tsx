@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import CampaignPreview from "./CampaignPreview";
 import { MainRouterConfig } from "../../routers/config";
-import getBus, { EventBus } from "../../common/Events";
+import EventBus from "../../common/Events";
 import { each } from "jquery"
 
 interface Campaign {
@@ -33,10 +33,13 @@ class CampaignsSection extends Component<{}, CampaignSectionState> {
 	    'data.persisted': this.dataPersisted.bind(this),
 	};
 
-	this.events = getBus();
-	each(this.eventListeners, (event, callback) => {
-	    this.events.on(event, callback);
-	});
+	EventBus.get()
+		.then((bus) => {
+			this.events = bus;
+			each(this.eventListeners, (event, callback) => {
+				this.events.on(event, callback);
+			});
+		});
 
 	this.state = {
 	    showNew: false,
@@ -47,7 +50,7 @@ class CampaignsSection extends Component<{}, CampaignSectionState> {
     }
 
     componentDidMount() {
-	this.events.emit('data.get', { namespace: 'campaign', key: 'get_campaigns' }, true);
+        EventBus.emit('data.get', {namespace: 'campaign', key: 'get_campaigns'}, true);
     }
 
     componentWillUnmount() {

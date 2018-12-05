@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import CharacterPreview from "./CharacterPreview";
-import getBus, { EventBus } from "../../common/Events";
+import EventBus from "../../common/Events";
 import { each } from "jquery"
 
 interface Character {
@@ -28,7 +28,7 @@ interface CharacterSectionState {
 }
 
 class CharactersSection extends Component<{}, CharacterSectionState> {
-    private readonly events: EventBus;
+    private events: EventBus;
     private readonly campaignsMap: {[id: string]: Campaign};
     private readonly eventListeners: object;
 
@@ -42,10 +42,14 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         };
 
         // Bind events
-        this.events = getBus();
-        each(this.eventListeners, (event, callback) => {
-            this.events.on(event, callback);
-        });
+        EventBus.get()
+            .then((bus) => {
+                this.events = bus;
+
+                each(this.eventListeners, (event, callback) => {
+                    this.events.on(event, callback);
+                });
+            });
 
         this.state = {
             showNew: false,
@@ -61,7 +65,7 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
 
     componentDidMount() {
         // Ask the server to get all our characters
-        this.events.emit('data.get', { namespace: 'character', key: 'get_characters' }, true);
+        EventBus.emit('data.get', {namespace: 'character', key: 'get_characters'}, true);
     }
 
     componentWillUnmount() {
