@@ -1,9 +1,22 @@
 button {
     cursor: pointer;
     display: block;
-    margin: auto;
+}
+
+.btn {
+    border: none;
+    border-radius: 5px;
+    font-family: Raleway, sans-serif;
+    font-size: 12pt;
+    padding: 10px 25px;
+    text-transform: uppercase;
 }
 
 .btn.disabled {
     background: #ccc;
+}
+
+.btn.btn-success {
+    background: var(--success-grad);
+    color: white;
 }

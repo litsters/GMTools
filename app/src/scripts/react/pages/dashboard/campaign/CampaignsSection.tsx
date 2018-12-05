@@ -15,16 +15,16 @@ interface CampaignSectionProps {
 
 interface CampaignSectionState {
     isCreating:boolean,
-    campaigns:Campaign[]
+    campaigns:any[]
 }
 
 class CampaignsSection extends Component<CampaignSectionProps, CampaignSectionState> {
 
-    private events: EventBus;
+  private events: EventBus;
 	private readonly eventListeners: object;
 	private setIsCreating: any;
 
-    constructor(props:any) {
+  constructor(props:any) {
 		super(props);
 
 		this.eventListeners = {
@@ -47,21 +47,22 @@ class CampaignsSection extends Component<CampaignSectionProps, CampaignSectionSt
 
 		this.setIsCreating = (val = true) => this.setState({isCreating: val});
 		this.handleSubmit = this.handleSubmit.bind(this);
-    }
+  }
 
-    componentDidMount() {
-        EventBus.emit('data.get', {namespace: 'campaign', key: 'get_campaigns'}, true);
-    }
+  componentDidMount() {
+    EventBus.emit('data.get', {namespace: 'campaign', key: 'get_campaigns'}, true);
+  }
 
-    componentWillUnmount() {
+  componentWillUnmount() {
+		const self = this;
 		if (this.events !== null) {
 			each(this.eventListeners, (event, callback) => {
-			this.events.removeListener(event, callback);
+				self.events.removeListener(event, callback);
 			});
 		}
-    }
+  }
 
-    addCampaign(campaign:any) {
+  addCampaign(campaign:any) {
 		const payload = {
 			namespace: 'campaign',
 			key: 'new_campaign', 
@@ -71,46 +72,46 @@ class CampaignsSection extends Component<CampaignSectionProps, CampaignSectionSt
 			},
 		};
 		this.events.emit('data.persist', payload, true);
-    }
+  }
 
-    updateInputState(key:string, event:any) {
+  updateInputState(key:string, event:any) {
 		const newState = {};
 		newState[key] = event.target.value;
 		this.setState(newState);
-    }
+  }
 
-    handleSubmit(campaign:any) {
+  handleSubmit(campaign:any) {
 		this.addCampaign(campaign)
 		this.setState({
 			isCreating: false
 		});
-    }
+  }
 
-    dataRetrieved(event: any) {
+  dataRetrieved(event: any) {
 		if (event.namespace === "campaign" && event.key === "get_campaigns" && event.data) {
 			this.setState({
-			campaigns: event.data,
+				campaigns: event.data
 			});
 		}
-    }
+  }
 
-    dataPersisted(event: any) {
+  dataPersisted(event: any) {
 		if (event.namespace === "campaign" && event.key === "new_campaign" && event.data) {
 			const campaigns = this.state.campaigns.slice();
 			campaigns.push(event.data);
 			this.setState({
-				campaigns: campaigns,
+				campaigns: campaigns
 			});
 		}
-    }
+  }
 
-    render() {
+  render() {
 		const { isCreating, campaigns } = this.state;
 
-        return (
-            <div className="content-page campaigns" id="campaigns">
-                <h1>Here are your Campaigns</h1>
-                <Link to={MainRouterConfig.routes.game.path}>go to demo</Link>
+    return (
+      <div className="content-page campaigns" id="campaigns">
+        <h1>Here are your Campaigns</h1>
+        <Link to={MainRouterConfig.routes.game.path}>go to demo</Link>
 				<div className="previews">
 					{this.state.campaigns.map((campaign: Campaign) => 
 						<CampaignPreview key={campaign._id} name={campaign.name}/>
@@ -122,9 +123,9 @@ class CampaignsSection extends Component<CampaignSectionProps, CampaignSectionSt
 				{isCreating
 					? <CampaignCreate close={this.setIsCreating.bind(null, false)} existing={campaigns} createCampaign={this.handleSubmit} />
 					: null}
-            </div>
-        );
-    }
+      </div>
+    );
+  }
 }
 
 export default CampaignsSection;

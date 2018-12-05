@@ -65,7 +65,7 @@ class CharacterDetails extends Component<CharacterDetailsProps, CharacterDetails
                     </select>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type="button" onClick={self.handleJoinCampaign}>Save</button>
+                    <button className="btn btn-success" type="button" onClick={self.handleJoinCampaign}>Save</button>
                 </Modal.Footer>
             </Modal>
         );
@@ -84,8 +84,8 @@ class CharacterDetails extends Component<CharacterDetailsProps, CharacterDetails
             : <p>No active campaigns</p>
 
         return (
-            <div>
-                <h3>Active Campaigns <span onClick={this.setIsJoining}>+</span></h3>
+            <div className="well">
+                <h3>Active Campaigns <span className="float-right pointer" onClick={this.setIsJoining}>Join +</span></h3>
                 {content}
             </div>
         )

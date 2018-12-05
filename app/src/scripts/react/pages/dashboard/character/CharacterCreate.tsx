@@ -90,13 +90,13 @@ class CharacterCreate extends Component<CharacterCreateProps, CharacterCreateSta
                 <h1>Create Character</h1>
                 <div>
                     <label>Name</label>
-                    {validation.name ? <p>{validation.name}</p> : null}
+                    {validation.name ? <p className="validator">{validation.name}</p> : null}
                     <input type="text" ref={el => this.txtbName = el}/>
                 </div>
                 <br/>
                 <div>
                     <label>Game</label>
-                    {validation.system ? <p>{validation.system}</p> : null}
+                    {validation.system ? <p className="validator">{validation.system}</p> : null}
                     <select ref={el => this.ddnGame = el}>
                         <option value={"none"}>Select Game...</option>
                         {Object.keys(plugins).map((key) => {
@@ -105,7 +105,9 @@ class CharacterCreate extends Component<CharacterCreateProps, CharacterCreateSta
                     </select>
                 </div>
                 <br/>
-                <button type="button" onClick={this.submit}>Create</button>
+                <br/>
+                <br/>
+                <button className="btn btn-success" type="button" onClick={this.submit}>Create</button>
             </div>
         );
     }

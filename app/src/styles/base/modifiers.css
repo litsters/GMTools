@@ -12,3 +12,8 @@
 
 .pointer { cursor: pointer }
 
+.validator {
+    color: red;
+    font-size: .8em;
+    margin: 0;
+}

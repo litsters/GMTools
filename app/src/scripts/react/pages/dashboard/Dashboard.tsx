@@ -69,7 +69,8 @@ class Dashboard extends Component<DashboardProps, {}> {
 
     scrollTo(element:string, duration:number = 500) {
         // NOTE: bug when animating scroll with 'scroll-snap-type' disabled; so must remove css prop
-            // before animation, then re-enable after animation is complete
+            // before animation, then re-enable after animation is complete. Re-enabling doesn't work
+            // in all browsers, so we may consider new design or switching to jquery-scrollify
         const content = $(this.contentWrapper);
         const pos = $(element).position().top + content.scrollTop();
         content
@@ -89,12 +90,18 @@ class Dashboard extends Component<DashboardProps, {}> {
 
             // set active menu item
             $(".menu-dashboard ul li.active").removeClass("active");
-            if (pos >= this.positions.home && pos < this.positions.campaigns) 
+            if (pos >= this.positions.home && pos < this.positions.campaigns) {
                 $(this.btnHome).addClass("active");
-            else if (pos >= this.positions.campaigns && pos < this.positions.characters) 
+                window.location.hash = "home";
+            }
+            else if (pos >= this.positions.campaigns && pos < this.positions.characters) {
                 $(this.btnCampaigns).addClass("active");
-            else if (pos >= this.positions.characters)
+                window.location.hash = "#campaigns";
+            }
+            else if (pos >= this.positions.characters) {
                 $(this.btnCharacters).addClass("active");
+                window.location.hash = "#characters";
+            }
         })
     }
 

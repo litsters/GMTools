@@ -6,4 +6,6 @@ body {
     --screen-desktop-min: 1199px;
 
     --firewatch-grad: linear-gradient(to right, #cb2d3e, #ef473a);
+    --success-grad: linear-gradient(45deg , #11998e, #38ef7d);
+
 }

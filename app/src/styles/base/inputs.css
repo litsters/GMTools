@@ -1,4 +1,19 @@
-input {
+input,
+select {
+    appearance: none;
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
     display: block;
+    font-size: 10pt;
+    margin: 7px 0;
+    outline: none;
+    padding: 7px;
     width: 100%;
+}
+
+input:focus,
+select:focus {
+    border-color: blue;
 }

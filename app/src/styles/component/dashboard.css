@@ -165,6 +165,16 @@
 
 }
 
+.well {
+    background: var(--item-background);
+    backdrop-filter: blur(5px);
+    border-radius: 2px;
+    margin: 10px;
+    outline: 2px solid var(--item-outline);
+    outline-offset: -13px;
+    padding: 25px;
+}
+
 @media screen and (min-width: 889px) {
     .content-page.characters .previews {
         grid-template-columns: 1fr 1fr 1fr;
