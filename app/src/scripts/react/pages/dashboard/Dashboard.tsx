@@ -65,11 +65,12 @@ class Dashboard extends Component<DashboardProps, {}> {
     scrollTo(element:String) {
         // NOTE: bug when animating scroll with 'scroll-snap-type' disabled; so must remove css prop
             // before animation, then re-enable after animation is complete
-        var content = $(this.contentWrapper);
+        const content = $(this.contentWrapper);
+        const pos = $(element).position().top + content.scrollTop();
         content
             .css({"scroll-snap-type": "none", "-webkit-scroll-snap-type": "none"})
             .animate({
-                scrollTop: $(element).position().top
+                scrollTop: pos
             }, 500, () => {
                 content.css({"scroll-snap-type": "y mandatory", "-webkit-scroll-snap-type": "y mandatory"});
             });
@@ -79,8 +80,8 @@ class Dashboard extends Component<DashboardProps, {}> {
         $(this.contentWrapper).scroll(() => {
             let pos = $(this.contentWrapper).scrollTop();
 
+            // set active menu item
             $(".menu-dashboard ul li.active").removeClass("active");
-
             if (pos >= this.positions.home && pos < this.positions.campaigns) 
                 $(this.btnHome).addClass("active");
             else if (pos >= this.positions.campaigns && pos < this.positions.characters) 

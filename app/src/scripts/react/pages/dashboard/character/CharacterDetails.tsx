@@ -93,7 +93,6 @@ class CharacterDetails extends Component<CharacterDetailsProps, CharacterDetails
 
     render() {
         const { character, campaigns, close } = this.props;
-        console.log(character)
 
         const modal = this.renderJoinDialog(campaigns);
 
