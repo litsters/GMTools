@@ -1,11 +1,26 @@
 import io from "socket.io-client";
 
-function getCredentials(): object {
-    return {
-        access_token: localStorage.getItem('access_token'),
-        id_token: localStorage.getItem('id_token'),
-        expires_at: localStorage.getItem('expires_at')
-    };
+interface ICredentials {
+    access_token: string
+    id_token: string
+    expires_at: string
+}
+
+function getCredentials(): Promise<ICredentials> {
+    function _get(resolve: Function) {
+        let accessToken = localStorage.getItem('access_token');
+        if (!accessToken) {
+            setTimeout(() => _get(resolve), 20);
+        } else {
+            resolve({
+                access_token: accessToken,
+                id_token: localStorage.getItem('id_token'),
+                expires_at: localStorage.getItem('expires_at')
+            });
+        }
+    }
+
+    return new Promise(_get);
 }
 
 function createSocket(url: string, onConnect: Function): SocketIOClient.Socket {
@@ -16,33 +31,52 @@ function createSocket(url: string, onConnect: Function): SocketIOClient.Socket {
     return socket;
 }
 
-var bus: EventBus;
+let busPromise: Promise<EventBus>;
 
-const getBus = () => {
-    if (!bus) {
-        bus = new EventBus("http://localhost:8080", createSocket); // TODO this needs to be configurable
-    }
-
-    return bus;
-};
-
-export class EventBus {
+class EventBus {
     socket: SocketIOClient.Socket;
     isAuthenticated: boolean;
-    private readonly events: any;
+    private readonly credentials: ICredentials;
+    private readonly events: object;
     private socketInitialized: boolean;
 
     /**
      * Create a new EventBus
      * @param url The url for the socket.io server
+     * @param credentials
      * @param socketCreator A function to call to actually create the socket.io Socket
      */
-    constructor(url: string, socketCreator: (url:string, onConnect:Function) => SocketIOClient.Socket) {
+    private constructor(url: string, credentials: ICredentials, socketCreator: (url:string, onConnect:Function) => SocketIOClient.Socket) {
         this.events = {};
         this.isAuthenticated = false;
+        this.credentials = credentials;
 
         // Establish a connection to the server
         this.socket = socketCreator(url, this.initializeSocket.bind(this))
+    }
+
+    static get(url = "", credentialsGetter = getCredentials, socketCreator = createSocket): Promise<EventBus> {
+        if (!busPromise) {
+            busPromise = credentialsGetter()
+                .then((credentials) => {
+                    return new EventBus(url || "http://localhost:8080", credentials, socketCreator);
+                });
+        }
+        return busPromise;
+    }
+
+    static on(event: string, fn: Function) {
+        EventBus.get()
+            .then((bus) => {
+                bus.on(event, fn);
+            });
+    }
+
+    static emit(event: string, payload: any, sendToServer = false) {
+        EventBus.get()
+            .then((bus) => {
+                bus.emit(event, payload, sendToServer);
+            });
     }
 
     on(event: string, fn: Function): EventBus {
@@ -116,7 +150,7 @@ export class EventBus {
         console.log('connection established');
 
         // Handle authentication
-        this.socket.emit('authentication', getCredentials());
+        this.socket.emit('authentication', this.credentials);
 
         if (!this.socketInitialized) {
             this.socket.on('authenticated', () => {
@@ -125,6 +159,7 @@ export class EventBus {
             });
             this.socket.on('unauthorized', (data:any) => {
                 console.log('authorization failed:', data);
+                this.isAuthenticated = false;
                 this.socket.disconnect();
             });
 
@@ -159,4 +194,4 @@ export class EventBus {
     }
 }
 
-export default getBus;
+export default EventBus;

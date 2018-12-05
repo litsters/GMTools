@@ -1,0 +1,27 @@
+.landing-page {
+    font-family: Raleway, sans-serif;
+}
+.landing-page .welcome-wrapper {
+    align-content: center;
+    background: radial-gradient(rgba(0,0,0,.92), rgba(0,0,0,.95), rgba(0,0,0,.88), rgba(0,0,0,.93));
+    display: flex;
+    min-height: 75vh;
+    padding: 100px 35px;
+}
+
+.landing-page .welcome-wrapper .content {
+    color: white;
+    font-size: 1.2em;
+    margin: auto;
+}
+.landing-page .welcome-wrapper .content button {
+    background: var(--firewatch-grad); 
+    border: none;
+    border-radius: 5px; 
+    color: white;
+    cursor: pointer;
+    font-family: Raleway, sans-serif;
+    padding: 15px 25px;
+    text-transform: uppercase;
+    font-size: 14pt;
+}

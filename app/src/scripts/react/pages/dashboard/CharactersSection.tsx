@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import CharacterPreview from "./CharacterPreview";
 import CharacterCreate from "./CharacterCreate";
-import getBus, { EventBus } from "../../common/Events";
+import EventBus from "../../common/Events";
 import { each } from "jquery"
 import { Character, Campaign } from "../../interfaces";
 
@@ -17,7 +17,7 @@ interface CharacterSectionState {
 }
 
 class CharactersSection extends Component<{}, CharacterSectionState> {
-    private readonly events: EventBus;
+    private events: EventBus;
     private readonly campaignsMap: {[id: string]: Campaign};
     private readonly eventListeners: object;
     private setCreatePanelOpen: any;
@@ -42,11 +42,24 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         };
 
         // Bind events
-        this.events = getBus();
-        each(this.eventListeners, (event, callback) => {
-            this.events.on(event, callback);
-        });
-    
+        EventBus.get()
+            .then((bus) => {
+                this.events = bus;
+
+                each(this.eventListeners, (event, callback) => {
+                    this.events.on(event, callback);
+                });
+            });
+
+        this.state = {
+            isCreating: false,
+            characterName: '',
+            characterSystem: '',
+            characters: [],
+            joinCharacter: null,
+            campaigns: [],
+            selectedCampaign: "",
+        };
         this.campaignsMap = {};
 
         this.setCreatePanelOpen = (val:boolean = true) => this.setState({isCreating: val});
@@ -56,7 +69,7 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
 
     componentDidMount() {
         // Ask the server to get all our characters
-        this.events.emit('data.get', { namespace: 'character', key: 'get_characters' }, true);
+        EventBus.emit('data.get', {namespace: 'character', key: 'get_characters'}, true);
     }
 
     componentWillUnmount() {

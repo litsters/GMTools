@@ -4,4 +4,6 @@ body {
     --screen-mobile-min: 0px;
     --screen-tablet-min: 899px;
     --screen-desktop-min: 1199px;
+
+    --firewatch-grad: linear-gradient(to right, #cb2d3e, #ef473a);
 }

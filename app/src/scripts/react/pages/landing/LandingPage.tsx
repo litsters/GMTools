@@ -21,11 +21,15 @@ class LandingPage extends Component<LandingProps, {}> {
 
     render() {
         return (
-            <div className="page-content">
-                <h1>Welcome to GM Tools!</h1>
-                <button onClick={() => this.login()}>Click me to log in!</button>
+            <div className="page-content landing-page">
+                <div className="welcome-wrapper">
+                    <div className="content">
+                        <h1>Welcome to GM Tools!</h1>
+                        <button onClick={() => this.login()}>Get Started</button>
+                    </div>
+                </div>
             </div>
-        )
+        );
     }
 }
 

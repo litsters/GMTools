@@ -36,7 +36,7 @@
     position: relative;
 }
 .menu-dashboard:after {
-    background: red;
+    background: var(--firewatch-grad);
     border-radius: 10px;
     content: '';
     height: 90%;
@@ -68,7 +68,7 @@
     position: relative;
 }
 .menu-dashboard ul li:after {
-    background: red;
+    background: var(--firewatch-grad);
     border-radius: 10px;
     content: '';
     height: 90%;

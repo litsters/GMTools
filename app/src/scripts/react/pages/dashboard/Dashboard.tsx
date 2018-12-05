@@ -5,7 +5,7 @@ import Auth from "../../auth/Auth";
 import { updateAuth, updateCampaigns, updateCharacters } from "../../actions/user-actions";
 import MasterDetailsLayout from "../../layout/MasterDetailLayout";
 import * as $ from "jquery";
-import getBus, {EventBus} from '../../common/Events';
+import EventBus from '../../common/Events';
 
 import HomeSection from "./HomeSection";
 import CampaignsSection from "./CampaignsSection";
@@ -97,9 +97,12 @@ class Dashboard extends Component<DashboardProps, {}> {
     }
 
     connectToServer() {
-        this.events = getBus()
-            .on('data.retrieved', Dashboard.dataRetrieved)
-            .on('data.persisted', Dashboard.dataPersisted);
+        EventBus.get()
+            .then((bus) => {
+                this.events = bus
+                    .on('data.retrieved', Dashboard.dataRetrieved)
+                    .on('data.persisted', Dashboard.dataPersisted);
+            });
     }
 
     static dataRetrieved(event: any) {
