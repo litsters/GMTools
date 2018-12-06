@@ -14,7 +14,7 @@ class PlayersPage extends Component<IPage, MainState> {
     render() {
 
         return (
-            <div>
+            <div className="padding-15">
                 <h1>Players Page</h1>
                 
             </div>

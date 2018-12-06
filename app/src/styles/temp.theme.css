@@ -90,3 +90,38 @@ body {
     margin: 10px 0;
     width: 100%;
 }
+
+.layout-game .btn {
+    border-radius: 0;
+    font-family: MrJeeves;
+    font-size: 1.3em;
+    outline: none;
+}
+.layout-game .btn:active {
+    transform: translateY(2px);
+}
+.layout-game .btn.btn-default {
+    background: #fff6cc;
+    border: 1px solid #58180D;
+    color: #58180D;
+}
+
+.generator-page {
+    background-image: url("/plugins/dnd-5e/assets/backdrops/codex.jpg");
+    background-position: center;
+    background-size: cover;
+    height: 100%;
+}
+.generator-page .content {
+    padding: 100px 35px;
+    text-align: center;
+}
+.generator-page .content .name {
+    color: #58180D;
+    font-family: MrJeeves;
+    font-size: 4em;
+    margin: 10px 0;
+}
+.generator-page .content button {
+    margin: auto;
+}
