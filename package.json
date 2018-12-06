@@ -5,7 +5,8 @@
   "scripts": {
     "install": "cd ./app && npm i && cd ../server && npm i",
     "app": "cd ./app && npm start",
-    "server": "cd ./server && npm start"
+    "server": "cd ./server && npm start",
+    "build": "npm i && cd ./app && npm run build && cd ../server && tsc --build ./tsconfig.json"
   },
   "repository": {
     "type": "git",

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import express, { Request, Response } from 'express';
 import bodyParser from "body-parser";
 import socketIOAuth from "socketio-auth";
@@ -15,7 +16,7 @@ import NoteHandler from "./note_handler";
 import registerAPIs from "./api";
 import { registerPluginAssetServer } from "./plugins";
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 // Authentication
 const jwtVerificationOptions = {
@@ -228,5 +229,5 @@ socketIOAuth(io, {authenticate, postAuthenticate, disconnect, timeout: "none"});
 
 // Start Server
 server.listen(port, function () {
-    console.log(`Server is started on port ${process.env.PORT || port}`);
+    console.log(`Server is started on port ${port}`);
 });
