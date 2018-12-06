@@ -106,13 +106,14 @@ body {
     color: #58180D;
 }
 
-/* Generator Page */
-.generator-page {
+.dice-page, .generator-page, .players-page {
     background-image: url("/plugins/dnd-5e/assets/backdrops/codex.jpg");
     background-position: center;
     background-size: cover;
     height: 100%;
 }
+
+/* Generator Page */
 .generator-page .content {
     padding: 100px 35px;
     text-align: center;
@@ -128,17 +129,6 @@ body {
 }
 
 /* Dice Page */
-.dice-page {
-    background-image: url("/plugins/dnd-5e/assets/backdrops/codex.jpg");
-    background-position: center;
-    background-size: cover;
-    height: 100%;
-}
-.dice-page .dice-roller {
-    /* padding: 20px;
-    border: 5px solid rgba(88,24,13,.6);
-    box-sizing: border-box; */
-}
 .dice-page .dice-roller .display {
     box-sizing: border-box;
     border: 5px solid rgba(88,24,13,.6);
