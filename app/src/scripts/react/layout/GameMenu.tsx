@@ -16,7 +16,9 @@ class GameMenu extends Component<IPage, {}> {
                 <ul>
                 {Object.keys(routes).map((key) => {
                     let route = routes[key],
-                        isActive = match.path === route.path;
+                        matchSubstr = match.path.substr(0, route.path.length),
+                        isActive = matchSubstr === route.path;
+                        console.log(match.path, route.path);
                     if (!route.showInMenu) return null;
                     return (
                         <li className={"menu-item" +(isActive ? " active" : "")} key={key}>
