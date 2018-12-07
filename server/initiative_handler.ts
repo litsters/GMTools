@@ -3,6 +3,7 @@ import EventWrapper from "./event";
 import models from './db/models';
 import { ICharacter } from "./db/schemas/character";
 import { IUser } from "./db/schemas/user";
+import {Types} from "mongoose";
 
 export default class InitiativeHandler extends Handler{
     handleEvent(eventType:string, event:any): Promise<EventWrapper[]>{
@@ -28,12 +29,26 @@ export default class InitiativeHandler extends Handler{
 
     // Sends a notification to a player that it is their turn for initiative,
     // and a notification to the next player that their turn is coming up.
-    private nextTurn(event:any):Promise<EventWrapper[]>{
-        let currentId = event.data.current; // Mongo id of current character
-        let nextId = event.data.next;       // Mongo id of next character
+    private nextTurn(event: any): Promise<EventWrapper[]> {
+        let inList = [];
+        let currentId: Types.ObjectId,
+            nextId: Types.ObjectId;
+        if (event.data.current) {
+            // Mongo id of current character
+            currentId = Types.ObjectId(event.data.current);
+            inList.push(currentId);
+        }
+        if (event.data.next) {
+            // Mongo id of next character
+            nextId = Types.ObjectId(event.data.next);
+            inList.push(nextId);
+        }
+        if (inList.length == 0) {
+            return Promise.resolve([]);
+        }
 
         // Get the characters from the database
-        return models.Character.find({_id: { $in: [currentId, nextId]}}).exec()
+        return models.Character.find({_id: { $in: inList}}).exec()
             .then((characters:ICharacter[]) => {
                 let users:any[] = [];
                 characters.forEach((c:ICharacter) => {
@@ -49,9 +64,15 @@ export default class InitiativeHandler extends Handler{
                 let currentPlayer:IUser = null;
                 let nextPlayer:IUser = null;
 
-                players.forEach((p:IUser) => {
-                    if(p.characters.includes(currentId)) currentPlayer = p;
-                    if(p.characters.includes(nextId)) nextPlayer = p;
+                players.forEach((p: IUser) => {
+                    p.characters.forEach((c) => {
+                        if (currentId.equals(c)) {
+                            currentPlayer = p;
+                        }
+                        if (nextId.equals(c)) {
+                            nextPlayer = p;
+                        }
+                    });
                 });
 
                 // Generate event for current player

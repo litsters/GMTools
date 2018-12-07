@@ -3,12 +3,13 @@ import IPage from "../../../interfaces/IPage";
 import EventBus from "../../../common/Events";
 import { each } from "jquery"
 import { Campaign, Character } from "../../../interfaces";
+import Alerts from "../../../common/Alerts"
 
 interface Initiative {
     key: number,
     initiative: number
     name: string
-    user?: string // Optional user id for the initiative item
+    character?: string // Optional character id for the initiative item
 }
 
 interface InitiativePageState {
@@ -31,8 +32,10 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
 
         // Declare what events we listen to and what method will handle them
         this.eventListeners = {
-            'data.retrieved': this.dataRetrieved.bind(this),
-            'data.persisted': this.dataPersisted.bind(this),
+            "data.retrieved": this.dataRetrieved.bind(this),
+            "data.persisted": this.dataPersisted.bind(this),
+            "initiative.alert": this.initiativeAlert.bind(this),
+            "initiative.start": this.initiativeStart.bind(this),
         };
 
         // Bind events
@@ -113,6 +116,16 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
         }
     }
 
+    initiativeAlert(event: any) {
+        let character = this.getCharacter(event.data.character);
+        Alerts.addWarning(character.name + "'s turn is coming up next.", "On Deck:");
+    }
+
+    initiativeStart(event: any) {
+        let character = this.getCharacter(event.data.character);
+        Alerts.addWarning("It is time for " + character.name + " to take action.", "Your Turn:");
+    }
+
     addCharacterList() {
         // Adds all characters from the state to the initiative
         let initiative = this.state.initiative.slice();
@@ -121,12 +134,22 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
                 key: ++this.keyCounter,
                 initiative: 0,
                 name: character.name,
-                user: character.user,
+                character: character._id,
             });
         });
         this.setState({
             initiative: initiative,
         })
+    }
+
+    getCharacter(characterId: string): Character {
+        let character;
+        this.charactersList.forEach((c) => {
+            if (c._id == characterId){
+                character = c;
+            }
+        });
+        return character;
     }
 
     sort() {
@@ -143,11 +166,26 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
     }
 
     next() {
-        let initiative = this.state.initiative.slice();
-        initiative.push(initiative.shift());
-        this.setState({
-            initiative: initiative,
-        });
+        if (this.state.initiative.length > 1) {
+            let initiative = this.state.initiative.slice();
+            initiative.push(initiative.shift());
+
+            if (this.events) {
+                let payload = {
+                    key: "next_turn",
+                    namespace: "initiative",
+                    data: {
+                        current: initiative[0].character,
+                        next: initiative[1].character,
+                    },
+                };
+                this.events.emit("initiative.turn", payload, true);
+            }
+
+            this.setState({
+                initiative: initiative,
+            });
+        }
     }
 
     updateInputState(key: string, event: any, isInt=false) {
