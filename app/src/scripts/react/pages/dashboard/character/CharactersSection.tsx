@@ -29,7 +29,8 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
 
     constructor(props:any) {
         super(props);
-        
+        const self = this;
+
         this.state = {
             characters: [],
             joinCharacter: null,
@@ -48,10 +49,10 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
         // Bind events
         EventBus.get()
             .then((bus) => {
-                this.events = bus;
+                self.events = bus;
 
-                each(this.eventListeners, (event, callback) => {
-                    this.events.on(event, callback);
+                each(self.eventListeners, (event, callback) => {
+                    self.events.on(event, callback);
                 });
             });
 
@@ -69,9 +70,10 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
     }
 
     componentWillUnmount() {
+        const self = this;
         if (this.events !== null) {
-            each(this.eventListeners, (event, callback) => {
-                this.events.removeListener(event, callback);
+            each(self.eventListeners, (event, callback) => {
+                self.events.removeListener(event, callback);
             });
         }
     }

@@ -27,6 +27,7 @@ class AdvancedDiceTool extends Component<any, DiceToolState> {
         this.append = this.append.bind(this);
         this.backspace = this.backspace.bind(this);
         this.submit = this.submit.bind(this);
+        this.clear = this.clear.bind(this);
     }
 
     clear()

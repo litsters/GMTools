@@ -47,7 +47,7 @@ class DicePage extends Component<IPage, MainState> {
         const tool = this.renderTool(mode);
 
         return (
-            <div>
+            <div className="dice-page padding-15">
                 <h1>Dice Page</h1>
                 {tool}
 

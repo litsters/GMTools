@@ -7,25 +7,78 @@ body {
 }
 
 
+.menu-game {
+    background-image: url("/plugins/dnd-5e/assets/backdrops/menu.jpg");
+    background-size: cover;
+    border-right: 5px solid rgb(180, 167, 109);
+    box-shadow: 0 4px 15px rgba(0,0,0,.65);
+    color: whitesmoke;
+    z-index: 2;
+}
+.menu-game .menu-item.active {
+    background: rgb(180, 167, 109);
+    box-shadow: inset 0 0 15px rgba(0,0,0,.65);
+    /* border: 10px solid rgb(156, 62, 46);
+    border-left: none;
+    border-right: none; */
+    font-size: inherit;
+}
+
+
 /* CODEX */
 .codex-input {
+    background: rgb(66, 51, 36);
+    color: whitesmoke;
     width: 100%;
 }
 .codex-input input {
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 0;
     box-sizing: border-box;
+    color: whitesmoke;
     font-size: 1.2em;
+    margin: 0;
     padding: 10px;
     width: 100%;
 }
 
+.codex-categories {
+    padding-left: 0;
+}
 .codex-categories h2 {
-    margin: 4px 0;
+    background: rgb(180, 167, 109);
+    border-bottom: 1px solid #58180D;
+    border-left: 0;
+    border-right: 0;
+    box-shadow: inset 0 0 15px rgba(0,0,0,.65);
+    color: whitesmoke;
+    font-family: MrJeeves;
+    font-size: 2em;
+    margin: 0;
+    padding: 7px 10px;
     text-transform: capitalize;
 }
+.codex-categories .category {
+    padding: 0;
+}
 .codex-categories .category .category-items {
+    list-style-type: none;
     padding-top: 10px;
+}
+.codex-categories .category .category-items li {
+    padding: 5px 5px 5px 10px;
+    border-bottom: 1px solid rgba(0,0,0,.2);
+    margin-left: 10px;
+}
+.codex-categories .category .category-items li a {
+    color: whitesmoke;
+    text-decoration: none;
+}
+.codex-page .master {
+    background: rgba(44, 27, 7, 0.6);
+    border-right: 5px solid rgb(180, 167, 109);
+    box-shadow: 0 4px 15px rgba(0,0,0,.65);
+    z-index: 2;
 }
 
 /* DETAILS PAGE */
@@ -89,4 +142,59 @@ body {
     height: 6px;
     margin: 10px 0;
     width: 100%;
+}
+
+.layout-game .btn {
+    border-radius: 0;
+    font-family: MrJeeves;
+    font-size: 1.3em;
+    outline: none;
+}
+.layout-game .btn:active {
+    transform: translateY(2px);
+}
+.layout-game .btn.btn-default {
+    background: #fff6cc;
+    border: 1px solid #58180D;
+    color: #58180D;
+}
+
+.dice-page, .generator-page, .players-page, .codex-page {
+    background-image: url("/plugins/dnd-5e/assets/backdrops/codex.jpg");
+    background-position: center;
+    background-size: cover;
+    height: 100%;
+}
+
+/* Generator Page */
+.generator-page .content {
+    padding: 100px 35px;
+    text-align: center;
+}
+.generator-page .content .name {
+    color: #58180D;
+    font-family: MrJeeves;
+    font-size: 4em;
+    margin: 10px 0;
+}
+.generator-page .content button {
+    margin: auto;
+}
+
+/* Dice Page */
+.dice-page .dice-roller .display {
+    box-sizing: border-box;
+    border: 5px solid rgba(88,24,13,.6);
+    margin-bottom: 15px;
+}
+.dice-page .dice-roller .display.invalid {
+    background: inherit;
+    border: 5px solid red;
+}
+.dice-page .dice-roller .display.valid {
+    background: inherit;
+    border: 5px solid green;
+}
+.dice-page .dice-roller .buttons .btn {
+    font-size: 1.6em;
 }
