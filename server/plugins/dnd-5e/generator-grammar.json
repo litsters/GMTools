@@ -1,0 +1,131 @@
+{
+  "roots": {
+    "human":            {"display": "Human",              "startSymbol": "human"},
+    "humanMale":        {"display": "Human Male",         "startSymbol": "humanMale"},
+    "humanFemale":      {"display": "Human Female",       "startSymbol": "humanFemale"},
+
+    "elf":              {"display": "Elf",                "startSymbol": "elf"},
+    "elfMale":          {"display": "Elf Male",           "startSymbol": "elfMale"},
+    "elfFemale":        {"display": "Elf Female",         "startSymbol": "elfFemale"},
+
+    "dwarf":            {"display": "Dwarf",              "startSymbol": "dwarf"}
+  },
+  "rules": {
+    "human": ["$humanMale", "$humanFemale"],
+
+    "humanMale": ["$hmFirst $hLast", "$hmFirst $hNick $hLast"],
+
+    "humanFemale": ["$hfFirst $hLast", "$hfFirst $hNick $hLast"],
+
+    "hmFirst": [{"text": "$hmPresetFirst", "weight": 1}, {"text": "$hmGenFirst", "weight": 2}],
+    "hfFirst": [{"text": "$hfPresetFirst", "weight": 1}, {"text": "$hfGenFirst", "weight": 2}],
+
+    "hNick": ["\"$hNickQuote\"", "the $hNickTheX"],
+    "hNickQuote": ["Anvil", "Dragon", "Hook", "Snake Eye", "Strider", "Salty", "Lucky", "Lefty", "Southpaw",
+      "Sword", "Grim", "Tiny", "Pudge", "Longshanks", "Magic", "Roach", "Weevil", "Oak", "Stalker"],
+    "hNickTheX": ["Butcher", "Knife", "Grim", "Magnificent", "Cruel", "Red", "Black", "Grey", "Fox", "Bluejay", "Raven", "Reaver",
+      "Reaper", "Kind", "Merciful", "Poet", "Bard", "Mad", "Tiny", "Grand", "Arcane", "${creature}slayer", "${creature}keeper"],
+    "creature": ["Goblin", "Orc", "Dragon", "Dwarf", "Elf", "Wraith", "Vampire", "Wolf", "Flumph", "Demon", "Devil", "Fiend", "Angel"],
+
+    "hmPresetFirst": [
+      "$hmPresetFirstCommon",
+      "$hmPresetFirstMid",
+      "$hmPresetFirstPosh"
+    ],
+
+    "hmPresetFirstCommon": ["Alf", "Bill", "Bert", "Bob", "Charlie", "Ed", "Fred", "George", "Harry", "Jack", "Kay",
+      "Moe", "Norm", "Owen", "Pete", "Sammy", "Tom", "Tim", "Willie", "Nick"],
+    "hmPresetFirstMid": ["John", "Thomas", "James", "Alfred", "Wallace", "Henry", "Calvin", "Bernard", "Nicholas", "Charles",
+      "Frederick", "Gilbert", "Albert", "Egbert", "Gunter", "Martin", "Marcus", "Lionel", "Leonard"],
+    "hmPresetFirstPosh": ["Percival","Ignatius", "Reginald", "Bernard", "Balthazar", "Melchior", "Aldrich", "Uthar", "Aldus", "Alphonsus",
+      "Bertram", "Conrad", "Aldwin", "Archibald", "Cuthbert", "Godwin", "Osbert", "Erasmus", "Algernon", "Aloysius"],
+
+    "hfPresetFirst": [
+      "$hfPresetFirstCommon",
+      "$hfPresetFirstMid",
+      "$hfPresetFirstPosh"
+    ],
+
+    "hfPresetFirstCommon": ["Jill", "Joan", "Emma", "Alice", "Allie", "Ala", "Emm", "Ema", "Ammy", "Ida", "Maude", "Tilla", "Tilly", "Mylla",
+    "Rosa", "Rose", "Sely", "Bess", "Tatsy", "Betty", "Janet", "Sarah", "Bridget", "Jossy", "Barbara", "Denise"],
+    "hfPresetFirstMid": ["Beatrice", "Agnes", "Matilda", "Isabella", "Juliana", "Adeline", "Alicen", "Evelyn", "Gelen", "Gisella", "Hadwis",
+      "Hawys", "Millicent", "Rosalind", "Elizabeth", "Gabriela", "Mary", "Genevieve", "Ismay", "Emayn", "Jesmaine", "Imayn", "Isolda",
+      "Muriel", "Agatha", "Alexandra", "Cassandra", "Dorathea", "Helen", "Catarine", "Kaithren", "Katryne", "Nicola", "Coletta", "Kalotte",
+      "Sybil"],
+    "hfPresetFirstPosh": ["Avice", "Cecily", "Margery", "Rohesia", "Adelaide", "Adela", "Athelis", "Arlette", "Asceline", "Hegelina",
+    "Imanie", "Emblyn", "Ermintrude", "Griselda", "Oriel", "Richarda", "Iohanna", "Sapphira", "Guinevere", "Winifred", "Anastasia",
+    "Antigone", "Dionysia", "Marjoria", "Margarete"],
+
+    "hmGenFirst": ["&cap{$hmSyllable$hmSyllable}"],
+    "hmSyllable": [
+      "der", "ran", "son", "rick", "bald", "nob", "bal", "can", "pet", "or", "dun", "cob", "dan", "dro", "go", "bit",
+      "mad", "sen", "mac", "lan", "ah", "hen", "fen", "then", "dav", "ben", "bol", "seb", "ni", "al", "aul", "wes", "ses",
+      "con", "rad", "bof", "dem", "dim", "it", "mack", "cam", "ced", "set", "ner", "bert", "ford", "ash",
+      "ley", "ton", "jon", "wal", "kil", "cer", "cel", "nor", "hro", "gen", "gan", "jor", "cuth",  "$hmSyllable$hmSyllable"
+    ],
+
+    "hfGenFirst": ["&cap{$hfSyllable$hfSyllable}"],
+    "hfSyllable": [
+      "hild", "ette", "ina", "imo", "gen", "jan", "las", "jul", "mab", "cia", "the", "bel", "cel", "weal", "han",
+      "ala", "sar", "jil", "viv", "lyn", "cyn", "byn", "ryn", "tia", "ayn", "ane", "ila", "del", "tal", "krys",
+      "li", "ali", "ona", "ine", "ise", "yne", "bri", "ta", "ana", "ry", "por", "wyn", "ag", "urs", "ula", "nes",
+      "cent", "trix", "ros", "min", "dy", "itte", "da", "rys", "mor", "gan", "hel", "lind", "line", "tha", "otte",
+      "$hfSyllable$hfSyllable"
+    ],
+
+    "hLast": ["$hPresetLast", "$hGenLast"],
+    "hPresetLast": ["Archer", "Fletcher", "Cooper", "Baker", "Wainwright", "Brown", "Jones", "Smith", "Clark", "Knight", "Tailor",
+      "Henderson", "Albertson", "Steele", "Cartwright", "Wright", "Farrier", "Magus", "Clapham", "Reeve", "Jenkins",
+      "Spaulding", "Skelton", "Barlow", "Hunter"],
+
+    "hGenLast": ["$hLastCompound"],
+    "hLastCompound": ["$firstCompound$secondCompound"],
+    "firstCompound": ["Strong", "Red", "Long", "Bone", "Lead", "Good", "Gold", "Green", "Silver", "Black", "One", "Iron", "Stone",
+      "Steel", "Deep", "Goblin", "Tree", "Foe", "Rock", "Fae", "Dwarf", "Goblin", "Elf", "Drake", "Dragon", "Orc",
+      "Night", "Wight", "Fiend", "Snake", "Worm", "Wyrm", "Half", "Bog", "Marsh", "Dune", "Shadow", "Bright", "Wind",
+      "Earth", "Sky", "Fire", "Flame", "Water", "Wave", "Mud", "Soot", "Smoke", "Fell", "Silk", "Potato", "Shade", "Hob",
+      "Troll", "Wolf", "Grim", "Dune", "Hill", "Grey", "Crag"],
+    "secondCompound": ["fellow", "friend", "shanks", "butcher", "hunter", "man", "bane", "ripper", "tongue", "arm", "reach", "tooth", "eye",
+      "foot", "hand", "grave", "seeker", "finder", "killer", "ender", "crusher", "born", "walker",
+      "strider", "watcher", "keeper", "shod", "shot", "eater", "nose", "smith", "tamer", "rider", "fodder"],
+
+    "elf": ["$elfMale", "$elfFemale"],
+    "elfMale": ["$emFirst $eLast"],
+    "elfFemale": ["$efFirst $eLast"],
+
+    "emFirst": [{"text": "$ePrefix$emSuffix", "weight": 1}, {"text": "$ePrefix${eSyllable}$emSuffix", "weight": 4}],
+    "efFirst": [{"text": "$ePrefix$efSuffix", "weight": 1}, {"text": "$ePrefix${eSyllable}$efSuffix", "weight": 4}],
+
+    "ePrefix": ["Cel", "Gil", "Gal", "Thran", "Al", "Cer", "Mel", "Tal", "Ver", "Set", "Lith", "Loth", "Quen", "Hal", "Nith",
+      "Cor", "Cal", "Gol", "Le", "La", "Ar", "As", "Vyn", "Has", "Fer", "Fel", "Fas", "Fal", "El", "Xan", "Vol", "Im", "Var", "Sil"],
+    "emSuffix": ["or", "ond", "orn", "as", "dir", "rond", "duil", "uil", "lad", "an", "ath", "us"],
+    "efSuffix": ["iel", "wen", "al", "is", "ya", "en", "ith", "eth", "ael", "oel", "yi", "ra", "a"],
+    "eSyllable": ["go", "ben", "th", "tha", "ith", "el", "alad", "as", "gon", "ber", "amen", "or", "ar", "amal", "ol", "el", "rion", "av",
+      "phi", "gal", "nod", "sir", "sith", "thil", "end", "mas", "cer", "con", "sel", "san",
+      {"text": "$eSyllable$eSyllable", "weight": 4} ],
+
+    "eLast": ["&cap{$eLastCompound$eLastCompound}"],
+    "eLastCompound": ["ama", "kiir", "stacia", "gala", "nodel", "holi", "mion", "ilphel", "lia", "don", "meli", "amne", "nai", "lo",
+    "sian", "xilo", "scient"],
+
+    "dwarf": ["$dwarfMale", "$dwarfFemale"],
+    "dwarfMale": ["$dmFirst $dLast"],
+    "dwarfFemale": ["$dfFirst $dLast"],
+
+    "dmFirst": ["$dmPrefix$dmSuffix"],
+    "dfFirst": ["$dfPrefix$dfSuffix"],
+
+    "dmPrefix": ["A", "E", "O", "U", "Gim", "Gun", "Osk", "Ska", "Fi", "Ki", "Ba", "Bom", "Du", "Ek", "Ig", "Glo", "Thor", "Fun"],
+    "dmSuffix": ["in", "rist", "li", "lin", "ar", "dren", "bur", "din", "ri", "dur", "ash", "threk", "ther", "ur", "en", "em", "ol"],
+    "dfPrefix": ["La", "She", "Ju", "Ger", "Che", "Mel", "Al", "Ne", "Sa", "Ri", "Ca", "Mi"],
+    "dfSuffix": ["${dmSuffix}a", "${dmSuffix}i", "${dmSuffix}as", "shi", "sak", "sa", "ba", "da", "as", "em", "et", "ah"],
+
+    "dLast": ["$dLastTranslated", "$dLastForeign"],
+    "dLastTranslated": ["$dltPrefix$dltSuffix"],
+    "dltPrefix": ["Rock", "Iron", "Steel", "High", "Mountain", "Hill", "Stone", "Fire", "Forge"],
+    "dltSuffix": ["seeker", "heart", "clad", "cutter", "hammer", "helm"],
+    "dLastForeign": ["$dlfPrefix$dlfSuffix", "${dmFirst}son"],
+    "dlfPrefix": ["Os", "Far", "Niel", "Lif", "Cor", "Thre", "Cra", "Skor", "Skir", "Swik", "Fer"],
+    "dlfSuffix": ["os", "as", "rer", "en", "ast", "ik", "eck", "har", "the", "then", "uk", "sef"]
+  }
+}

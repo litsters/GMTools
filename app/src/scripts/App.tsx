@@ -9,6 +9,7 @@ import Body from './react/layout/body';
 import Alerts from './react/common/Alerts';
 import { updateUser, apiRequest, updateAuth } from './react/actions/user-actions';
 import { updateCodex } from './react/actions/codex-actions';
+import { updateGeneratorData } from './react/actions/generator-actions';
 
 interface Props {
 
@@ -38,11 +39,17 @@ const codexSelector = createSelector(
   codex => codex
 );
 
+const generatorSelector = createSelector(
+  (state: any) => state.generator,
+  generator => generator
+)
+
 const mapStateToProps = createSelector(
   userSelector,
   codexSelector,
-  (user, codex) => ({
-    user, codex
+  generatorSelector,
+  (user, codex, generator) => ({
+    user, codex, generator
   })
 );
 
@@ -51,6 +58,7 @@ const mapActionsToProps = {
   onApiRequest: apiRequest,
   onUpdateAuth: updateAuth,
   onUpdateCodex: updateCodex,
+  onUpdateGeneratorData: updateGeneratorData
 };
 
 export default withRouter(connect(mapStateToProps, mapActionsToProps)(App));

@@ -1,0 +1,864 @@
+{
+  "tables": {
+    "alignment": {"display": "Alignment", "values": [
+      "Chaotic evil or chaotic neutral",
+      {"value": "Lawful evil", "weight": 2},
+      {"value": "Neutral evil", "weight": 3},
+      {"value": "Neutral", "weight": 4},
+      {"value": "Neutral good", "weight": 3},
+      {"value": "Lawful good or lawful neutral", "weight": 3},
+      "Chaotic good"
+    ]},
+    "race": {"display": "Race", "values": [
+      {"value": "Human", "weight": 40},
+      {"value": "Dwarf", "weight": 10},
+      {"value": "Elf", "weight": 10},
+      {"value": "Halfling", "weight": 10},
+      {"value": "Dragonborn", "weight": 5},
+      {"value": "Gnome", "weight": 5},
+      {"value": "Half-elf", "weight": 5},
+      {"value": "Half-orc", "weight": 5},
+      {"value": "Tiefling", "weight": 5},
+      {"value": "DM's choice", "weight": 5}
+    ]},
+    "age": {"display": "Relative age", "values": [
+      {"value": "Young", "weight": 5},
+      {"value": "Middling", "weight": 4},
+      {"value": "Advanced", "weight": 3},
+      {"value": "Elderly", "weight": 2},
+      {"value": "Ancient", "weight": 1}
+    ]},
+    "numericAge": {"display": "Age", "values": [
+      {"value": "20 years or younger", "weight": 20},
+      {"value": "21-30 years",         "weight": 39},
+      {"value": "31-40 years",         "weight": 10},
+      {"value": "41-50 years",         "weight": 20},
+      {"value": "51-60 years",         "weight": 10},
+      {"value": "61 years or older",   "weight":  1}
+    ]},
+    "occupation": {"display": "Occupation", "values": [
+      {"value": "Academic", "weight": 5},
+      {"value": "Adventurer", "weight": 5, "rolls": ["class"]},
+      {"value": "Aristocrat", "weight": 1},
+      {"value": "Artisan or guild member", "weight": 15},
+      {"value": "Criminal", "weight": 5},
+      {"value": "Entertainer", "weight": 5},
+      {"value": "Exile, hermit, or refugee", "weight": 2},
+      {"value": "Explorer or wanderer", "weight": 5},
+      {"value": "Farmer or herder", "weight": 12},
+      {"value": "Hunter or trapper", "weight": 5},
+      {"value": "Laborer", "weight": 15},
+      {"value": "Merchant", "weight": 5},
+      {"value": "Politician or bureaucrat", "weight": 5},
+      {"value": "Priest", "weight": 5},
+      {"value": "Sailor", "weight": 5},
+      {"value": "Soldier", "weight": 5}
+    ]},
+    "class": {"display": "Class", "values": [
+      {"value": "Barbarian", "weight": 8},
+      {"value": "Bard", "weight": 7},
+      {"value": "Cleric", "weight": 15},
+      {"value": "Druid", "weight": 7},
+      {"value": "Fighter", "weight": 16},
+      {"value": "Monk", "weight": 6},
+      {"value": "Paladin", "weight": 6},
+      {"value": "Ranger", "weight": 6},
+      {"value": "Rogue", "weight": 14},
+      {"value": "Sorcerer", "weight": 5},
+      {"value": "Warlock", "weight": 5},
+      {"value": "Wizard", "weight": 5}
+    ]},
+    "geoLocation": {"display": "Location", "values": [
+      "village",
+      "cave",
+      "mountain",
+      "coast",
+      "crevice",
+      "ocean",
+      "island",
+      "desert",
+      "plain",
+      "hill",
+      "canyon",
+      "demiplane",
+      "swamp",
+      "bog"
+    ]},
+    "parentsKnown": {"display": "Did you know your parents?", "values": [
+      {"value": "You know who your parents are or were", "weight": 95},
+      {"value": "You do not know who your parents were", "weight":  5}
+    ]},
+    "halfElfParents": {"display": "Heritage", "values": [
+      {"value": "One parent was an elf and the other was a human", "weight": 5},
+      "One parent was an elf and the other was a half-elf",
+      "One parents was a human and the other was a half-elf",
+      "Both parents were half elves"
+    ]},
+    "halfOrcParents": {"display": "Heritage", "values": [
+      {"value": "One parent was an orc and the other was a human", "weight": 3},
+      {"value": "One parent was an orc and the other was a half orc", "weight": 2},
+      {"value": "One parent was a human and the other was a half-orc", "weight": 2},
+      "Both parents were half orcs"
+    ]},
+    "tieflingParents": {"display": "Heritage", "values": [
+      {"value": "Both parents were humans, their infernal heritage dormant until you came along", "weight": 4},
+      {"value": "One parent was a tiefling and the other was a human", "weight": 2},
+      "One parent was a tiefling and the other was a devil",
+      "One parent was human and the other was a devil"
+    ]},
+    "birthplace": {"display": "Where were you born?", "values": [
+      {"value": "Home", "weight": 50},
+      {"value": "Home of a family friend", "weight": 5},
+      {"value": "Home of a healer or midwife", "weight": 8},
+      {"value": "Carriage, cart, or wagon", "weight": 2},
+      {"value": "Barn, shed, or other outbuilding", "weight": 3},
+      {"value": "Cave", "weight": 2},
+      {"value": "Field", "weight": 2},
+      {"value": "Forest", "weight": 2},
+      {"value": "Temple", "weight": 3},
+      "Battlefield",
+      {"value": "Alley or street", "weight": 2},
+      {"value": "Brothel, tavern, or inn", "weight": 2},
+      {"value": "Castle, keep, tower, or palace", "weight": 2},
+      "Sewer or rubbish heap",
+      {"value": "Among people of a different race", "weight": 3},
+      {"value": "On board a boat or ship", "weight": 3},
+      {"value": "In a prison or in the headquarters of a secret organization", "weight": 2},
+      {"value": "In a sage's laboratory", "weight": 2},
+      "In the Feywild",
+      "In the Shadowfell",
+      "On the Astral Plane or the Ethereal Plane",
+      "On an Inner Plane of your choice",
+      "On an Outer Plane of your choice"
+    ]},
+    "numSiblings": {"display": "Number of siblings", "values": [
+      0,
+      "1d3",
+      "1d4+1",
+      "1d6+2",
+      "1d8+3"
+    ]},
+    "birthOrder": {"display": "Birth order", "values": [
+      {"value": "Twin, triplet, or quadruplet", "weight": 1},
+      {"value": "Older", "weight": 5},
+      {"value": "Younger", "weight": 5}
+    ]},
+    "relationship": {"display": "Attitude towards you", "values": [
+      {"value": "Hostile", "weight": 2},
+      {"value": "Friendly", "weight": 6},
+      {"value": "Indifferent", "weight": 2}
+    ]},
+    "family": {"display": "Who raised you?", "values": [
+      "None",
+      "Institution, such as an asylum",
+      "Temple",
+      {"value": "Orphanage", "weight": 2},
+      {"value": "Guardian", "weight": 2},
+      {"value": "Paternal or maternal aunt, uncle, or both", "weight": 8},
+      {"value": "Paternal or maternal grandparents", "weight": 10},
+      {"value": "Adoptive family (same or different race)", "weight": 10},
+      {"value": "Single father or stepfather", "weight": 20},
+      {"value": "Single mother or stepmother", "weight": 20},
+      {"value": "Mother and father", "weight": 25}
+    ]},
+    "absentParent": {"display": "What happened to your missing parent(s)?", "values": [
+      {"value": "Your missing parent died", "weight": 1, "rolls": ["causeOfDeath"]},
+      "Your missing parent was imprisoned, enslaved, or otherwise taken away",
+      "Your missing parent abandoned you",
+      "Your missing parent disappeared to an unknown fate"
+    ]},
+    "lifestyle": {"display": "Lifestyle", "values": [
+      "Wretched",
+      {"value": "Squalid", "weight": 2},
+      {"value": "Poor", "weight": 3},
+      {"value": "Modest", "weight": 4},
+      {"value": "Comfortable", "weight": 3},
+      {"value": "Wealthy", "weight": 2},
+      "Aristocratic"
+    ]},
+    "home": {
+      "clamp": {"low": 0, "high": 100},
+      "display": "Home",
+      "values": [
+        "On the streets",
+        {"value": "Rundown shack", "weight": 20},
+        {"value": "No permanent residence", "weight": 10},
+        {"value": "Encampment or village in the wilderness", "weight": 10},
+        {"value": "Apartment in a rundown neighborhood", "weight": 10},
+        {"value": "Small house", "weight": 20},
+        {"value": "Large house", "weight": 20},
+        {"value": "Mansion", "weight": 20},
+        {"value": "Palace or castle", "weight": 30}
+      ]
+    },
+    "memories": {"display": "Childhood memories", "values": [
+      {"value": "I am still haunted by my childhood, when I was treated badly by my peers", "weight": 3},
+      {"value": "I spent most of my childhood alone, with no close friends", "weight": 2},
+      {"value": "Others saw me as being different or strange, and so I had few companions", "weight": 3},
+      {"value": "I had a few close friends and lived an ordinary childhood", "weight": 4},
+      {"value": "I had several friends, and my childhood was generally a happy one", "weight": 3},
+      {"value": "I always found it easy to make friends, and I loved being around people", "weight": 2},
+      {"value": "Everyone knew who I was, and I had friends everywhere I went", "weight": 8}
+    ]},
+    "bgAcolyte": {"Acolyte": "", "values": [
+      "I ran away from home at an early age and found refuge in a temple.",
+      "My family gave me to a temple, since they were unable or unwilling to care for me.",
+      "I grew up in a household with strong religious convictions. Entering the service of one or more gods seemed natural.",
+      "An impassioned sermon struck a chord deep in my soul and moved me to serve the faith.",
+      "I followed a childhood friend, a respected acquaintance, or someone I loved into religious service.",
+      "After encountering a true servant of the gods, I was so inspired that I immediately entered the service of a religious group."
+    ]},
+    "bgCharlatan": {"display": "Charlatan", "values": [
+      "I was left to my own devices, and my knack for manipulating others helped me survive.",
+      "I learned early on that people are gullible and easy to exploit.",
+      "I often got in trouble, but I managed to talk my way out of it every time.",
+      "I took up with a confidence artist, from whom I learned my craft.",
+      "After a charlatan fleeced my family, I decided to learn the trade so I would never be fooled by such deception again.",
+      "I was poor or I feared becoming poor, so I learned the tricks I needed to keep myself out of poverty."
+    ]},
+    "bgCriminal": {"display": "Criminal", "values": [
+      "I resented authority in my younger days and saw a life of crime as the best way to fight against tyranny and oppression.",
+      "Necessity forced me to take up the life, since it was the only way I could survive.",
+      "I fell in with a gang of reprobates and ne'er-do-wells, and I learned my specialty from them.",
+      "A parent or relative taught me my criminal specialty to prepare me for the family business.",
+      "I left home and found a place in a thieves' guild or some other criminal organization.",
+      "I was always bored, so I turned to crime to pass the time and discovered I was quite good at it."
+    ]},
+    "bgEntertainer": {"display": "Entertainer", "values": [
+      "Members of my family made ends meet by performing, so it was fitting for me to follow their example.",
+      "I always had a keen insight into other people, enough so that I could make them laugh or cry with my stories or songs.",
+      "I ran away from home to follow a minstrel troupe.",
+      "I saw a bard perform once, and I knew from that moment on what I was born to do.",
+      "I earned coin by performing on street corners and eventually made a name for myself.",
+      "A traveling entertainer took me in and taught me the trade."
+    ]},
+    "bgFolkHero": {"display": "Folk Hero", "values": [
+      "I learned what was right and wrong from my family.",
+      "I was always enamored by tales of heroes and wished I could be something more than ordinary.",
+      "I hated my mundane life, so when it was time for someone to step up and do the right thing, I took my chance.",
+      "A parent or one of my relatives was an adventurer, and I was inspired by that person's courage.",
+      "A mad old hermit spoke a prophecy when I was born, saying that I would accomplish great things.",
+      "I have always stood up for those who are weaker than I am."
+    ]},
+    "bgGuildArtisan": {"display": "Guild Artisan", "values": [
+      "I was apprenticed to a master who taught me the guild's business.",
+      "I helped a guild artisan keep a secret or complete a task, and in return I was taken on as an apprentice.",
+      "One of my family members who belonged to the guild made a place for me.",
+      "I was always good with my hands, so I took the opportunity to learn a trade.",
+      "I wanted to get away from my home situation and start a new life.",
+      "I learned the essentials of my craft from a mentor but had to join the guild to finish my training."
+    ]},
+    "bgHermit": {"display": "Hermit", "values": [
+      "My enemies ruined my reputation, and I fled to the wilds to avoid further disparagement.",
+      "I am comfortable with being isolated, as I seek inner peace.",
+      "I never liked the people I called my friends, so it was easy for me to strike out on my own.",
+      "I felt compelled to forsake my past, but did so with great reluctance, and sometimes I regret making that decision.",
+      "I lost everything \u2014 my home, my family, my friends. Going it alone was all I could do.",
+      "Society's decadence disgusted me, so I decided to leave it behind."
+    ]},
+    "bgNoble": {"display": "Noble", "values": [
+      "I come from an old and storied family, and it fell to me to preserve the family name.",
+      "My family has been disgraced, and I intend to clear our name.",
+      "My family recently came by its title, and that elevation thrust us into a new and strange world.",
+      "My family has a title, but none of my ancestors have distinguished themselves since we gained it.",
+      "My family is filled with remarkable people. I hope to live up to their example.",
+      "I hope to increase my family's power and influence."
+    ]},
+    "bgOutlander": {"display": "Outlander", "values": [
+      "I spent a lot of time in the wilderness as a youngster, and I came to love that way of life.",
+      "From a young age, I couldn't abide the stink of the cities and preferred to spend my time in nature.",
+      "I came to understand the darkness that lurks in the wilds, and I vowed to combat it.",
+      "My people lived on the edges of civilization, and I learned the methods of survival from my family.",
+      "After a tragedy I retreated to the wilderness, leaving my old life behind.",
+      "My family moved away from civilization, and I learned to adapt to my new environment."
+    ]},
+    "bgSage": {"display": "Sage", "values": [
+      "I was naturally curious, so I packed up and went to a university to learn more about the world.",
+      "My mentor's teachings opened my mind to new possibilities in that field of study.",
+      "I was always an avid reader, and I learned much about my favorite topic on my own.",
+      "I discovered an old library and pored over the texts I found there. That experience awakened a hunger for more knowledge.",
+      "I impressed a wizard who told me I was squandering my talents and should seek out an education to take advantage of my gifts.",
+      "One of my parents or a relative gave me a basic education that whetted my appetite, and I left home to build on what I had learned."
+    ]},
+    "bgSailor": {"display": "Sailor", "values": [
+      "I was press-ganged by pirates and forced to serve on their ship until I finally escaped.",
+      "I wanted to see the world, so I signed on as a deckhand for a merchant ship.",
+      "One of my relatives was a sailor who took me to sea.",
+      "I needed to escape my community quickly, so I stowed away on a ship. When the crew found me, I was forced to work for my passage.",
+      "Reavers attacked my community, so I found refuge on a ship until I could seek vengeance.",
+      "I had few prospects where I was living, so I left to find my fortune elsewhere."
+    ]},
+    "bgSoldier": {"display": "Soldier", "values": [
+      "I joined the militia to help protect my community from monsters.",
+      "A relative of mine was a soldier, and I wanted to carry on the family tradition.",
+      "The local lord forced me to enlist in the army.",
+      "War ravaged my homeland while I was growing up. Fighting was the only life I ever knew.",
+      "I wanted fame and fortune, so I joined a mercenary company, selling my sword to the highest bidder.",
+      "Invaders attacked my homeland. It was my duty to take up arms in defense of my people."
+    ]},
+    "bgUrchin": {"display": "Urching", "values": [
+      "Wanderlust caused me to leave my family to see the world. I look after myself.",
+      "I ran away from a bad situation at home and made my own way in the world.",
+      "Monsters wiped out my village, and I was the sole survivor. I had to find a way to survive.",
+      "A notorious thief looked after me and other orphans, and we spied and stole to earn our keep.",
+      "One day I woke up on the streets, alone and hungry, with no memory of my early childhood.",
+      "My parents died, leaving no one to look after me. I raised myself."
+    ]},
+    "bgBarbarian": {"display": "Birth of a barbarian", "values": [
+      "My devotion to my people lifted me in battle, making me powerful and dangerous.",
+      "The spirits of my ancestors called on me to carry out a great task.",
+      "I lost control in battle one day, and it was as if something else was manipulating my body, forcing it to kill every foe I could reach.",
+      "I went on a spiritual journey to find myself and instead found a spirit animal to guide, protect, and inspire me.",
+      "I was struck by lightning and lived. Afterward, I found a new strength within me that let me push beyond my limitations.",
+      "My anger needed to be channeled into battle, or I risked becoming an indiscriminate killer."
+    ]},
+    "bgBard": {"display": "Bardic beginning", "values": [
+      "I awakened my latent bardic abilities through trial and error.",
+      "I was a gifted performer and attracted the attention of a master bard who schooled me in the old techniques.",
+      "I joined a loose society of scholars and orators to learn new techniques of performance and magic.",
+      "I felt a calling to recount the deeds of champions and heroes, to bring them alive in song and story.",
+      "I joined one of the great colleges to learn old lore, the secrets of magic, and the art of performance.",
+      "I picked up a musical instrument one day and instantly discovered that I could play it."
+    ]},
+    "bgCleric": {"display": "Clerical calling", "values":[
+      "A supernatural being in service to the gods called me to become a divine agent in the world.",
+      "I saw the injustice and horror in the world and felt moved to take a stand against them.",
+      "My god gave me an unmistakable sign. I dropped everything to serve the divine.",
+      "Although I was always devout, it wasn't until I completed a pilgrimage that I knew my true calling.",
+      "I used to serve in my religion's bureaucracy but found I needed to work in the world, to bring the message of my faith to the darkest corners of the land.",
+      "I realize that my god works through me, and I do as commanded, even though I don't know why I was chosen to serve."
+    ]},
+    "bgDruid": {"display": "Druidic development", "values": [
+      "I saw too much devastation in the wild places, too much of nature's splendor ruined by the despoilers. I joined a circle of druids to fight back against the enemies of nature.",
+      "I found a place among a group of druids after I fled a catastrophe.",
+      "I have always had an affinity for animals, so I explored my talent to see how I could best use it.",
+      "I befriended a druid and was moved by druidic teachings. I decided to follow my friend's guidance and give something back to the world.",
+      "While I was growing up, I saw spirits all around me \u2014 entities no one else could perceive. I sought out the druids to help me understand the visions and communicate with these beings.",
+      "I have always felt disgust for creatures of unnatural origin. For this reason, I immersed myself in the study of the druidic mysteries and became a champion of the natural order."
+    ]},
+    "bgFighter": {"display": "Foundation for fighting", "values": [
+      "I wanted to hone my combat skills, and so I joined a war college.",
+      "I squired for a knight who taught me how to fight, care for a steed, and conduct myself with honor. I decided to take up that path for myself.",
+      "Horrible monsters descended on my community, killing someone I loved. I took up arms to destroy those creatures and others of a similar nature.",
+      "I joined the army and learned how to fight as part of a group.",
+      "I grew up fighting, and I refined my talents by defending myself against people who crossed me.",
+      "I could always pick up just about any weapon and know how to use it effectively."
+    ]},
+    "bgMonk": {"display": "Monastic mission", "values": [
+      "I was chosen to study at a secluded monastery. There, I was taught the fundamental techniques required to eventually master a tradition.",
+      "I sought instruction to gain a deeper understanding of existence and my place in the world.",
+      "I stumbled into a portal to the Shadowfell and took refuge in a strange monastery, where I learned how to defend myself against the forces of darkness.",
+      "I was overwhelmed with grief after losing someone close to me, and I sought the advice of philosophers to help me cope with my loss.",
+      "I could feel that a special sort of power lay within me, so I sought out those who could help me call it forth and master it.",
+      "I was wild and undisciplined as a youngster, but then I realized the error of my ways. I applied to a monastery and became a monk as a way to live a life of discipline."
+    ]},
+    "bgPaladin": {"display": "Preparing for paladin-hood", "values": [
+      "A fantastical being appeared before me and called on me to undertake a holy quest.",
+      "One of my ancestors left a holy quest unfulfilled, so I intend to finish that work.",
+      "The world is a dark and terrible place. I decided to serve as a beacon of light shining out against the gathering shadows.",
+      "I served as a paladin's squire, learning all I needed to swear my own sacred oath.",
+      "Evil must be opposed on all fronts. I feel compelled to seek out wickedness and purge it from the world.",
+      "Becoming a paladin was a natural consequence of my unwavering faith. In taking my vows, I became the holy sword of my religion."
+    ]},
+    "bgRanger": {"display": "Reckoning for roaming", "values": [
+      "I found purpose while I honed my hunting skills by bringing down dangerous animals at the edge of civilization.",
+      "I always had a way with animals, able to calm them with a soothing word and a touch.",
+      "I suffer from terrible wanderlust, so being a ranger gave me a reason not to remain in one place for too long.",
+      "I have seen what happens when the monsters come out from the dark. I took it upon myself to become the first line of defense against the evils that lie beyond civilization's borders.",
+      "I met a grizzled ranger who taught me woodcraft and the secrets of the wild lands.",
+      "I served in an army, learning the precepts of my profession while blazing trails and scouting enemy encampments."
+    ]},
+    "bgRogue": {"display": "Reasons for roguery", "values": [
+      "I've always been nimble and quick of wit, so I decided to use those talents to help me make my way in the world.",
+      "An assassin or a thief wronged me, so I focused my training on mastering the skills of my enemy to better combat foes of that sort.",
+      "An experienced rogue saw something in me and taught me several useful tricks.",
+      "I decided to turn my natural lucky streak into the basis of a career, though I still realize that improving my skills is essential.",
+      "I took up with a group of ruffians who showed me how to get what I want through sneakiness rather than direct confrontation.",
+      "I'm a sucker for a shiny bauble or a sack of coins, as long as I can get my hands on it without risking life and limb."
+    ]},
+    "bgSorcerer": {"display": "Source of your sorcery", "values": [
+      "When I was born, all the water in the house froze solid, the milk spoiled, or all the iron turned to copper. My family is convinced that this event was a harbinger of stranger things to come for me.",
+      "I suffered a terrible emotional or physical strain, which brought forth my latent magical power. I have fought to control it ever since.",
+      "My immediate family never spoke of my ancestors, and when I asked, they would change the subject. It wasn't until I started displaying strange talents that the full truth of my heritage came out.",
+      "When a monster threatened one of my friends, I became filled with anxiety. I lashed out instinctively and blasted the wretched thing with a force that came from within me.",
+      "Sensing something special in me, a stranger taught me how to control my gift.",
+      "After I escaped from a magical conflagration, I realized that though I was unharmed, I was not unchanged. I began to exhibit unusual abilities that I am just beginning to understand."
+    ]},
+    "bgWarlock": {"display": "Whence your warlock patron?", "values": [
+      "While wandering around in a forbidden place, I encountered an otherworldly being that offered to enter into a pact with me.",
+      "I was examining a strange tome I found in an abandoned library when the entity that would become my patron suddenly appeared before me.",
+      "I stumbled into the clutches of my patron after I accidentally stepped through a magical doorway.",
+      "When I was faced with a terrible crisis, I prayed to any being who would listen, and the creature that answered became my patron.",
+      "My future patron visited me in my dreams and offered great power in exchange for my service.",
+      "One of my ancestors had a pact with my patron, so that entity was determined to bind me to the same agreement."
+    ]},
+    "bgWizard": {"display": "Why you're a wizard", "values": [
+      "An old wizard chose me from among several candidates to serve an apprenticeship.",
+      "When I became lost in a forest, a hedge wizard found me, took me in, and taught me the rudiments of magic.",
+      "I grew up listening to tales of great wizards and knew I wanted to follow their path. I strove to be accepted at an academy of magic and succeeded.",
+      "One of my relatives was an accomplished wizard who decided I was smart enough to learn the craft.",
+      "While exploring an old tomb, library, or temple, I found a spellbook. I was immediately driven to learn all I could about becoming a wizard.",
+      "I was a prodigy who demonstrated mastery of the arcane arts at an early age. When I became old enough to set out on my own, I did so to learn more magic and expand my power."
+    ]},
+    "pcLifeEvent": {"display": "Event", "values": [
+      {"value": "You suffered a tragedy", "weight": 10, "rolls": ["tragedy"]},
+      {"value": "You gained a bit of good fortune", "weight": 10, "rolls": ["boon"]},
+      {"value": "You fell in love or got married. If you get this result twice, you can choose to have a child instead", "weight": 10},
+      {"value": "You made a enemy of an adventurer", "weight": 10, "rolls": ["blame"]},
+      {"value": "You made a friend of an adventurer", "weight": 10},
+      {"value": "You spent time working in a job related to your background. Start with an extra 2d6 gp", "weight": 20},
+      {"value": "You met someone important", "weight": 5},
+      {"value": "You went on an adventure", "weight": 5, "rolls": ["adventure"]},
+      {"value": "You had a supernatural experience", "weight": 5, "rolls": ["supernatural"]},
+      {"value": "You fought in a battle", "weight": 5, "rolls": ["war"]},
+      {"value": "You committed a crime or were wrongly accused", "weight": 5, "rolls": ["crime", "punishment"]},
+      {"value": "You encountered something magical", "weight": 4, "rolls": ["arcane"]},
+      {"value": "Something truly strange happened to you", "weight": 1, "rolls": ["weird"]}
+    ]},
+    "blame": {"display": "Was it something you did?", "values": [
+      "You are to blame",
+      "You are not to blame"
+    ]},
+    "adventure": {"display": "How did you fare?", "values": [
+      {"value": "You nearly died. You have nasty scars, and you are missing 1d3 fingers or 1d4 toes", "weight": 10},
+      {"value": "You suffered a grievous injury. Although the wound healed, it still pains you from time to time", "weight": 10},
+      {"value": "You were wounded, but in time you fully recovered", "weight": 10},
+      {"value": "You contracted a disease while exploring a filthy warren. You recovered from the disease, but you have a persistent cough, pockmarks on your skin, or prematurely grey hair", "weight": 10},
+      {"value": "You were poisoned by a trap or monster. You recovered, but the next time you must make a saving throw against poison, you make the throw with disadvantage", "weight": 10},
+      {"value": "You lost something of sentimental value to you during your adventure. Remove one trinket from your possession", "weight": 10},
+      {"value": "You were terribly frightened by something you encountered and ran away, abandoning your companions to their fate", "weight": 10},
+      {"value": "You learned a great deal during your adventure. The next time you make an ability check or a saving throw, you have advantage on the roll", "weight": 10},
+      {"value": "You found some treasure on your adventure. You have 2d6 gp left from your share of it", "weight": 10},
+      {"value": "You found a considerable amount of treasure on your adventure. You have 1d20+50 gp left from your share of it", "weight": 9},
+      {"value": "You came across a common magic item (of the DM's choice)", "weight": 1}
+    ]},
+    "arcane": {"value": "Arcane experience", "values": [
+      "You were charmed or frightened by a spell",
+      "You were injured by the effect of a spell",
+      "You witnessed a powerfull spell being cast by a cleric, a druid, a sorcerer, a warlock, or a wizard",
+      "You drank a potion (of the DM's choice)",
+      "You found a spell scroll (of the DM's choice) and succeeded in casting the spell it contained",
+      "You were affected by teleportation magic",
+      "You turned invisible for a time",
+      "You identified an illusion for what it was",
+      "You saw a creature being conjured by magic",
+      {"value": "Your fortune was read by a diviner. Roll twice on the Life Events table, but don't apply the results. Instead, the DM picks one event as a portent of your future (which might or might not come true)", "weight": 1, "rolls": [{"table": "pcLifeEvents", "qty": 2}] }
+    ]},
+    "boon": {"display": "Lucky!", "values": [
+      "A friendly wizard gave you a spell scroll containing one cantrip (of the DM's choice)",
+      "You saved the life of a commoner, who now owes you a life debt. This individual accompanies you on your travels and performs mundane tasks for you, but will leave if neglected, abused, or imperiled. Determine details about this character by using the supplemental tables and working with your DM.",
+      "You found a riding horse",
+      "You found some money. You have 1d20 in addition to your regular starting funds",
+      "A relative bequeathed you a simple weapon of your choice",
+      "You found something interesting. You gain one additional trinket",
+      "You once performed a service for a local temple. The next time you visit the temple, you can receive healing up to your hitpoint maximum",
+      "A friendly alchemist gifted you with a potion of healing or a flask of acid, as you choose",
+      "You found a treasure map",
+      "A distant relative left you a stipend that enables you to live at the comfortable lifestyle for 1d20 years. If you choose to live at a higher lifestyle, you reduce the price of the lifestyle by 2gp during that time period"
+    ]},
+    "crime": {"display": "Your crime", "values": [
+      "Murder",
+      "Theft",
+      "Burglary",
+      "Assault",
+      "Smuggling",
+      "Kidnapping",
+      "Extortion",
+      "Counterfeiting"
+    ] },
+    "punishment": {"display": "Your punishment", "values": [
+      {"value": "You did not commit the crime and were exonerated after being accused", "weight": 3},
+      {"value": "You committed the crime, or helped to do so, but nonetheless the authorities found you not guilty", "weight": 3},
+      {"value": "You were nearly caught i nthe act. You had to flee and are wanted in the community where the crime occurred", "weight": 2},
+      {"value": "You were caught and convicted. You spent time in jail, chained to an oar, or performing hard labor. You served a sentence of 1d4 years or succeeded in escaping after that much time", "weight": 4}
+    ]},
+    "supernatural": {"display": "Supernatural occurence", "values": [
+      {"value": "You were ensorcelled by a fey and server 1d6 years before you escaped", "weight": 5},
+      {"value": "You saw a demon and ran away before it could do anything to you", "weight": 5},
+      {"value": "A devil tempted you. Make a DC 10 Wisdom saving throw. On a failed save, your alignment shifts one step toward evil (if it's not evil already), and you start the game with an additional 1d20+50 gp", "weight": 5},
+      {"value": "You wake up one morning miles away from your home, with no idea how you got there", "weight": 5},
+      {"value": "You visited a holy site and felt the presence of the divine there", "weight": 10},
+      {"value": "You witnessed a falling red star, a face in the frost, or some other bizarre happening. You are certain that it was an omen of some sort", "weight": 10},
+      {"value": "You escaped certain death and believe it was the intervention of a god that saved you", "weight": 10},
+      {"value": "You witnessed a minor miracle", "weight": 10},
+      {"value": "You explored an empty house and found it to be haunted", "weight": 10},
+      {"value": "You were briefly possessed by", "weight": 5, "rolls": ["possessedBy"]},
+      {"value": "You saw a ghost", "weight": 5},
+      {"value": "You saw a ghoul feeding on a corpse", "weight": 5},
+      {"value": "A Celestial or a Fiend visited you in your dreams to give a warning of dangers to come", "weight": 5},
+      {"value": "You briefly visited the Feywild or the Shadowfell", "weight": 5},
+      {"value": "You saw a portal that you believe leads to another plane of existence", "weight": 5}
+    ] },
+    "possessedBy": {"display": "Possessor", "values": [
+      "a celestial",
+      "a devil",
+      "a demon",
+      "a fey",
+      "an elemental",
+      "an undead"
+    ]},
+    "tragedy": {"display": "Tragic event", "values": [
+      {"value": "A family member or a close friend died.", "weight": 2, "rolls": ["causeOfDeath"]},
+      "A friendship ended bitterly, and the other person is now hostile to you. The cause might have been a misunderstanding or something you or the former friend did.",
+      "You lost all your possessions in a disaster, and you had to rebuild your life",
+      "You were imprisoned for a crime you didn't commit and spent 1d6 years at hard labor, in jail, or shackled to an oar in a slave galley",
+      "War ravaged your home community, reducing everything to rubble and ruin. In the aftermath, you either helped your town rebuild or moved somewhere else",
+      "A lover disappeared without a trace. You have been looking for that person ever since",
+      "A terrible blight in your home community caused crops to fail, and many starved. You lost a sibling or some other family member",
+      "You did something that brought terrible shame to you in the eyes of your family. You might have been involved in a scandal, dabbled in dark magic, or offended someone important. The attitude of your family members toward you becomes indifferent at best, though they might eventually forgive you",
+      "For a reason you were never told, you were exiled from your community. You then either wandered in the wilderness for a time or promptly found a new place to live",
+      {"value": "A romantic relationship ended", "weight": 1, "rolls": ["romanticRelationshipEnd"] },
+      {"value": "A current or prospective romantic partner of yours died.", "weight": 1, "rolls": ["causeOfDeath"], "condRolls": [
+        {
+          "id": "didYouMurderThem",
+          "display": "Were you the cause?",
+          "dependsOn": "causeOfDeath",
+          "conditions": [
+            {"match": {"eq": 2, "rolls": ["romanticRelationshipDeathResponsibility"]}}
+          ]
+        }]
+      }
+    ] },
+    "romanticRelationshipEnd": { "display": "How did it end?", "values": [
+      "Amicably",
+      "With bad feelings"
+    ]},
+    "romanticRelationshipDeathResponsibility": ["You were responsible (directly or indirectly)", {"value": "You were not responsible", "weight": 11}],
+    "war": {"display": "Your lot in battle", "values": [
+      "You were knocked out and left for dead. You wake up hours later with no recollection of the battle",
+      {"value": "You were badly injured in the fight, and you still bear the awful scars of those wounds", "weight": 2},
+      "You ran away from the battle to save your life, but you still feel shame for your cowardice",
+      {"value": "You suffered only minor injuries, and the wounds all healed without leaving scars", "weight": 3},
+      {"value": "You survived the battle, but you suffer from terrible nightmares in which you relive the experience", "weight": 2},
+      {"value": "You escaped the battle unscathed, though many of your friends were injured or lost", "weight": 2},
+      "You acquitted yourself well in battle and are remembered as a hero. You might have received a medal for your bravery"
+    ] },
+    "weird": {"display": "Strange happening", "values": [
+      "You were turned into a toad and remained in that form for 1d4 weeks",
+      "You were petrified and remained a stone statue for a time until someone freed you",
+      "You were enslaved by a hag, a satyr, or some other being and lived in that creature's thrall for 1d6 years",
+      "A dragon held you prisoner for 1d4 months until adventurers killed it",
+      "You were taken captive by a race of evil humanoids such as drow, kuo-toa, or quaggoths. You lived as a slave in the Underdark until you escaped",
+      "You served a powerful adventurer as a hireling. You have only recently left that service. Use the supplemental tables and work with your DM to determine the basic details about your former employer",
+      "You went insane for 1d6 years and recently regained your sanity. A tic or some other bit of odd behavior might linger",
+      "A lover of yours was secretly a silver dragon",
+      "You were captured by a cult and nearly sacrificed on an altar to the foul being the cultists served. You escaped, but you fear they will find you",
+      "You met a demigod, an archdevil, an archfey, a demon lord, or a titan, and you lived to tell the tale",
+      "You were swallowed by a giant fish and spent a month in its gullet before you escaped",
+      "A powerful being granted you a wish, but you squandered it on something frivolous"
+    ] },
+    "causeOfDeath": {"display": "Cause of death", "values": [
+      "Unknown",
+      "Murdered",
+      "Killed in battle",
+      "Accident related to class or occupation",
+      "Accident unrelated to class or occupation",
+      {"value": "Natural causes, such as disease or old age", "weight": 2},
+      "Apparent suicide",
+      "Torn apart by an animal or a natural disaster",
+      "Consumed by a monster",
+      "Executed for a crime or tortured to death",
+      "Bizarre event, such as being hit by a meteorite, struck down by an angry god, or killed by a hatching slaad egg"
+    ] },
+    "status": {"display": "Status", "values": [
+      {"value": "Dead", "weight": 1, "rolls": ["causeOfDeath"]},
+      {"value": "Missing or unknown", "weight": 2},
+      {"value": "Alive, but doing poorly due to injury, financial trouble, or relationship difficulties", "weight": 3},
+      {"value": "Alive and well", "weight": 4},
+      {"value": "Alive and quite successful", "weight": 3},
+      {"value": "Alive and infamous", "weight": 2},
+      {"value": "Alive and famous", "weight": 1}
+    ] },
+    "oath": {
+      "display": "Oath (Lawful tendency)",
+      "values": [
+        "I swore to defend my home at all costs",
+        "I never turn down a challenge to a duel",
+        "It's highly important to obey one's superiors",
+        "My family traditions are more important than anything",
+        "Having a daily routine is comforting",
+        "I never do anything without the proper paperwork"
+      ]},
+    "whim": {
+      "display": "Whim (Chaotic tendency)",
+      "values": [
+        "I stop and smell the roses",
+        "After a few weeks, I'm ready to move on to unknown territory again",
+        "I hoard shiny objects",
+        "My goals are more important than petty laws",
+        "I jump at any opportunity that comes my way",
+        "Personal development is more useful than societal development"
+      ] },
+    "conscience": {
+      "display": "Conscience (Good tendency)",
+      "values": [
+        "Be merciful to the helpless",
+        "Be as fair as possible",
+        "Be loyal to your friends and compatriots",
+        "Sometimes you must sacrifice for the greater good",
+        "What goes around comes around",
+        "There are ideals that are worth fighting for"
+      ]},
+    "temptation": {
+      "display": "Temptation (Evil tendency)",
+      "values": [
+        "Torture is all right when it's for a purpose",
+        "I will lie, cheat, and steal if it's in my own interests",
+        "Everyone has their price",
+        "Power is intoxicating",
+        "<Race> are all scum",
+        "Suffering is amusing"
+      ]},
+    "goal": {
+      "display": "Goal",
+      "values": [
+        "Become rich and powerful",
+        "Spread my worldview to the corners of the earth",
+        "Avenge a loved one's death",
+        "Create a masterpiece of art/magic",
+        "Live in comfort",
+        "Find love"]
+    },
+    "trait": {
+      "display": "Trait",
+      "values": [
+        "This NPC refers to themself in the third person",
+        "I speak very slowly and deliberately",
+        "My tongue can't keep up with my brain",
+        "I walk with a slight limp",
+        "I frequently sigh in exasperation",
+        "I find nearly everything amusing",
+        "I don't blink often",
+        "The tavern is my second home",
+        "I need time away from people to recharge",
+        "I'm not comfortable with any degree of silence",
+        "I can't help wise-cracking every other moment",
+        "Everything I say is often dripping with sarcasm",
+        "I am brimming with youthful optimism",
+        "I am incredibly naive",
+        "I am incredibly shrewd",
+        "I am an endless fount of tall tales",
+        "I have connections everywhere",
+        "I am hard of hearing",
+        "I despise food that a lot of people like",
+        "I love some foods that many people find unappealing",
+        "I rub my nose when I speak",
+        "I don't make eye contact with people",
+        "I am scrupulously polite and formal",
+        "I am loud and boisterous",
+        "I am quiet and reserved",
+        "I am subtle and skillful",
+        "I am haughty and imperious",
+        "I always one-up people",
+        "I can never sit still",
+        "I can't sleep well and often wander around in the wee hours of the morning",
+        "I am difficult to get hold of",
+        "I am a pillar of my community"
+      ]},
+    "secret": {
+      "display": "Secret",
+      "values": [
+        "I write poetry and songs",
+        "My ancestors hid a treasure that I intend to uncover",
+        "I'm adopted--I never learnt what became of my family",
+        "I am a celestial in disguise",
+        "I am a fiend in disguise",
+        "I own a strange, magical artifact",
+        "I know the way to some old ruins that no one else knows about",
+        "I keep a strange pet",
+        "I am in hiding from old enemies",
+        "My bloodline is subject to a terrible curse",
+        "My bloodline has been blessed by a god/demigod/powerful mage",
+        "I used to be an adventurer",
+        "I am a doppelganger",
+        "Many years ago, I committed a terrible crime",
+        "I have a heroic alter-ego",
+        "I am the last champion/vizier/scion of a now-fallen noble house",
+        "I harbour strange, innate magic that I can't control",
+        "I have a network of secret passages that I use to travel quickly in the region",
+        "I can't read",
+        "Many local and regional rulers or nobles are in my pocket",
+        "I am a dragon in disguise",
+        "I am the clone of a long dead wizard, with no memory of my former life",
+        "I have reincarnated \u2014 my previous form was completely different",
+        "I perform in a mime troupe",
+        "I am learning the dark arts from an old manuscript I found",
+        "I secretly support some of my neighbours financially",
+        "Sometimes I get strange, prophetic visions of the future"
+      ]
+    }
+  },
+  "content": [
+    {
+      "id": "npc",
+      "display": "NPC",
+      "rolls": ["age", "race", "occupation", "alignment", "oath", "whim", "goal", "conscience", "temptation",  "trait", "secret"],
+      "condRolls": [
+        {
+          "id": "lifeEvents",
+          "display": "Life Events",
+          "dependsOn": "age",
+          "conditions": [
+            {"match": {"eq": "Young", "rolls": [{"table": "pcLifeEvent", "qty": 1}]}},
+            {"match": {"eq": "Middling", "rolls": [{"table": "pcLifeEvent", "qty": 2}]}},
+            {"match": {"eq": "Advanced", "rolls": [{"table": "pcLifeEvent", "qty": 3}]}},
+            {"match": {"eq": "Elderly", "rolls": [{"table": "pcLifeEvent", "qty": 4}]}},
+            {"match": {"eq": "Ancient", "rolls": [{"table": "pcLifeEvent", "qty": 5}]}}
+          ]
+        }]
+    },
+    {
+      "id": "this-is-your-life",
+      "display": "This Is Your Life",
+      "sections": [
+        {
+          "id": "origins",
+          "display": "Origins",
+          "sections": [
+            {
+              "id": "parents",
+              "display": "Parents",
+              "rolls": ["parentsKnown"],
+              "optionalRolls": [
+                {
+                  "id": "heritage",
+                  "display": "Heritage",
+                  "options": [
+                    {"display": "Half-Elf Parents", "rolls": ["halfElfParents"]},
+                    {"display": "Half-Orc Parents", "rolls": ["halfOrcParents"]},
+                    {"display": "Tiefling Parents", "rolls": ["tieflingParents"]}
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "birthplace",
+              "display": "Birthplace",
+              "rolls": ["birthplace"]
+            },
+            {
+              "id": "siblingsRels",
+              "display": "Sibling Relations",
+              "rolls": ["numSiblings", "birthOrder"],
+              "condRolls": [
+                {
+                  "id": "sibling",
+                  "display": "Siblings",
+                  "dependsOn": "numSiblings",
+                  "conditions": [
+                    {"matchNumber": {"rolls": ["occupation", "alignment", "status", "relationship"]}}
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "familyFriends",
+              "display": "Family and Friends",
+              "rolls": ["family", "lifestyle", "memories"],
+              "modifiedRolls": [
+                {
+                  "dependsOn": "lifestyle",
+                  "table": "home",
+                  "modifiers": [
+                    {"value": "Wretched"    , "amt": -40},
+                    {"value": "Squalid"     , "amt": -20},
+                    {"value": "Poor"        , "amt": -10},
+                    {"value": "Modest"      , "amt":   0},
+                    {"value": "Comfortable" , "amt":  10},
+                    {"value": "Wealthy"     , "amt":  20},
+                    {"value": "Aristocratic", "amt":  40}
+                  ]
+                }
+              ],
+              "condRolls": [
+                {
+                  "id": "absentParents",
+                  "display": "Absent Parent(s)",
+                  "dependsOn": "family",
+                  "conditions": [
+                    {"match": {"lt": 36, "rolls": [{"table": "absentParent", "qty": 2}]}},
+                    {"match": {"lt": 76, "rolls": ["absentParent"]}}
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "personalDecisions",
+          "display": "Personal Decisions",
+          "sections": [
+            {
+              "id": "background",
+              "display": "Background",
+              "optionalRolls": [
+                {
+                  "id": "bgHistory",
+                  "display": "Background History",
+                  "options": [
+                    {"display": "Acolyte"      , "rolls": ["bgAcolyte"     ]},
+                    {"display": "Charlatan"    , "rolls": ["bgCharalatan"  ]},
+                    {"display": "Criminal"     , "rolls": ["bgCriminal"    ]},
+                    {"display": "Entertainer"  , "rolls": ["bgEntertainer" ]},
+                    {"display": "Folk Hero"    , "rolls": ["bgFolkHero"    ]},
+                    {"display": "Guild Artisan", "rolls": ["bgGuildArtisan"]},
+                    {"display": "Hermit"       , "rolls": ["bgHermit"      ]},
+                    {"display": "Noble"        , "rolls": ["bgNoble"       ]},
+                    {"display": "Outlander"    , "rolls": ["bgOutlander"   ]},
+                    {"display": "Sage"         , "rolls": ["bgSage"        ]},
+                    {"display": "Sailor"       , "rolls": ["bgSailor"      ]},
+                    {"display": "Soldier"      , "rolls": ["bgSoldier"     ]},
+                    {"display": "Urchin"       , "rolls": ["bgUrchin"      ]}
+                  ]
+                }]
+            },
+            {
+              "id": "class",
+              "display": "Class Training",
+              "optionalRolls": [
+                {
+                  "id": "classHistory",
+                  "display": "Class History",
+                  "options": [
+                    {"display": "Barbarian", "rolls": ["bgBarbarian"]},
+                    {"display": "Bard"     , "rolls": ["bgBard"     ]},
+                    {"display": "Cleric"   , "rolls": ["bgCleric"   ]},
+                    {"display": "Druid"    , "rolls": ["bgDruid"    ]},
+                    {"display": "Fighter"  , "rolls": ["bgFighter"  ]},
+                    {"display": "Monk"     , "rolls": ["bgMonk"     ]},
+                    {"display": "Paladin"  , "rolls": ["bgPaladin"  ]},
+                    {"display": "Ranger"   , "rolls": ["bgRanger"   ]},
+                    {"display": "Rogue"    , "rolls": ["bgRogue"    ]},
+                    {"display": "Sorcerer" , "rolls": ["bgSorcerer" ]},
+                    {"display": "Warlock"  , "rolls": ["bgWarlock"  ]},
+                    {"display": "Wizard"   , "rolls": ["bgWizard"   ]}
+                  ]
+                }]
+            }
+          ]
+        },
+        {
+          "id": "pcBackstory",
+          "display": "Lifespan and history",
+          "rolls": ["numericAge"],
+          "condRolls": [
+            {
+              "id": "lifeEvents",
+              "display": "Life Events",
+              "dependsOn": "numericAge",
+              "conditions": [
+                {"match": {"lt": 21,  "rolls": [ {"table": "pcLifeEvent", "qty": 1}      ]}},
+                {"match": {"lt": 60,  "rolls": [ {"table": "pcLifeEvent", "qty": "1d4"}  ]}},
+                {"match": {"lt": 70,  "rolls": [ {"table": "pcLifeEvent", "qty": "1d6"}  ]}},
+                {"match": {"lt": 90,  "rolls": [ {"table": "pcLifeEvent", "qty": "1d8"}  ]}},
+                {"match": {"lt": 100, "rolls": [ {"table": "pcLifeEvent", "qty": "1d10"} ]}},
+                {"match": {"eq": 100, "rolls": [ {"table": "pcLifeEvent", "qty": "1d12"} ]}}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+
+  ]
+}

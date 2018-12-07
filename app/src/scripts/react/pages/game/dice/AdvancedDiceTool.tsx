@@ -30,8 +30,7 @@ class AdvancedDiceTool extends Component<any, DiceToolState> {
         this.clear = this.clear.bind(this);
     }
 
-    clear()
-    {
+    clear() {
       this.setState({value: "", isValid: null, result: null})
     }
 
@@ -83,7 +82,7 @@ class AdvancedDiceTool extends Component<any, DiceToolState> {
         return (
             <div className="dice-roller advanced">
                 <div className={`display ${isValidClass}`}>
-                    <input type="text" readOnly value={value} />
+                    <input className="dice-input" type="text" readOnly value={value} />
                     <div className="result">
                         <span className="result-value">{result ? result.value : null}</span>
                         <span className="result-details">{result ? result.details : null}</span>
@@ -117,7 +116,7 @@ class AdvancedDiceTool extends Component<any, DiceToolState> {
                     <div className="btn" onClick={this.append.bind(null, "0")}>0</div>
                     <div className="btn" onClick={this.append.bind(null, "(")}>(</div>
                     <div className="btn" onClick={this.append.bind(null, ")")}>)</div>
-                    <div className={"btn" + (!isValid ? " disabled" : "")} onClick={this.submit}>Roll</div>
+                    <div id="submitBtn" className={"btn" + (!isValid ? " disabled" : "")} onClick={this.submit}>Roll</div>
 
                 </div>
             </div>

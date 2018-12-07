@@ -1,6 +1,6 @@
 export { default as UserReducer } from "./user-reducer";
 export { default as CodexReducer } from "./codex-reducer";
-
+export { default as GeneratorReducer } from "./generator-reducer";
 
 export const mergeObject = (state:any, propName:string, data:any) => {
     return {

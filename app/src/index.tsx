@@ -10,15 +10,16 @@ import registerServiceWorker from './scripts/registerServiceWorker';
 import { applyMiddleware, createStore, combineReducers, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { UserReducer, CodexReducer } from './scripts/react/reducers';
+import { UserReducer, CodexReducer, GeneratorReducer } from './scripts/react/reducers';
 
 
 const allReducers = combineReducers({
   user: UserReducer,
-  codex: CodexReducer
+  codex: CodexReducer,
+  generator: GeneratorReducer
 });
 
-const allStoreEnahncers = (window as any).devToolsExtension ?
+const allStoreEnhancers = (window as any).devToolsExtension ?
     compose(
         applyMiddleware(thunk),
         (window as any).devToolsExtension()
@@ -30,7 +31,7 @@ const allStoreEnahncers = (window as any).devToolsExtension ?
 const store = createStore(
   allReducers,
   {},
-  allStoreEnahncers
+  allStoreEnhancers
 );
 
 ReactDOM.render(

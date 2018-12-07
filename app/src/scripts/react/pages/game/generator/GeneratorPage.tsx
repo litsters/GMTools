@@ -1,5 +1,19 @@
 import React, { Component } from "react";
 import IPage from "../../../interfaces/IPage";
+import { connect } from 'react-redux';
+import { apiGetGeneratorData } from '../../../actions/generator-actions';
+import { GeneratorReducer } from "../../../reducers";
+
+
+//----------------------------------------------------------------------------------------------------------------------
+// Name generator
+//----------------------------------------------------------------------------------------------------------------------
+
+interface IRoot
+{
+  display: string,
+  startSymbol: string
+}
 
 interface IRule
 {
@@ -11,10 +25,15 @@ type Rule = IRule | string;
 
 interface Grammar
 {
-  [key: string]: Rule[]
+  roots: {
+    [key: string]: IRoot
+  },
+  rules: {
+    [key: string]: Rule[]
+  }
 }
 
-class CFGGenerator
+class CFGExpander
 {
   grammar: Grammar;
 
@@ -22,23 +41,26 @@ class CFGGenerator
   {
     this.grammar = grammar;
 
-    for (let key of Object.keys(this.grammar))
+    for (let key of Object.keys(this.grammar.rules))
     {
-      for (let rule of this.grammar[key])
+      for (let rule of this.grammar.rules[key])
       {
-        let textExp = typeof rule === "string" ? rule : rule.text;
+        let textExp;
 
-        let regex = /(\$(\w+)|\$\{(\w+)\})/g;
+        textExp = typeof rule === "string" ? rule : rule.text;
+
+        let regex = /(\$(\w+)|\${(\w+)})/g;
         let match = null;
 
         while ((match = regex.exec(textExp)) !== null)
         {
           let ruleRef = match[2] || match[3];
 
-          if (this.grammar[ruleRef] === undefined)
+          if (this.grammar.rules[ruleRef] === undefined)
             throw new Error(`Grammar invalid: No rule matching ${ruleRef}`);
         }
       }
+
     }
   }
 
@@ -57,12 +79,12 @@ class Expansion
 
   constructor(grammar: Grammar, ruleStr: string)
   {
-    if (grammar[ruleStr] === undefined)
+    if (grammar.rules[ruleStr] === undefined)
       throw new Error(`Cannot expand ${ruleStr}: no such rule`);
 
     this.grammar = grammar;
 
-    this.alternatives = grammar[ruleStr];
+    this.alternatives = grammar.rules[ruleStr];
 
     for (let alternative of this.alternatives)
     {
@@ -89,7 +111,7 @@ class Expansion
 
     this.text = typeof choice === "string" ? choice : choice.text;
 
-    let regex = /(\$(\w+)|\$\{(\w+)\})/g;
+    let regex = /(\$(\w+)|\${(\w+)})/g;
     let match;
 
     while (this.text.includes("$"))
@@ -114,190 +136,541 @@ class Expansion
 
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+// Roll table handler
+//----------------------------------------------------------------------------------------------------------------------
+
+type RollTableDict = {[key: string]: RollTableDef}
+type RollReference = (string | RollTableRef);
+type RolledNumber = string;                       // XdY + Z
+type RollValue = (RollValueDef | string | number)
+
+// In a list of rolls or subrolls to make, refers to the table to roll on
+interface RollTableRef {
+  table: string,
+  qty?: number | RolledNumber
+}
+
+// eq: match value exactly; lt: less than numeric value, gt: greater than numeric value, rolls: make these rolls on match
+interface ConditionClause {
+  eq?: any,
+  lt?: number,
+  gt?: number,
+  rolls: RollReference[]
+}
+
+// match: check clauses for match; matchNumber: treat value of dependency as a qty for these rolls
+interface Condition {
+  match?: ConditionClause
+  matchNumber?: {rolls: RollReference[]}
+}
+
+// When dependency has value, add amt to the modified roll
+interface Modifier {
+  value: any,
+  amt: number
+}
+
+// alter the roll according to the dependency's value
+interface ModifiedRoll {
+  id: string,
+  display: string,
+  dependsOn: string,
+  table: string,
+  modifiers: Modifier[]
+}
+
+interface Option {
+  display: string,
+  rolls: RollReference[]
+}
+
+// Rolls that require some kind of user selection
+interface OptionalRoll {
+  id: string,
+  display: string,
+  options: Option[]
+}
+
+interface ConditionalRoll {
+  id: string,
+  display: string,
+  dependsOn: string,
+  conditions: Condition[]
+}
+
+interface RollValueDef {
+  value: string | number,
+  weight?: number,
+  rolls?: RollReference[]
+  condRolls?: ConditionalRoll[]
+  modifiedRolls?: ModifiedRoll[]
+}
+
+interface RollTableDef {
+  clamp?: {min: number, max: number},
+  display: string
+  values: RollValue[]
+}
+
+// Represents a logical grouping of table rolls, like an NPC, plotline, or character backstory
+interface RollerDef {
+  id: string,
+  display: string,
+  rolls?: RollReference[],
+  condRolls?: ConditionalRoll[],
+  modifiedRolls?: ModifiedRoll[],
+  optionalRolls?: OptionalRoll[],
+  sections?: RollerDef[]
+}
+
+interface RollTableDefinition {
+  tables: RollTableDict
+  content: RollerDef[]
+}
+
+interface SingleRollResult {
+  display: string
+  result: any,
+  roll: number
+  children?: {[key: string]: SingleRollResult | SingleRollResult[]}
+}
+
+class Roller
+{
+  id: string;
+  results: {[key: string]: any} = {};
+  definition: RollerDef;
+  tables: RollTableDict;
+  children: Roller[] = [];
+
+  constructor(rollerDef: RollerDef, tables: RollTableDict) {
+    this.definition = rollerDef;
+    this.tables = tables;
+
+    this.id = this.definition.id;
+
+    if (this.definition.sections)
+      for (let rollerDef of this.definition.sections)
+        this.children.push( new Roller( rollerDef, this.tables ))
+  }
+
+  roll()
+  {
+    if (this.definition.rolls)
+      this.handleRolls(this.definition.rolls);
+
+    if (this.definition.condRolls)
+      for (let roll of this.definition.condRolls)
+      {
+        let rollResult = (this.results[roll.dependsOn] as SingleRollResult);
+
+        for (let cond of roll.conditions)
+        {
+          if (cond.match)
+          {
+            if (  cond.match.eq && rollResult.result == cond.match.eq
+              ||  cond.match.lt && rollResult.roll   <  cond.match.lt
+              ||  cond.match.gt && rollResult.roll   >  cond.match.gt)
+            {
+              this.handleRolls(cond.match.rolls, roll.id, roll.display);
+              break;
+            }
+
+          }
+          else if (cond.matchNumber)
+          {
+            let matchNum = typeof rollResult.result === "number" ? rollResult.result : new DieRoll(rollResult.result).roll();
+            this.handleRolls(cond.matchNumber.rolls, roll.id, roll.display, matchNum);
+          }
+        }
+      }
+
+    if (this.definition.modifiedRolls)
+      for (let roll of this.definition.modifiedRolls)
+      {
+        let rollResult = (this.results[roll.dependsOn] as SingleRollResult);
+        let modAmt = 0;
+
+        for (let mod of roll.modifiers)
+        {
+          if (rollResult === mod.value)
+            modAmt = mod.amt
+        }
+
+        this.results[roll.table] = this.doOneRoll(roll.table, modAmt);
+      }
+
+    if (this.definition.optionalRolls)
+    {
+      this.results["_optionals"] = {};
+      for (let roll of this.definition.optionalRolls)
+        this.results["_optionals"][roll.id] = {display: roll.display, options: roll.options};
+    }
+
+    for (let child of this.children)
+    {
+      this.results[child.id] = {display: child.definition.display, children: child.roll()};
+    }
+
+    return this.results;
+  }
+
+  rollOptional(id: string, option: string)
+  {
+    let hit = false;
+
+    if (this.definition.optionalRolls)
+      for (let roll of this.definition.optionalRolls)
+        if (roll.id === id)
+        {
+          hit = true;
+
+          for (let opt of roll.options)
+            if (option === opt.display)
+              this.handleRolls(opt.rolls);
+            else
+            {
+              for (let otherRoll of opt.rolls)
+              {
+                let key = typeof otherRoll === "string" ? otherRoll : otherRoll.table;
+                if (this.results[key])
+                  delete this.results[key];
+              }
+            }
+        }
+
+
+    if (hit === false)
+      for (let child of this.children)
+        child.rollOptional(id, option);
+
+    return this.results;
+  }
+
+  private handleRolls(rollRefs: RollReference[], id?: string, display?: string, matchNum?: number )
+  {
+    if (matchNum === undefined)
+    {
+      for (let rollRef of rollRefs)
+      {
+        let rollId = id !== undefined ? id : typeof rollRef === "string" ? rollRef : rollRef.table;
+        let result = this.handleRoll(rollRef);
+
+        this.results[rollId] = Array.isArray(result) ? {display, results: result} : this.handleRoll(rollRef);
+      }
+    }
+    else if (matchNum > 0)
+    {
+      if (!id)
+        throw new Error("Can't match number without a set id!");
+
+      this.results[id] = {display, results: []};
+
+      for (let i = 0; i < matchNum; i++)
+      {
+        this.results[id].results[i] = {};
+        for (let roll of rollRefs)
+        {
+          let key = typeof roll === "string" ? roll : roll.table;
+          this.results[id].results[i][key] = this.handleRoll(roll);
+        }
+      }
+    }
+  }
+
+  private handleRoll(rollRef: RollReference)
+  {
+    let results: any;
+
+    if (typeof rollRef !== 'string')
+    {
+      let qty = typeof rollRef.qty === 'number' ? rollRef.qty : new DieRoll(rollRef.qty).roll();
+
+      results = [];
+      for (let i = 0; i < qty; i++)
+        results.push(this.doOneRoll(rollRef.table));
+    }
+    else
+    {
+      results = this.doOneRoll(rollRef);
+    }
+
+    return results;
+  }
+
+  private doOneRoll(rollTable: string, modAmt = 0): SingleRollResult
+  {
+    if (this.tables[rollTable] === undefined)
+      throw new Error(`No table for ${rollTable}!`);
+
+    let rollItems: RollValue[];
+    let table = this.tables[rollTable];
+    let clampMin = -1;
+    let clampMax = -1;
+
+    rollItems = table.values;
+
+    let totalWeight = 0;
+    for (let rollItem of rollItems)
+    {
+      if (typeof rollItem === "string" || typeof rollItem === "number")
+        totalWeight += 1;
+      else
+        totalWeight += rollItem.weight;
+    }
+
+    if (clampMax === -1 && clampMin === -1)
+    {
+      clampMin = 0;
+      clampMax = totalWeight
+    }
+
+    let roll = Math.round((Math.random() * (clampMax - clampMin))) + clampMin;
+
+    roll += modAmt;
+    roll = Math.max(0, roll);
+
+    totalWeight = 0;
+    for (let rollItem of rollItems)
+    {
+      if (typeof rollItem === "string" || typeof rollItem === "number")
+        totalWeight += 1;
+      else
+        totalWeight += rollItem.weight;
+
+      if (totalWeight >= roll)
+      {
+        if (typeof rollItem === "string" || typeof rollItem === "number")
+          return {result: rollItem, roll, display: table.display};
+        else
+        {
+          let children: {[key: string]: any};
+
+          if (rollItem.rolls)
+          {
+            children = {};
+
+            for (let subRoll of rollItem.rolls)
+            {
+              if (typeof subRoll === "string")
+                children[subRoll] = this.doOneRoll(subRoll);
+              else
+              {
+                children[subRoll.table] = [];
+                let qty = typeof subRoll.qty === "number"? subRoll.qty : new DieRoll(subRoll.qty).roll();
+
+                for (let i = 0; i < qty; i++)
+                  children.push( this.doOneRoll(subRoll.table) );
+              }
+            }
+          }
+
+          return {result: rollItem.value, roll, children, display: table.display};
+        }
+      }
+    }
+
+    throw new Error(`Unable to generate a valid roll! Make sure table ${rollTable} is defined properly.`);
+  }
+}
+
 interface ExpandedGrammar
 {
   text: string
 }
 
-const humanNames =
-{
-  root: ["$ethnicity"],
+class DieRoll {
+  numDice: number;
+  dieType: number;
+  modifier: number;
 
-  ethnicity: ["$english", /*"$german"*/],
-  english: ["$engFirst", "$engFirst $engLast", "$engFirst $engNick $engLast"],
-  engFirst: [{text: "$engPresetFirst", weight: 1}, {text: "$engGenFirst", weight: 2}],
-  engTitle: ["Lord", "Baron", "Count", "Sir", "Earl"],
-  engNick: ["\"$engNickQuote\"", "the $engNickTheX"],
-  engNickQuote: ["Anvil", "Dragon", "Hook", "Snake Eye", "Strider", "Salty", "Lucky", "Lefty", "Southpaw",
-                "Sword", "Grim", "Tiny", "Pudge", "Longshanks", "Magic", "Roach", "Weevil", "Oak", "Stalker"],
-  engNickTheX: ["Butcher", "Knife", "Grim", "Magnificent", "Cruel", "Red", "Black", "Grey", "Fox", "Bluejay", "Raven", "Reaver",
-                "Reaper", "Kind", "Merciful", "Poet", "Bard", "Mad", "Tiny", "Grand", "Arcane", "${creature}slayer", "${creature}keeper"],
-  creature: ["Goblin", "Orc", "Dragon", "Dwarf", "Elf", "Wraith", "Vampire", "Wolf", "Flumph", "Demon", "Devil", "Fiend", "Angel"],
+  constructor(dieStr: string)
+  {
+    const regex = /(\d+)d(\d+)([+-]\d+)?/;
 
-  engPresetFirst: [
-    {text: "$engPresetFirstCommon", weight: 5},
-    {text: "$engPresetFirstMid", weight: 5},
-    {text: "$engPresetFirstPosh", weight: 5},
-    {text: "$engTitle $engPresetFirstMid", weight: 2},
-    {text: "$engTitle $engPresetFirstPosh", weight: 3}
-  ],
-  engPresetFirstCommon: ["Alf", "Bill", "Bert", "Bob", "Charlie", "Ed", "Fred", "George", "Harry", "Jack", "Kay",
-                   "Moe", "Norm", "Owen", "Pete", "Sammy", "Tom", "Tim", "Willie", "Nick"],
-  engPresetFirstMid: ["John", "Thomas", "James", "Alfred", "Wallace", "Henry", "Calvin", "Bernard", "Nicholas", "Charles",
-                      "Frederick", "Gilbert", "Albert", "Egbert", "Gunter", "Martin", "Marcus", "Lionel", "Leonard"],
-  engPresetFirstPosh: ["Percival","Ignatius", "Reginald", "Bernard", "Balthazar", "Melchior", "Aldrich", "Uthar", "Aldus", "Alphonsus",
-                       "Bertram", "Conrad", "Aldwin", "Archibald", "Cuthbert", "Godwin", "Osbert", "Erasmus", "Algernon", "Aloysius"],
+    let match = regex.exec(dieStr);
 
-  engGenFirst: ["&cap{$syllable$syllable}", "$engTitle &cap{$syllable$syllable}"],
-  syllable: [
-    "der", "ran", "son", "rick", "bald", "nob", "bal", "can", "pet", "or", "dun", "cob", "dan", "dro", "go", "bit",
-    "mad", "sen", "mac", "lan", "ah", "hen", "fen", "then", "dav", "ben", "bol", "seb", "ni", "al", "aul", "wes", "ses",
-    "con", "rad", "bof", "dem", "dim", "it", "mack", "cam", "ced", "set", "ner", "bert", "ford", "ash",
-    "ley", "ton", "jon", "wal", "kil", "cer", "cel", "nor", "hro", "gen", "gan", "jor", "cuth",  "$syllable$syllable"
-  ],
+    this.numDice = parseInt(match[1], 10);
+    this.dieType = parseInt(match[2], 10);
+    this.modifier = match[3] ? parseInt(match[3], 10) : 0;
+  }
 
-  engLast: ["$engPresetLast", "$engGenLast"],
-  engPresetLast: ["Archer", "Fletcher", "Cooper", "Baker", "Wainwright", "Brown", "Jones", "Smith", "Clark", "Knight", "Tailor",
-                   "Henderson", "Albertson", "Steele", "Cartwright", "Wright", "Farrier", "Magus", "Clapham", "Reeve", "Jenkins",
-                   "Spaulding", "Skelton", "Barlow", "Hunter"],
+  roll(): number
+  {
+    let total = 0;
 
-  engGenLast: ["$engLastCompound"],
-  engLastCompound: ["$firstCompound$secondCompound"],
-  firstCompound: ["Strong", "Red", "Long", "Bone", "Lead", "Good", "Gold", "Green", "Silver", "Black", "One", "Iron", "Stone",
-                  "Steel", "Deep", "Goblin", "Tree", "Foe", "Rock", "Fae", "Dwarf", "Goblin", "Elf", "Drake", "Dragon", "Orc",
-                   "Night", "Wight", "Fiend", "Snake", "Worm", "Wyrm", "Half", "Bog", "Marsh", "Dune", "Shadow", "Bright", "Wind",
-                   "Earth", "Sky", "Fire", "Flame", "Water", "Wave", "Mud", "Soot", "Smoke", "Fell", "Silk", "Potato", "Shade", "Hob",
-                   "Troll", "Wolf", "Grim", "Dune", "Hill", "Grey", "Crag"],
-  secondCompound: ["fellow", "friend", "shanks", "butcher", "hunter", "man", "bane", "ripper", "tongue", "arm", "reach", "tooth", "eye",
-              "foot", "hand", "grave", "seeker", "finder", "killer", "ender", "crusher", "born", "walker",
-              "strider", "watcher", "keeper", "shod", "shot", "eater", "nose", "smith", "tamer", "rider", "fodder"],
+    for (let i = 0; i < this.numDice; i++)
+      total += Math.floor(Math.random() * this.dieType) + 1;
 
-};
+    total += this.modifier;
+    return total;
+  }
+}
 
-// const humanNames =
-// {
-//     root: [/*"#preset#",*/ "$generated"],
-//
-//     preset: ["$ethnicity"],
-//     ethnicity: ["$english"],
-//
-//     english: ["$engFirst $engLast", "$engFirst \"$nickName\" $engLast"],
-//     engFirst: ["Alfred", "Bertie", "Bernard", "Charles", "Gilbert", "Guy", "Henry", "John", "Jack", "James", "Miles", "Percival"],
-//     engLast: ["Jones", "Smith", "Acton", "Copeland", "Barlow", "Reeves", "Clapham", "Skelton", "Rutherford", "Spaulding", "Jenkins"],
-//
-//     generated: ["$firstName", "$firstName $lastName", "$firstName \"$nickName\" $lastName"],
-//     firstName: ["$title $genFirst", "$genFirst"],
-//     lastName: ["$genLast", "$genLast$suffix"],
-//     nickName: ["Lefty", "Lucky", "Salty", "Patches", "Bob", "The Knife", "Snake Eyes", "Hook", "The Butcher", "Strider"],
-//
-//     title: ["$nobleTitle", "$descriptiveTitle"],
-//         nobleTitle: ["Lord", "Lady", "Baron", "Baroness", "Sir", "Dame", "Count", "Countess", "Big Kahuna"],
-//         descriptiveTitle: ["Honest", "Old Man", "Little", "Big", "Old"],
-//
-//     suffix: [" the $suffixAdj", ", Senior", ", Junior", " alias $firstName"],
-//         suffixAdj: ["Second", "Third", "Fearless", "Ruthless", "Bold", "Merciful", "Knife", "Lesser", "Great", "Red", "Black", "Pale",
-//                     "Dark One", "Quick", "Mighty", "Rat", "Cursed", "Ready", "Stoic", "Mad", "Elder", "Younger"],
-//
-//     genFirst: [/*"&cap{$syllable}$post", "$pre$syllable$post", "$pre$syllable",*/ "&cap{$syllable}"/*, "&cap{$syllable}$syllable"*/,
-//                "$genFirst $genFirst"],
-//         pre: ["Ak-", "Dero", "Cal", "Tal-", "Sa", "Per", "Mak-", "Al-", "Lis"],
-//         // pronounceable anywhere
-//         // A: ["al", "ne", "er", "ash", "an", "ot", "an", "i", "or", "ty", "az", "az", "on", "ar", "an", "ol", "ik",
-//         //   "er", "ahn", "a", "e", "i", "o", "u", "y", "ek", "ak", "els", "int", "osh", "ish", "an", "en", "in", "on",
-//         //   "un", "$A$A"],
-//         // pronounceable before/after pronounceable anywhere
-//         // B: ["st", "pr", "sh", "mr", "jh", "sp", "tr", "sw", "br", "bl", "ch",  "cl", "cr", "ly", "$A$B$A"],
-//         // pronounceable after pronounceable anywhere
-//         // C: ["nd", "ng", "ct", "tch", "nts", "ntz", "$A$C"],
-//         V: ["a", "e", "i", "o", "u", "y", "ae", "ai", "ao", "au", "ea", "ee", "ei", "eo", "eu", "ia", "ie", "io", "iu", "oa", "oe",
-//             "oi", "oo", "ou", "ua", "ue", "ui", "uo", "$V$ENDC$V"],
-//         C: ["b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z",
-//             "bh", "bj", "bl", "br", "bw",
-//             "ch", "cl", "cr", "cw",
-//             "dh", "dr", "dw",
-//             "fh", "fj", "fl", "fr", "fw",
-//             "gh", "gl", "gn", "gr", "gw",
-//             "hr", "hw",
-//             "jh", "jr",
-//             "kh", "kl", "kn", "kr", "ks", "kv", "kw",
-//             "ll",
-//             "mb", "mn", "mr", "mw",
-//             "ng", "nr",
-//             "pf", "ph", "pl", "pn", "pr", "ps", "pt", "pw",
-//             "qh", "qr", "qu", "qw",
-//             "rh", "rw",
-//             "sb", "sc", "sf", "sh", "sk", "sl", "sm", "sn", "sp", "squ", "st", "sv", "sw",
-//             "th", "tr", "ts", "tw",
-//             "vh", "vl", "vr", "vw",
-//             "wh", "wr",
-//             "xh",
-//             "zh", "zl", "zr", "zw", "$C$V$C"],
-//         // syllable: ["$A", "$B$A", "$A$B", "$B$A$B", "$A$C", "$B$A$C"],
-//         ENDC: ["b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z",
-//                "bb", "bf", "bh", "bn", "br", "bs", "bt", "bz",
-//                "cc", "ch", "ck", "ct", "cz",
-//                "dd", "dh", "ds", "dt", "dz",
-//                "ff", "fh", "fs", "ft", "fz",
-//                "gf", "gg", "gh", "gm", "gn", "gr", "gs", "gz",
-//                "hb", "hc", "hd", "hf", "hg", "hj", "hk", "hl", "hm", "hn", "hr", "hs", "ht", "hv", "hx", "hz",
-//                "jh", "jj", "jr",
-//                "kf", "kh", "kk", "kr", "ks", "kt", "kz",
-//                "lb", "ld", "lf", "lg", "lh", "lj", "lk", "ll", "lm", "ln", "lp", "ls", "lt", "lv", "lx", "lz",
-//                "mb", "md", "mf", "mh", "mm", "mn", "mp", "mr", "ms", "mt", "mz",
-//                "nc", "ng", "nk", "nn", "nr", "ns", "nt", "nz",
-//                "pf", "ph", "pp", "ps", "pt", "pz",
-//                "qh", "qq", "qs", "qt", "qz",
-//                "rb", "rc", "rd", "rf", "rg", "rh", "rk", "rl", "rm", "rn", "rp", "rr", "rs", "rt", "rv", "rx", "rz",
-//                "sc", "sh", "sk", "sm", "sp", "sq", "ss", "st",
-//                "tch", "th", "tl", "tt", "ts", "tz",
-//                "vh", "vs", "vv", "vz",
-//                "wd", "wf", "wg", "wh", "wk", "wl", "wm", "wn", "wp", "wq", "ws", "wt", "wv", "wx", "wz",
-//                "xh", "xt", "xx",
-//                "zd", "zh", "zl", "zm", "zr", "zt", "zz", "$ENDC$V$ENDC"],
-//         // syllable: ["$V$ENDC", "$C$V", "$V$C$V$ENDC", "$V$C$V", "$V$ENDC$V", "$C$V$ENDC"],
-//         syllable: ["$V$ENDC", "$C$V"],
-//         post: ["ion", "iel", "han", "ius", "os", "an", "or", "thor", "en", "len", "ia", "oa", "ov", "iev", "ita", "ino", "asta", "on",
-//                "in", "us", "ek", "ham", "er", "ir", "ur", "os", "ix", "ox", "ex", "ax", "it", "et", "der", "ene", "o", "a", "est"],
-//
-//     genLast: ["$genFirst", "$descriptiveLast"/*, "$occupationalLast"*/],
-//         descriptiveLast: ["$firstCompound$secondCompound"],
-//             firstCompound: ["Strong", "Red", "Long", "Bone", "Lead", "Good", "Gold", "Green", "Silver", "Black", "One", "Iron", "Stone",
-//                             "Steel", "Deep", "Goblin", "Tree", "Foe", "Rock", "Fae", "Dwarf", "Goblin", "Elf", "Drake", "Dragon", "Orc",
-//                              "Night", "Wight", "Fiend", "Snake", "Worm", "Wyrm", "Half", "Bog", "Marsh", "Dune", "Shadow", "Bright", "Wind",
-//                              "Earth", "Sky", "Fire", "Flame", "Water", "Wave", "Mud", "Soot", "Smoke", "Fell", "Silk", "Potato", "Shade", "Hob",
-//                              "Troll", "Wolf", "Grim", "Dune", "Hill", "Grey", "Crag", ""],
-//             secondCompound: ["fellow", "friend", "shanks", "butcher", "hunter", "man", "bane", "ripper", "tongue", "arm", "reach", "tooth", "eye",
-//                         "foot", "hand", "grave", "seeker", "finder", "killer", "ender", "crusher", "born", "walker",
-//                         "strider", "watcher", "keeper", "shod", "shot", "eater", "nose", "smith", "tamer", "rider", "fodder"],
-//         // occupationalLast: ["Archer", "Fletcher", "Cooper", "Smith", "Reeve", "Wainwright", "Tanner", "Hunter", "Miller", "Baker"]
-// };
+interface GeneratorPageProps {
+  apiGetData: any
+  generator: {
+    grammar: Grammar
+    rollTables: RollTableDefinition
+  }
+}
 
-let gen = new CFGGenerator(humanNames);
+export interface GeneratorPageState {
+  isLoading: boolean
+  generatedText: string
+  rollResults: {[key: string]: any}
+}
 
-class GeneratorPage extends Component<IPage, {}> {
+class GeneratorPage extends Component<IPage & GeneratorPageProps, GeneratorPageState> {
 
-    name: string;
+    generator: CFGExpander = null;
+    rollers: Roller[] = null;
+
+    constructor(props: IPage & GeneratorPageProps) {
+      super(props);
+
+      this.state = {
+        isLoading: true,
+        generatedText: "",
+        rollResults: {}
+      }
+    }
+
+    componentDidMount() {
+      if (!this.props.generator.grammar) {
+        this.props.apiGetData();
+      }
+    }
 
     render() {
 
-        let name = gen.expand("root").text;
+      if (!this.props.generator.grammar)
+      {
+        return <div>Loading...</div>;
+      }
 
-        return (
-            <div className="generator-page padding-15">
-                <h1>Generator</h1>
-                <div className="content">
-                  <p className="name" id="name">{name}</p>
-                  <button className="btn btn-default" onClick={this.reroll.bind(this)}>Reroll</button>
-                </div>
+      if (this.generator == null)
+      {
+        this.generator = new CFGExpander(this.props.generator.grammar)
+      }
+
+      if (this.rollers == null)
+      {
+        this.rollers = [];
+        for (let roller of this.props.generator.rollTables.content)
+        {
+          this.rollers.push( new Roller(roller, this.props.generator.rollTables.tables) );
+        }
+      }
+
+      let roots: any = [];
+
+      for (let rule of Object.values(this.props.generator.grammar.roots))
+      {
+        roots.push(<div key={rule.display}><button onClick={() => this.generate(rule.startSymbol)}>{rule.display}</button></div>);
+      }
+
+      let rollerHtml = [];
+
+      for (let roller of this.rollers)
+      {
+        rollerHtml.push(<div key={roller.id}><button onClick={() => this.saveRoll({id: roller.id, results: roller.roll()}) }>{roller.definition.display}</button></div>);
+        if (this.state.rollResults[roller.id] !== undefined)
+        {
+          let resultHtml = this.renderRollObj(roller, this.state.rollResults[roller.id], 1, "");
+          rollerHtml.push(<div key={roller.id + "-result"}>{resultHtml}</div>);
+        }
+      }
+
+      return (
+          <div className="generator-page padding-15">
+            <h1>Generator</h1>
+            <div className="content">
+              <div id="roots">{roots}</div>
+              <div id="genText">{this.state.generatedText}</div>
+              <h1>Roll tables</h1>
+              <div id="rollTables">{rollerHtml}</div>
             </div>
-        );
+          </div>
+      );
     }
 
-    reroll()
+    generate(startSymbol: string)
     {
-      this.name = gen.expand("root").text;
-      document.getElementById("name").innerText = this.name;
+      let expanded = this.generator.expand(startSymbol);
+      let state = this.state;
+
+      this.setState({
+          ...state,
+          generatedText: expanded.text
+      });
     }
+
+    saveRoll({id, results}: {id: string, results: any})
+    {
+      let rollResults = this.state.rollResults;
+      rollResults[id] = results;
+
+      this.setState({
+        ...this.state,
+        rollResults
+      });
+    }
+
+    private renderRollObj(roller: Roller, rollObj: any, level: number, key: string): any
+    {
+      if (rollObj.result !== undefined)
+      {
+        let subHtml: any = "";
+        if (rollObj.children)
+          subHtml = Object.values(rollObj.children).map( (val: any) => <p key={val.display + val.result}><strong>{val.display}</strong> {val.result}</p>);
+
+        return <div key={rollObj.result + Math.random()}>{rollObj.result}{subHtml}</div>;
+      }
+
+
+      if (rollObj.results)
+        return <ul>{rollObj.results.map( (item: any, idx: number) => <li><p><strong>{`${rollObj.display} ${idx + 1}`}</strong></p>{this.renderRollObj(roller, item, level + 1, key)}</li>)}</ul>;
+
+
+
+      let children = [];
+      const Heading = "h" + (1 + level);
+      for (let key of Object.keys(rollObj))
+      {
+        if (key === "_optionals")
+          continue;
+
+        // headings have children tags
+        let next = rollObj[key].result !== undefined || rollObj[key].results !== undefined ? rollObj[key] : rollObj[key].children;
+
+        children.push( <div key={key}><Heading>{rollObj[key].display}</Heading>{ this.renderRollObj(roller, next, level + 1, key)}</div> );
+      }
+
+      if (rollObj._optionals)
+      {
+        children.push( Object.keys(rollObj._optionals).map( (id: string) => {
+          return (
+            <div>
+              <select key={"select" + id} id={id}>{ rollObj._optionals[id].options.map( (opt: {display: string}) => <option key={opt.display}>{opt.display}</option>) }</select>
+              <button onClick={ () => {
+                let select = document.getElementById(id) as HTMLSelectElement;
+                this.saveRoll({id: roller.id, results: roller.rollOptional(id, select.options[select.selectedIndex].value)});
+              }}>
+                Roll
+              </button>
+            </div>)
+        }) );
+      }
+
+      return children;
+    }
+
 }
 
-export default GeneratorPage;
+const mapDispatchToProps = (dispatch:any) => ({
+  apiGetData: () => dispatch(apiGetGeneratorData()),
+});
+
+export default connect(GeneratorReducer, mapDispatchToProps)(GeneratorPage);
