@@ -27,23 +27,58 @@ body {
 
 /* CODEX */
 .codex-input {
+    background: rgb(66, 51, 36);
+    color: whitesmoke;
     width: 100%;
 }
 .codex-input input {
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 0;
     box-sizing: border-box;
+    color: whitesmoke;
     font-size: 1.2em;
+    margin: 0;
     padding: 10px;
     width: 100%;
 }
 
+.codex-categories {
+    padding-left: 0;
+}
 .codex-categories h2 {
-    margin: 4px 0;
+    background: rgb(180, 167, 109);
+    border-bottom: 1px solid #58180D;
+    border-left: 0;
+    border-right: 0;
+    box-shadow: inset 0 0 15px rgba(0,0,0,.65);
+    color: whitesmoke;
+    font-family: MrJeeves;
+    font-size: 2em;
+    margin: 0;
+    padding: 7px 10px;
     text-transform: capitalize;
 }
+.codex-categories .category {
+    padding: 0;
+}
 .codex-categories .category .category-items {
+    list-style-type: none;
     padding-top: 10px;
+}
+.codex-categories .category .category-items li {
+    padding: 5px 5px 5px 10px;
+    border-bottom: 1px solid rgba(0,0,0,.2);
+    margin-left: 10px;
+}
+.codex-categories .category .category-items li a {
+    color: whitesmoke;
+    text-decoration: none;
+}
+.codex-page .master {
+    background: rgba(44, 27, 7, 0.6);
+    border-right: 5px solid rgb(180, 167, 109);
+    box-shadow: 0 4px 15px rgba(0,0,0,.65);
+    z-index: 2;
 }
 
 /* DETAILS PAGE */
@@ -124,7 +159,7 @@ body {
     color: #58180D;
 }
 
-.dice-page, .generator-page, .players-page {
+.dice-page, .generator-page, .players-page, .codex-page {
     background-image: url("/plugins/dnd-5e/assets/backdrops/codex.jpg");
     background-position: center;
     background-size: cover;
