@@ -6,6 +6,7 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import MainRouter from './react/routers/main-router';
 import Header from './react/layout/header';
 import Body from './react/layout/body';
+import Alerts from './react/common/Alerts';
 import { updateUser, apiRequest, updateAuth } from './react/actions/user-actions';
 import { updateCodex } from './react/actions/codex-actions';
 
@@ -20,6 +21,7 @@ class App extends Component<Props & RouteComponentProps<any>> {
         <Header></Header>
         <Body>
           <MainRouter/>
+          <Alerts />
         </Body>
       </main>
     );
@@ -29,12 +31,12 @@ class App extends Component<Props & RouteComponentProps<any>> {
 const userSelector = createSelector(
   (state: any) => state.user,
   user => user
-)
+);
 
 const codexSelector = createSelector(
   (state: any) => state.codex,
   codex => codex
-)
+);
 
 const mapStateToProps = createSelector(
   userSelector,
@@ -49,6 +51,6 @@ const mapActionsToProps = {
   onApiRequest: apiRequest,
   onUpdateAuth: updateAuth,
   onUpdateCodex: updateCodex,
-}
+};
 
 export default withRouter(connect(mapStateToProps, mapActionsToProps)(App));

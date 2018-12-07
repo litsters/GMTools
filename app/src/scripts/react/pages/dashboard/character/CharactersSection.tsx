@@ -186,7 +186,7 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
                     <CharacterCreate 
                     createCharacter={this.handleCreateCharacter} 
                     close={this.setComponentMode} existing={null} />
-            )
+            );
             case ComponentMode.Details: return (
                 <CharacterDetails
                     character={this.state.selectedCharacter}
@@ -194,7 +194,7 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
                     close={this.setComponentMode}
                     joinCampaign={this.handleJoinCampaign}
                 />
-            )
+            );
             default: return null;
         }
     }

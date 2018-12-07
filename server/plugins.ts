@@ -33,7 +33,7 @@ export const loadPlugin = (pluginName: string, callback: ICallback) => {
     });
 
     callback(null, plugin);
-}
+};
 
 export const loadPluginNames = (callback: any) => {
     const path = `${pluginsDir}`;
@@ -56,8 +56,8 @@ export const loadPluginNames = (callback: any) => {
     });
     
     callback(plugins);
-}
+};
 
 export const registerPluginAssetServer = (app:Application) => {
     app.use('/plugins', express.static(path.join(serverDir, "/plugins"), {index:false, extensions: ['png', 'svg', 'jpg']}));
-}
+};

@@ -55,7 +55,7 @@ class CampaignsSection extends Component<CampaignSectionProps, CampaignSectionSt
 
   componentWillUnmount() {
 		const self = this;
-		if (this.events !== null) {
+		if (this.events) {
 			each(this.eventListeners, (event, callback) => {
 				self.events.removeListener(event, callback);
 			});
@@ -81,7 +81,7 @@ class CampaignsSection extends Component<CampaignSectionProps, CampaignSectionSt
   }
 
   handleSubmit(campaign:any) {
-		this.addCampaign(campaign)
+		this.addCampaign(campaign);
 		this.setState({
 			isCreating: false
 		});
