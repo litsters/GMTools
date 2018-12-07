@@ -31,6 +31,8 @@ export default class InitiativeHandler extends Handler{
     // and a notification to the next player that their turn is coming up.
     private nextTurn(event: any): Promise<EventWrapper[]> {
         let inList = [];
+        let currentCharacter: ICharacter,
+            nextCharacter: ICharacter;
         let currentId: Types.ObjectId,
             nextId: Types.ObjectId;
         if (event.data.current) {
@@ -51,8 +53,15 @@ export default class InitiativeHandler extends Handler{
         return models.Character.find({_id: { $in: inList}}).exec()
             .then((characters:ICharacter[]) => {
                 let users:any[] = [];
-                characters.forEach((c:ICharacter) => {
+                characters.forEach((c: ICharacter) => {
                     users.push(c.user);
+
+                    if (c._id.equals(currentId)) {
+                        currentCharacter = c;
+                    }
+                    if (c._id.equals(nextId)) {
+                        nextCharacter = c;
+                    }
                 });
                 return models.User.find({_id: { $in: users}}).exec();
             })
@@ -61,8 +70,8 @@ export default class InitiativeHandler extends Handler{
 
                 // Determine which user is which, since
                 // order is not guaranteed and some may not have been found
-                let currentPlayer:IUser = null;
-                let nextPlayer:IUser = null;
+                let currentPlayer: IUser = null;
+                let nextPlayer: IUser = null;
 
                 players.forEach((p: IUser) => {
                     p.characters.forEach((c) => {
@@ -76,26 +85,22 @@ export default class InitiativeHandler extends Handler{
                 });
 
                 // Generate event for current player
-                if(currentPlayer !== null){
+                if (currentPlayer !== null) {
                     let currentEvent = {
                         namespace: event.namespace,
                         key: "turn_start",
-                        data: {
-                            character: currentId
-                        }
+                        data: currentCharacter,
                     };
                     let userids:string[] = [currentPlayer.id];
                     events.push(new EventWrapper(userids, currentEvent, "initiative.start"));
                 }
 
                 // Generate event for next player
-                if(nextPlayer !== null){
+                if (nextPlayer !== null) {
                     let nextEvent = {
                         namespace: event.namespace,
                         key: "turn_alert",
-                        data: {
-                            character: nextId
-                        }
+                        data: nextCharacter,
                     };
                     let userids:string[] = [nextPlayer.id];
                     events.push(new EventWrapper(userids, nextEvent, "initiative.alert"));

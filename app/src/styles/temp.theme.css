@@ -159,7 +159,7 @@ body {
     color: #58180D;
 }
 
-.dice-page, .generator-page, .players-page, .codex-page {
+.dice-page, .generator-page, .players-page, .codex-page, .initiative-page {
     background-image: url("/plugins/dnd-5e/assets/backdrops/codex.jpg");
     background-position: center;
     background-size: cover;

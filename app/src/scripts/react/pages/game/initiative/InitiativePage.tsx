@@ -3,7 +3,6 @@ import IPage from "../../../interfaces/IPage";
 import EventBus from "../../../common/Events";
 import { each } from "jquery"
 import { Campaign, Character } from "../../../interfaces";
-import Alerts from "../../../common/Alerts"
 
 interface Initiative {
     key: number,
@@ -34,8 +33,6 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
         this.eventListeners = {
             "data.retrieved": this.dataRetrieved.bind(this),
             "data.persisted": this.dataPersisted.bind(this),
-            "initiative.alert": this.initiativeAlert.bind(this),
-            "initiative.start": this.initiativeStart.bind(this),
         };
 
         // Bind events
@@ -116,16 +113,6 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
         }
     }
 
-    initiativeAlert(event: any) {
-        let character = this.getCharacter(event.data.character);
-        Alerts.addWarning(character.name + "'s turn is coming up next.", "On Deck:");
-    }
-
-    initiativeStart(event: any) {
-        let character = this.getCharacter(event.data.character);
-        Alerts.addWarning("It is time for " + character.name + " to take action.", "Your Turn:");
-    }
-
     addCharacterList() {
         // Adds all characters from the state to the initiative
         let initiative = this.state.initiative.slice();
@@ -139,17 +126,7 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
         });
         this.setState({
             initiative: initiative,
-        })
-    }
-
-    getCharacter(characterId: string): Character {
-        let character;
-        this.charactersList.forEach((c) => {
-            if (c._id == characterId){
-                character = c;
-            }
         });
-        return character;
     }
 
     sort() {
@@ -295,7 +272,7 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
 
     render() {
         return (
-            <div className="initiativePage">
+            <div className="initiative-page padding-15">
                 <h1>Initiative</h1>
                 <div>
                     <ol className="initiativeList">
@@ -315,7 +292,7 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
                     </ol>
                     <form onSubmit={this.handleSubmit}>
                         <input type="text" placeholder="Name" value={this.state.addName} onChange={(event) => this.updateInputState('addName', event)}/>
-                        <input type="text" value={this.state.addInitiative} onChange={(event) => this.updateInputState('addInitiative', event, true)}/>
+                        <input type="text" placeholder="Initiative" value={this.state.addInitiative} onChange={(event) => this.updateInputState('addInitiative', event, true)}/>
                         <button type="submit" title="Add to initiative">+</button>
                     </form>
                     <button type="button" onClick={this.next}>Next</button>
@@ -324,7 +301,7 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
                 <div>
                     <div>
                         <select onChange={(event) => this.updateSelectedCampaign(event)}>
-                            <option value=""> </option>
+                            <option value=""> -- Select Campaign -- </option>
                             {this.state.campaigns.map((campaign: Campaign) => {
                                 return (<option key={campaign._id} value={campaign._id}>{campaign.name}</option>)
                             })}
