@@ -210,8 +210,8 @@ class CharactersSection extends Component<{}, CharacterSectionState> {
             <div className="content-page characters" id="characters">
                 <h1>Here are your Characters</h1>
                 <div className="previews">
-                    {characters.map((character:any) => 
-                        <CharacterPreview key={character.name} name={character.name} 
+                    {characters.map((character: Character) => 
+                        <CharacterPreview key={character._id} name={character.name} 
                             campaignName={self.getCampaign(character)} 
                             onClick={() => self.setState({selectedCharacter:character, mode:ComponentMode.Details})}/>
                     )}
