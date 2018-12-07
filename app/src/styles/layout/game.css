@@ -7,21 +7,26 @@
 .menu-game {
     background: #ccc;
     height: 100%;
-    flex: 0 0 250px;
+    flex: 0 0 200px;
 }
 .menu-game ul {
     padding: 0;
 }
 .menu-game .menu-item {
     list-style-type: none;
-    margin: 15px 0 5px 0;
+    padding: 12px;
     text-align: center;
     text-transform: capitalize;
 }
 .menu-game .menu-item img {
     display: block;
+    height: 75px;
     margin: auto;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+}
+.menu-item a {
+    color: inherit;
+    text-decoration: none;
 }
 .menu-game .menu-item.active {
     font-size: 1.4em;
