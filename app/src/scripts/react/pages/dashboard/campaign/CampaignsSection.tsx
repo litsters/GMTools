@@ -81,7 +81,7 @@ class CampaignsSection extends Component<CampaignSectionProps, CampaignSectionSt
   }
 
   handleSubmit(campaign:any) {
-		this.addCampaign(campaign)
+		this.addCampaign(campaign);
 		this.setState({
 			isCreating: false
 		});

@@ -1,0 +1,33 @@
+.initiativePage {
+    overflow: auto;
+    height: 100%;
+}
+
+.initiativeList {
+    list-style: none;
+}
+
+.initiativeList input, .initiativeList button, .initiativeList .ordering, .initiativeList .name {
+    display: inline-block;
+}
+
+.initiativeList .name {
+    min-width: 100px;
+}
+
+.initiativeList input {
+    width: 35px;
+}
+
+.initiativeList .ordering {
+    vertical-align: bottom;
+}
+
+.initiativeList .ordering button {
+    display: block;
+}
+
+.initiativeList .delete-btn {
+    font-weight: bold;
+    padding: 5px 15px;
+}

@@ -22,7 +22,7 @@ class CampaignCreate extends Component<CampaignCreateProps, CampaignCreateState>
         this.state = {
             plugins: [],
             validation: {}
-        }
+        };
 
         this.loadPluginNames = this.loadPluginNames.bind(this);
         this.submit = this.submit.bind(this);
@@ -68,8 +68,7 @@ class CampaignCreate extends Component<CampaignCreateProps, CampaignCreateState>
 
         this.setState({validation});
 
-        if (validation.name || validation.system) return false;
-        return true;
+        return !(validation.name || validation.system);
     }
 
     submit() {

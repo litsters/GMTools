@@ -53,6 +53,7 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
             campaigns: [],
         };
 
+        this.sort = this.sort.bind(this);
         this.next = this.next.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateInitiative = this.updateInitiative.bind(this);
@@ -126,6 +127,19 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
         this.setState({
             initiative: initiative,
         })
+    }
+
+    sort() {
+        let initiative = this.state.initiative.slice();
+        initiative.sort((a, b) => {
+            if (a.initiative > b.initiative) {
+                return -1
+            }
+            return (a.initiative == b.initiative) ? 0 : 1;
+        });
+        this.setState({
+            initiative: initiative,
+        });
     }
 
     next() {
@@ -243,18 +257,20 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
 
     render() {
         return (
-            <div>
+            <div className="initiativePage">
                 <h1>Initiative</h1>
                 <div>
                     <ol className="initiativeList">
                         {this.state.initiative.map((a, i) => {
                             return (
                                 <li key={a.key}>
-                                    <span>{a.name}</span>
+                                    <span className="name">{a.name}</span>
                                     <input type="text" value={a.initiative} onChange={(event) => this.updateInitiative(i, event)}/>
-                                    <button type="button" onClick={() => this.remove(i)}>-</button>
-                                    {i > 0 && <button type="button" onClick={() => this.moveUp(i)}>^</button> }
-                                    {i < this.state.initiative.length - 1 && <button type="button" onClick={() => this.moveDown(i)}>v</button> }
+                                    <span className="ordering">
+                                        {i > 0 && <button type="button" title="Move Up" onClick={() => this.moveUp(i)}>🠹</button> }
+                                        {i < this.state.initiative.length - 1 && <button type="button" title="Move Down" onClick={() => this.moveDown(i)}>🠻</button> }
+                                    </span>
+                                    <button className="btn delete-btn" type="button" title="Remove" onClick={() => this.remove(i)}>-</button>
                                 </li>
                             );
                         })}
@@ -265,6 +281,7 @@ class InitiativePage extends Component<IPage, InitiativePageState> {
                         <button type="submit" title="Add to initiative">+</button>
                     </form>
                     <button type="button" onClick={this.next}>Next</button>
+                    <button type="button" onClick={this.sort}>Sort</button>
                 </div>
                 <div>
                     <div>
