@@ -26,6 +26,8 @@ class CategoryList extends Component<CategoryListProps, CategoryListState> {
         const { headline, items } = this.props;
         const { isCollapsed } = this.state;
         if (!headline || !items) return null;
+        if(items instanceof Array) console.log("it's an Array");
+        else console.log("NOT an Array");
 
         const toggleButton = <span className="category-collapse">{isCollapsed ? "+" : "-"}</span>
 
