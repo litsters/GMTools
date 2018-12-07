@@ -129,7 +129,7 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
         const renderedMaster = this.renderMaster(renderedCategories);
 
         return (
-            <div className="layout-page">
+            <div className="layout-page codex-page">
                 {renderedTabs}
                 <MasterDetailsLayout master={renderedMaster} details={renderedOpenItem} clearDetails={() => history.push("/game/lookup")} />
             </div>

@@ -27,11 +27,11 @@ class CategoryList extends Component<CategoryListProps, CategoryListState> {
         const { isCollapsed } = this.state;
         if (!headline || !items) return null;
 
-        const toggleButton = <span className="category-collapse" onClick={this.toggleCollapse}>{isCollapsed ? "+" : "-"}</span>
+        const toggleButton = <span className="category-collapse">{isCollapsed ? "+" : "-"}</span>
 
         return (
             <div className="category">
-                <h2>
+                <h2 className="pointer" onClick={this.toggleCollapse}>
                     {headline}
                     {toggleButton}
                 </h2>

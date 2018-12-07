@@ -283,10 +283,12 @@ class GeneratorPage extends Component<IPage, {}> {
         let name = gen.expand("root").text;
 
         return (
-            <div>
+            <div className="generator-page padding-15">
                 <h1>Generator</h1>
-                <p id="name">{name}</p>
-                <button onClick={this.reroll.bind(this)}>Reroll</button>
+                <div className="content">
+                  <p className="name" id="name">{name}</p>
+                  <button className="btn btn-default" onClick={this.reroll.bind(this)}>Reroll</button>
+                </div>
             </div>
         );
     }
