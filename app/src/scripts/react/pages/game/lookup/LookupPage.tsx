@@ -11,7 +11,7 @@ import Tabs, { Tab } from "./Tabs";
 import Loading from "../../../common/Loading";
 
 // define categories that should not be rendered
-const blockedCategories = ["config", "tabs"];
+const blockedCategories = ["config", "tabs", "generator-grammar", "generator-tables"];
 
 interface LookupPageProps {
     codex: any,
@@ -31,7 +31,7 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
         this.state = {
             filterText: "",
             loadingCategories: true
-        }
+        };
 
         this.openTab = this.openTab.bind(this);
         this.closeTab = this.closeTab.bind(this);
@@ -77,7 +77,7 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
     }
 
     renderCategories(isLoading:boolean, codex:any) {
-        if (isLoading) return <Loading />
+        if (isLoading) return <Loading />;
         if (!codex) return null;
 
         return (
@@ -124,8 +124,8 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
         const { filterText, loadingCategories } = this.state;
         const filteredCodex = filterText ? this.filterEntries(filterText, codex) : codex;
         const renderedCategories = this.renderCategories(loadingCategories, filteredCodex);
-        const renderedOpenItem = this.renderOpenItem(codex, match.params.category, match.params.id, this.openTab)
-        const renderedTabs = <Tabs tabs={tabs} closeTab={this.closeTab}/>
+        const renderedOpenItem = this.renderOpenItem(codex, match.params.category, match.params.id, this.openTab);
+        const renderedTabs = <Tabs tabs={tabs} closeTab={this.closeTab}/>;
         const renderedMaster = this.renderMaster(renderedCategories);
 
         return (
@@ -140,6 +140,6 @@ class LookupPage extends Component<IPage & LookupPageProps, LookupPageState> {
 const mapDispatchToProps = (dispatch:any) => ({
     apiGetCodex: () => dispatch(apiGetCodex()),
     updateTabs: (tabs:any) => dispatch(updateTabs(tabs))
-})
+});
 
 export default connect(CodexReducer, mapDispatchToProps)(LookupPage);

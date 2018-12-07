@@ -16,7 +16,7 @@ import { UserReducer, CodexReducer, GeneratorReducer } from './scripts/react/red
 const allReducers = combineReducers({
   user: UserReducer,
   codex: CodexReducer,
-  generator: GeneratorReducer
+  generator: GeneratorReducer,
 });
 
 const allStoreEnhancers = (window as any).devToolsExtension ?

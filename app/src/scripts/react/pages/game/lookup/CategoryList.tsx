@@ -11,13 +11,13 @@ interface CategoryListState {
 }
 
 class CategoryList extends Component<CategoryListProps, CategoryListState> {
-    toggleCollapse:any
+    toggleCollapse:any;
 
     constructor(props:CategoryListProps) {
         super(props);
         this.state = {
             isCollapsed: false
-        }
+        };
 
         this.toggleCollapse = () => this.setState({isCollapsed: !this.state.isCollapsed});
     }
@@ -29,7 +29,7 @@ class CategoryList extends Component<CategoryListProps, CategoryListState> {
         if(items instanceof Array) console.log("it's an Array");
         else console.log("NOT an Array");
 
-        const toggleButton = <span className="category-collapse">{isCollapsed ? "+" : "-"}</span>
+        const toggleButton = <span className="category-collapse">{isCollapsed ? "+" : "-"}</span>;
 
         return (
             <div className="category">
