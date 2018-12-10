@@ -56,7 +56,7 @@ export const MainRouterConfig: RouteDefs = {
                 lookup: { path: `${gameRoute}/lookup`,  dynamic: `${gameRoute}/lookup/:category?/:id?`, component: "LookupPage",showInMenu: true,   icon: "lookup", text: "lookup", visibleTo: "gm", exact: false },
                 dice:   { path: `${gameRoute}/dice`,    component: "DicePage",  showInMenu: true,   icon: "dice", text: "dice",   visibleTo: "gm" },
                 initiative: { path: `${gameRoute}/initiative`,component: "InitiativePage",showInMenu: true,icon: "inventory", text: "initiative",   visibleTo: "gm" },                
-                generator:  { path: `${gameRoute}/generator`,component: "GeneratorPage",showInMenu: true,   icon: "placeholder-light", text: "generator",   visibleTo: "gm" }
+                generator:  { path: `${gameRoute}/generator`,component: "GeneratorPage",showInMenu: true,   icon: "generator", text: "generator",   visibleTo: "gm" }
             }},
         default:{ path: "/",        component: "LandingPage" }
     }

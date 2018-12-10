@@ -42,7 +42,8 @@ const codexSelector = createSelector(
 const generatorSelector = createSelector(
   (state: any) => state.generator,
   generator => generator
-)
+);
+
 
 const mapStateToProps = createSelector(
   userSelector,

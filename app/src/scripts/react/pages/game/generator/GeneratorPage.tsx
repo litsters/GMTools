@@ -585,10 +585,12 @@ class GeneratorPage extends Component<IPage & GeneratorPageProps, GeneratorPageS
 
       return (
           <div className="generator-page padding-15">
-            <h1>Generator</h1>
             <div className="content">
+              <h1>Name Generator</h1>
               <div id="roots">{roots}</div>
-              <div id="genText">{this.state.generatedText}</div>
+              {this.state.generatedText &&
+                <h2 id="genText">{this.state.generatedText}</h2>
+              }
               <h1>Roll tables</h1>
               <div id="rollTables">{rollerHtml}</div>
             </div>
